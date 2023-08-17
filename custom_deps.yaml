@@ -1,0 +1,9 @@
+repositories:
+  vesc:
+    type: git
+    url: https://github.com/f1tenth/vesc.git
+    version: ros2
+  transport_drivers:
+    type: git
+    url: https://github.com/ros-drivers/transport_drivers.git
+    version: main
