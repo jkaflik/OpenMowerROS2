@@ -1,0 +1,29 @@
+chassis:
+  width: 0.6
+  height: 
+  length: 0.325
+  offset: 0.3 0.0 0.2
+
+mower:
+  # mower blades cut width when spinning 
+  cut_width: 0.13
+  offset: 0.15, 0.0, 0.0
+
+wheel:
+  #diameter of wheel
+  diameter: 0.185
+  
+  # distance between wheels
+  separation: 0.325
+
+  # gear ratio between motor and wheel (calculated based on 1600 ticks/m and wheel diameter)
+  gear_ratio: 0.003378378378378
+
+gps:
+  antenna:
+    # offset of gps antenna from center of robot
+    offset: 0.3, 0.0, 0.2
+
+battery:
+  empty_voltage: 25.0
+  full_voltage: 28.5

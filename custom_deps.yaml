@@ -1,8 +1,8 @@
 repositories:
   vesc:
     type: git
-    url: https://github.com/f1tenth/vesc.git
-    version: ros2
+    url: https://github.com/sbgisen/vesc.git
+    version: humble-devel 
   transport_drivers:
     type: git
     url: https://github.com/ros-drivers/transport_drivers.git

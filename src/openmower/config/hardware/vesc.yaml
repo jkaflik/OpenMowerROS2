@@ -1,0 +1,4 @@
+serial:
+  left: /dev/ttyAMA4
+  mower: /dev/ttyAMA3
+  right: /dev/ttyAMA2

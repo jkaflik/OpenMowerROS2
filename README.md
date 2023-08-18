@@ -6,6 +6,8 @@ This is a ROS 2 port of the [OpenMower ROS](https://github.com/ClemensElflein/op
 
 The initial goal of this project is to get learn about robot development using ROS2. The long term goal is to build a robotic lawn mower using the OpenMower hardware, but with longer term goals of adding features such as pairing robots, obstacle avoidance etc.
 
+Inspired by [articubot](https://github.com/joshnewans/articubot_one).
+
 ## Dependencies
 
 This project depends on the following ROS 2 packages:

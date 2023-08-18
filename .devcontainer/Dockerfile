@@ -16,10 +16,11 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y python3-pip
 ENV SHELL /bin/bash
 
+RUN sudo apt install -f wget curl vim
 RUN sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 RUN sudo apt-get update
-RUN sudo apt-get install -y gz-garden
+RUN sudo apt-get install -y gz-garden ros-iron-teleop-twist-keyboard
 
 COPY entrypoint.sh /entrypoint.sh
 
@@ -29,5 +30,9 @@ COPY entrypoint.sh /entrypoint.sh
 
 # [Optional] Set the default user. Omit if you want to keep the default as root.
 USER $USERNAME
+
+RUN echo "source /opt/ros/iron/setup.bash" >> ~/.bashrc
+RUN echo "source /home/ws/install/setup.bash" >> ~/.bashrc
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ["tail", "-f", "/dev/null"]
