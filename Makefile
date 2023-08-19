@@ -12,7 +12,10 @@ build:
 	colcon build --symlink-install
 
 sim:
-	ros2 launch src/openmower/launch/sim.launch.py
+	ROS_LOG_DIR=log/ ros2 launch src/openmower/launch/sim.launch.py
+
+run:
+	ROS_LOG_DIR=log/ ros2 launch src/openmower/launch/openmower.launch.py
 
 rsp:
 	ros2 launch src/openmower/launch/rsp.launch.py

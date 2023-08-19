@@ -8,6 +8,9 @@ controller_manager:
     diff_drive_base_controller:
       type: diff_drive_controller/DiffDriveController
 
+    mower_controller:
+      type: effort_controllers/JointGroupEffortController
+
 diff_drive_base_controller:
   ros__parameters:
     publish_rate: 50.0
@@ -20,3 +23,8 @@ diff_drive_base_controller:
     wheel_radius: 0.033
 
     use_stamped_vel: false
+
+mower_controller:
+  ros__parameters:
+    joints: ['mower_joint']
+    publish_rate: 50.0

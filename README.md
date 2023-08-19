@@ -14,6 +14,10 @@ This project depends on the following ROS 2 packages:
 - [vesc](https://github.com/f1tenth/vesc/)
 - [ublox](https://index.ros.org/p/ublox/github-KumarRobotics-ublox/#iron)
 
+## Hardware upgrades
+
+- [battery](https://amelectronics.pl/produkt/akumulator-pakiet-7s4p-28v-14000mah-14ah-bms-10a/)
+
 ## Development
 
 Contributions are welcome.

@@ -1,28 +1,53 @@
 chassis:
-  width: 0.6
-  height: 
-  length: 0.325
-  offset: 0.3 0.0 0.2
+  # x, y, z offset in m of chassis from center of robot
+  offset: [-0.1, 0.0, 0.0]
+
+  # width, height, length of chassis in m
+  width: 0.325
+  height: 0.2
+  length: 0.6
 
 mower:
-  # mower blades cut width when spinning 
-  cut_width: 0.13
-  offset: 0.15, 0.0, 0.0
+  # x, y, z offset in m of mower from center of robot
+  offset: [0.15, 0.0, -0.001]
+
+  # mower blades cut radius in m when spinning 
+  cut_radius: 0.065
+
+  # thickness in m
+  thickness: 0.01
+  # mass in kg
+  mass: 0.05
 
 wheel:
-  #diameter of wheel
-  diameter: 0.185
-  
-  # distance between wheels
-  separation: 0.325
+  # x, y, z offset in m of wheel from center of robot
+  # for the left and right wheels, the y offset is positive and negative respectively
+  offset: [0, 0.16, 0]
+  # mass in kg
+  mass: 0.2
 
-  # gear ratio between motor and wheel (calculated based on 1600 ticks/m and wheel diameter)
-  gear_ratio: 0.003378378378378
+  # radius in m
+  radius: 0.0925
+  # thickness in m
+  thickness: 0.05
+
+  # velocity in m/s
+  velocity: 
+    max: 0.2
+    min: -0.2
+  # gear ratio between motor and wheel
+  gear_ratio: 1
+
+caster_wheel:
+  # x, y, z offset in m of caster wheel from center of chassis
+  offset: [0.5, 0.1]
+  radius: 0.0925
+  mass: 0.05
 
 gps:
   antenna:
-    # offset of gps antenna from center of robot
-    offset: 0.3, 0.0, 0.2
+    # x, y, z offset in m of gps antenna from center of chassis
+    offset: [0.3, 0.0, 0.2]
 
 battery:
   empty_voltage: 25.0

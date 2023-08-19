@@ -6,3 +6,5 @@
 /log
 /cache
 /build
+
+__pycache__/

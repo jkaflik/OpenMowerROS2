@@ -17,6 +17,8 @@
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
 
+  <depend>vesc_hw_interface</depend>
+
   <exec_depend>control_msgs</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>

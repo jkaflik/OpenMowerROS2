@@ -4,19 +4,23 @@
     <xacro:include filename="inertial_macros.xacro"/>
 
 
-    <xacro:property name="chassis_length" value="0.335"/>
-    <xacro:property name="chassis_width" value="0.265"/>
-    <xacro:property name="chassis_height" value="0.138"/>
-    <xacro:property name="chassis_mass" value="1.0"/>
-    <xacro:property name="wheel_radius" value="0.033"/>
-    <xacro:property name="wheel_thickness" value="0.026"/>
-    <xacro:property name="wheel_mass" value="0.05"/>
-    <xacro:property name="wheel_offset_x" value="0.226"/>
-    <xacro:property name="wheel_offset_y" value="0.1485"/>
-    <xacro:property name="wheel_offset_z" value="0.01"/>
-    <xacro:property name="caster_wheel_radius" value="0.01"/>
-    <xacro:property name="caster_wheel_mass" value="0.01"/>
-    <xacro:property name="caster_wheel_offset_x" value="0.075"/>
+    <xacro:property name="chassis_length" value="${robot['chassis']['length']}"/>
+    <xacro:property name="chassis_width" value="${robot['chassis']['width']}"/>
+    <xacro:property name="chassis_height" value="${robot['chassis']['height']}"/>
+    <xacro:property name="chassis_mass" value="${robot['chassis']['mass']}"/>
+    <xacro:property name="chassis_offset_x" value="${robot['chassis']['offset'][0]}"/>
+    <xacro:property name="chassis_offset_y" value="${robot['chassis']['offset'][1]}"/>
+    <xacro:property name="chassis_offset_z" value="${robot['chassis']['offset'][2]}"/>
+    <xacro:property name="wheel_radius" value="${robot['wheel']['radius']}"/>
+    <xacro:property name="wheel_thickness" value="${robot['wheel']['thickness']}"/>
+    <xacro:property name="wheel_mass" value="${robot['wheel']['mass']}"/>
+    <xacro:property name="wheel_offset_x" value="${robot['wheel']['offset'][0]}"/>
+    <xacro:property name="wheel_offset_y" value="${robot['wheel']['offset'][1]}"/>
+    <xacro:property name="wheel_offset_z" value="${robot['wheel']['offset'][2]}"/>
+    <xacro:property name="caster_wheel_radius" value="${robot['caster_wheel']['mass']}"/>
+    <xacro:property name="caster_wheel_mass" value="${robot['caster_wheel']['mass']}"/>
+    <xacro:property name="caster_wheel_offset_x" value="${robot['caster_wheel']['offset'][0]}"/>
+    <xacro:property name="caster_wheel_offset_y" value="${robot['caster_wheel']['offset'][1]}"/>
     <xacro:property name="caster_wheel_offset_z" value="${wheel_offset_z - wheel_radius + caster_wheel_radius}"/>
 
     <material name="white">
@@ -62,7 +66,7 @@
     <joint name="chassis_joint" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>
-        <origin xyz="${-wheel_offset_x} 0 ${-wheel_offset_z}"/>
+        <origin xyz="${chassis_offset_x} ${chassis_offset_y} ${chassis_offset_z}"/>
     </joint>
 
     <link name="chassis">
@@ -93,7 +97,7 @@
     <joint name="left_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="left_wheel"/>
-        <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" />
+        <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="-${pi/2} 0 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -118,15 +122,12 @@
         <material>Gazebo/Blue</material>
     </gazebo>
 
-
-
-
     <!-- RIGHT WHEEL LINK -->
 
     <joint name="right_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="right_wheel"/>
-        <origin xyz="0 ${-wheel_offset_y} 0" rpy="${pi/2} 0 0" />
+        <origin xyz="${wheel_offset_x} ${-wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
         <axis xyz="0 0 -1"/>
     </joint>
 
@@ -151,17 +152,46 @@
         <material>Gazebo/Blue</material>
     </gazebo>
 
+    <!-- MOWER LINK -->
 
-    <!-- CASTER WHEEL LINK -->
+    <joint name="mower_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="mower"/>        
+        <origin xyz="${robot['mower']['offset'][0]} ${robot['mower']['offset'][1]} ${robot['mower']['offset'][2]}" rpy="${pi/2} 0 0" />
+        <axis xyz="0 0 -1"/>
+    </joint>
 
-    <joint name="caster_wheel_joint" type="fixed">
+    <link name="mower">
+        <visual>
+            <geometry>
+                <cylinder radius="${robot['mower']['cut_radius']}" length="${robot['mower']['thickness']}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${robot['mower']['cut_radius']}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${robot['mower']['mass']}" length="${robot['mower']['thickness']}" radius="${robot['mower']['cut_radius']}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="mower">
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <!-- LEFT CASTER WHEEL LINK -->
+
+    <joint name="left_caster_wheel_joint" type="fixed">
         <parent link="chassis"/>
-        <child link="caster_wheel"/>
-        <origin xyz="${caster_wheel_offset_x} 0 ${caster_wheel_offset_z}"/>
+        <child link="left_caster_wheel"/>
+        <origin xyz="${caster_wheel_offset_x} ${caster_wheel_offset_y} ${caster_wheel_offset_z}"/>
     </joint>
 
 
-    <link name="caster_wheel">
+    <link name="left_caster_wheel">
         <visual>
             <geometry>
                 <sphere radius="${caster_wheel_radius}"/>
@@ -178,7 +208,39 @@
         </xacro:inertial_sphere>
     </link>
 
-    <gazebo reference="caster_wheel">
+    <gazebo reference="left_caster_wheel">
+        <material>Gazebo/White</material>
+        <mu1 value="0.001"/>
+        <mu2 value="0.001"/>
+    </gazebo>
+
+    <!-- RIGHT CASTER WHEEL LINK -->
+
+    <joint name="right_caster_wheel_joint" type="fixed">
+        <parent link="chassis"/>
+        <child link="right_caster_wheel"/>
+        <origin xyz="${caster_wheel_offset_x} ${-caster_wheel_offset_y} ${caster_wheel_offset_z}"/>
+    </joint>
+
+
+    <link name="right_caster_wheel">
+        <visual>
+            <geometry>
+                <sphere radius="${caster_wheel_radius}"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${caster_wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_sphere mass="${caster_wheel_mass}" radius="${caster_wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_sphere>
+    </link>
+
+    <gazebo reference="right_caster_wheel">
         <material>Gazebo/White</material>
         <mu1 value="0.001"/>
         <mu2 value="0.001"/>
