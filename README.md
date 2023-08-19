@@ -29,3 +29,11 @@ The project is setup to use a dev container. This is a docker container that has
 The most prefered IDE is [Visual Studio Code](https://code.visualstudio.com/). The project is setup to use the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension. This extension allows you to open the project in a dev container.
 
 As a side container, Xserver is run with a VNC server and client exposed via a web browser. This allows you to run the Gazebo simulator and view the GUI in a web browser. The VNC server is exposed on port 12345 to the host.
+
+
+### Forwarding hardware devices to your dev container
+
+It's possible to interact with real hardware without need to run entire stack on OpenMower robot. To do so, you need to forward serial devices to your dev container. To do so, you need to run following command on your host machine:
+
+```bash
+OPENMOWER_REMOTE_IP=blabla make remote-devices

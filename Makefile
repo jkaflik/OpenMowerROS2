@@ -1,3 +1,5 @@
+OPENMOWER_REMOTE_IP ?= 10.0.250.79
+
 all: deps build
 
 .PHONY: deps build
@@ -21,4 +23,4 @@ rsp:
 	ros2 launch src/openmower/launch/rsp.launch.py
 
 remote-devices:
-	sudo bash .devcontainer/scripts/remote_devices.sh 10.0.250.79 openmower
+	sudo bash .devcontainer/scripts/remote_devices.sh $(OPENMOWER_REMOTE_IP) openmower
