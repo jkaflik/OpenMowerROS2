@@ -1,3 +1,5 @@
+# This Dockerfile is itent to be a release image, but for now it is used for development
+
 FROM ros:iron
 ARG USERNAME=openmower
 ARG USER_UID=1000
@@ -23,7 +25,7 @@ RUN sudo apt-get update
 RUN sudo apt-get install -y gz-garden ros-iron-teleop-twist-keyboard
 RUN sudo adduser $USERNAME dialout
 
-COPY entrypoint.sh /entrypoint.sh
+COPY .devcontainer/entrypoint.sh /entrypoint.sh
 
 # ********************************************************
 # * Anything else you want to do like clean up goes here *
@@ -32,8 +34,15 @@ COPY entrypoint.sh /entrypoint.sh
 # [Optional] Set the default user. Omit if you want to keep the default as root.
 USER $USERNAME
 
+COPY ./ /home/ws
+WORKDIR /home/ws
+
+RUN sudo chown -R openmower /home/ws/
+RUN rosdep update
+RUN make custom-deps deps build
+
 RUN echo "source /opt/ros/iron/setup.bash" >> ~/.bashrc
 RUN echo "source /home/ws/install/setup.bash" >> ~/.bashrc
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD ["tail", "-f", "/dev/null"]
+CMD ["ros2", "launch", "src/openmower/launch/openmower.launch.py"]

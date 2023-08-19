@@ -19,3 +19,6 @@ run:
 
 rsp:
 	ros2 launch src/openmower/launch/rsp.launch.py
+
+remote-devices:
+	sudo bash .devcontainer/scripts/remote_devices.sh 10.0.250.79 openmower

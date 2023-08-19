@@ -18,5 +18,5 @@
 			]
         }
     },
-    "postCreateCommand": "sudo rosdep update && sudo rosdep install --from-paths src --ignore-src -y && sudo chown -R openmower /home/ws/"
+    "postCreateCommand": "sudo chown -R openmower /home/ws/ && sudo rosdep update && sudo rosdep install --from-paths src --ignore-src -y"
 }
