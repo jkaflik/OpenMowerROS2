@@ -72,6 +72,23 @@ def generate_launch_description():
         output='screen'
     )
 
+    gps_params = os.path.join(get_package_share_directory(package_name), 'config', 'ublox_gps.yaml')
+    ublox_gps_node = Node(package='ublox_gps',
+                                             executable='ublox_gps_node',
+                                             output='both',
+                                             parameters=[gps_params])
+    
+    ntrip_client = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("ntrip_client"), '/ntrip_client_launch.py']),
+        launch_arguments={
+            'host': 'system.asgeupos.pl',
+            'port': '8082',
+            'mountpoint': 'BOGI_RTCM_3_1',
+            'username': 'jkaflik',
+            'password': '7*i4ODRctXfpqkr#',
+        }.items(),
+    )
+
     # Launch them all!
     return LaunchDescription([
         node_robot_state_publisher,
@@ -96,4 +113,6 @@ def generate_launch_description():
                 on_exit=[load_mower_controller],
             )
         ),
+        ntrip_client,
+        ublox_gps_node,
     ])

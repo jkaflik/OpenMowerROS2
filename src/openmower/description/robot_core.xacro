@@ -21,7 +21,7 @@
     <xacro:property name="caster_wheel_mass" value="${robot['caster_wheel']['mass']}"/>
     <xacro:property name="caster_wheel_offset_x" value="${robot['caster_wheel']['offset'][0]}"/>
     <xacro:property name="caster_wheel_offset_y" value="${robot['caster_wheel']['offset'][1]}"/>
-    <xacro:property name="caster_wheel_offset_z" value="${wheel_offset_z - wheel_radius + caster_wheel_radius}"/>
+    <xacro:property name="caster_wheel_offset_z" value="${wheel_offset_z - wheel_radius + caster_wheel_radius*2}"/>
 
     <material name="white">
         <color rgba="1 1 1 1" />

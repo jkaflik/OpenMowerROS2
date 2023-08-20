@@ -46,7 +46,7 @@ sshAndSocatSerialToTCP() {
 killall socat || true
 
 sshAndSocatSerialToTCP ttyAMA0 115200 65000 & \
-sshAndSocatSerialToTCP ttyAMA1 115200 65001 & \
+sshAndSocatSerialToTCP ttyAMA1 921600 65001 & \
 sshAndSocatSerialToTCP ttyAMA2 115200 65002 & \
 sshAndSocatSerialToTCP ttyAMA3 115200 65003 & \
 sshAndSocatSerialToTCP ttyAMA4 115200 65004 && fg

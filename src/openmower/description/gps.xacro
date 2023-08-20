@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="gps">
+    <joint name="gps_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="gps"/>
+        <origin xyz="0.3 0 0.05" rpy="0 0 0"/>
+    </joint>
+
+    <link name="gps">
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.08 0.08 0.04"></box>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.08 0.08 0.04"></box>
+            </geometry>
+            <material name="black"/>
+        </visual>
+
+        <sensor name="navsat" type="navsat">
+            <always_on>1</always_on>
+            <update_rate>1</update_rate>
+            <topic>navsat</topic>
+        </sensor>
+    </link>
+
+    <gazebo reference="gps">
+        <material>Gazebo/Black</material>
+    </gazebo>
+</robot>

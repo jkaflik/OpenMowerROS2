@@ -14,7 +14,8 @@
 				"donjayamanne.python-extension-pack",
 				"eamodio.gitlens",
 				"ms-iot.vscode-ros",
-				"ms-vscode.makefile-tools"
+				"ms-vscode.makefile-tools",
+				"DotJoshJohnson.xml"
 			]
         }
     },

@@ -16,6 +16,8 @@ This project depends on the following ROS 2 packages:
 
 ## Hardware upgrades
 
+List of potential upgrades for myself:
+
 - [battery](https://amelectronics.pl/produkt/akumulator-pakiet-7s4p-28v-14000mah-14ah-bms-10a/)
 
 ## Development
@@ -30,10 +32,18 @@ The most prefered IDE is [Visual Studio Code](https://code.visualstudio.com/). T
 
 As a side container, Xserver is run with a VNC server and client exposed via a web browser. This allows you to run the Gazebo simulator and view the GUI in a web browser. The VNC server is exposed on port 12345 to the host.
 
+### Simulator
+
+The project is setup to use the [Gazebo Garden](http://gazebosim.org/) simulator. Mower is loaded from URDF.
+
+Currently supported features:
+- control - [ros2 control hardware system interface](src/openmower/description/gazebo_control.xacro) `gz_ros2_control/GazeboSimSystem`
+- [GPS](src/openmower/description/gps.xacro) - `navsat` sensor
+    currently it's broken due to [OSM bug in Qt](https://github.com/gazebosim/gz-gui/issues/482)
 
 ### Forwarding hardware devices to your dev container
 
 It's possible to interact with real hardware without need to run entire stack on OpenMower robot. To do so, you need to forward serial devices to your dev container. To do so, you need to run following command on your host machine:
 
 ```bash
-OPENMOWER_REMOTE_IP=blabla make remote-devices
+OPENMOWER_REMOTE_IP=192.168.100.100 make remote-devices

@@ -1,10 +1,10 @@
 chassis:
   # x, y, z offset in m of chassis from center of robot
-  offset: [-0.1, 0.0, 0.0]
+  offset: [-0.1, 0.0, -0.05]
 
   # width, height, length of chassis in m
   width: 0.325
-  height: 0.2
+  height: 0.10
   length: 0.6
 
 mower:
@@ -39,7 +39,7 @@ wheel:
   gear_ratio: 1
 
 caster_wheel:
-  # x, y, z offset in m of caster wheel from center of chassis
+  # x, y offset in m of caster wheel from center of chassis
   offset: [0.5, 0.1]
   radius: 0.0925
   mass: 0.05
