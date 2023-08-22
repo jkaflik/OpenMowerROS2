@@ -154,7 +154,7 @@
 
     <!-- MOWER LINK -->
 
-    <joint name="mower_joint" type="continuous">
+    <!-- <joint name="mower_joint" type="continuous">
         <parent link="base_link"/>
         <child link="mower"/>        
         <origin xyz="${robot['mower']['offset'][0]} ${robot['mower']['offset'][1]} ${robot['mower']['offset'][2]}" rpy="${pi/2} 0 0" />
@@ -180,7 +180,7 @@
 
     <gazebo reference="mower">
         <material>Gazebo/Red</material>
-    </gazebo>
+    </gazebo> -->
 
     <!-- LEFT CASTER WHEEL LINK -->
 

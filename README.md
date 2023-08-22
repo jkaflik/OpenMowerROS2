@@ -11,6 +11,9 @@ Inspired by [articubot](https://github.com/joshnewans/articubot_one).
 ## Dependencies
 
 This project depends on the following ROS 2 packages:
+- [control2]
+- [nav2]
+- [robot_localization](https://github.com/cra-ros-pkg/robot_localization)
 - [vesc](https://github.com/f1tenth/vesc/)
 - [ublox](https://index.ros.org/p/ublox/github-KumarRobotics-ublox/#iron)
 

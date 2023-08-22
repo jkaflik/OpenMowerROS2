@@ -1,5 +1,6 @@
 /src/vesc
 /src/transport_drivers
+/src/navigation2
 
 # ROS 2
 /install

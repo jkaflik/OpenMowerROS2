@@ -107,12 +107,28 @@ def generate_launch_description():
                 on_exit=[load_diff_controller],
             )
         ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=load_joint_state_controller,
-                on_exit=[load_mower_controller],
-            )
-        ),
+        # RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=load_joint_state_controller,
+        #         on_exit=[load_mower_controller],
+        #     )
+        # ),
         ntrip_client,
         ublox_gps_node,
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            arguments=['-d' + os.path.join(get_package_share_directory('openmower'), 'config', 'view_bot.rviz')]
+        ),
+        Node(
+            package='rqt_robot_steering',
+            executable='rqt_robot_steering',
+        ),
+        Node(
+            package='robot_localization',
+            executable='navsat_transform_node',
+            name='navsat_transform_node',
+            output='screen',
+            parameters=[os.path.join(get_package_share_directory("robot_localization"), 'params', 'navsat_transform.yaml')],
+        ),
     ])

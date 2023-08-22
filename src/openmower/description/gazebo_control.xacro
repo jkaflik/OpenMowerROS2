@@ -21,11 +21,11 @@
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
-    <joint name="mower_joint">
+    <!-- <joint name="mower_joint">
       <command_interface name="effort">
       </command_interface>
       <state_interface name="effort"/>
-    </joint>
+    </joint> -->
   </ros2_control>
 
   <gazebo>
