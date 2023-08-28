@@ -9,8 +9,7 @@ deps:
 	rosdep install --from-paths src -i -y
 
 custom-deps:
-	vcs import src --force --shallow < custom_deps.yaml
-	rm -rf src/navigation2/nav2_system_tests
+	sh utils/install-custom-deps.sh
 
 build:
 	colcon build --symlink-install

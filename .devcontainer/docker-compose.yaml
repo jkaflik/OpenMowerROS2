@@ -16,7 +16,8 @@ services:
     ipc: host
     security_opt:
     - seccomp:unconfined
-    network_mode: host
+    ports:
+    - "2222:22"
     volumes:
     - ../:/home/ws
     - build:/home/ws/build # keep container pre-build
