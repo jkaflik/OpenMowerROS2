@@ -2,6 +2,7 @@ FROM ros:iron
 ARG USERNAME=openmower
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG SSH_PORT=2222
 
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
@@ -27,6 +28,7 @@ RUN ( \
     echo "source /home/ws/install/setup.bash"; \
   ) >> /home/$USERNAME/.bashrc
 
+RUN sed -i 's/#Port 22/Port $SSH_PORT/' /etc/ssh/sshd_config
 RUN mkdir /run/sshd
 
 CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config"]

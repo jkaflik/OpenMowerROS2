@@ -1,4 +1,5 @@
-OPENMOWER_REMOTE_IP ?= 10.0.250.79
+OPENMOWER_REMOTE_IP ?= 10.0.251.104
+OPENMOWER_REMOTE_USER ?= openmower
 ROS_LOG_DIR = log/
 
 all: deps build
@@ -30,4 +31,4 @@ rsp:
 	ros2 launch src/openmower/launch/rsp.launch.py
 
 remote-devices:
-	sudo bash .devcontainer/scripts/remote_devices.sh $(OPENMOWER_REMOTE_IP) openmower
+	sudo bash .devcontainer/scripts/remote_devices.sh $(OPENMOWER_REMOTE_IP) $(OPENMOWER_REMOTE_USER)
