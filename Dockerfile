@@ -15,6 +15,7 @@ RUN apt-get update \
   && apt-get install -y ssh \
     python3-pip \
     curl \
+    vim \
   && rm -rf /var/lib/apt/lists/*
 
 RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \

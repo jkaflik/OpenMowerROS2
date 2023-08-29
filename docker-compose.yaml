@@ -14,10 +14,12 @@ services:
   workspace:
     image: ghcr.io/jkaflik/openmowerros2:main
     ipc: host
+    network_mode: host
     security_opt:
     - seccomp:unconfined
     volumes:
-    - ../:/home/ws
+    - /dev:/dev
+    - ./:/home/ws
     - build:/home/ws/build # keep container pre-build
     - install:/home/ws/install # keep container pre-build
     - log:/home/ws/log # keep container pre-build
