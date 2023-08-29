@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Remote Host (7f8bbb15-157c-48e9-ade9-e833c2f6170b)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/ws" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/src/vesc/vesc_hw_interface/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/src/openmower/cmake-build-debug" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
