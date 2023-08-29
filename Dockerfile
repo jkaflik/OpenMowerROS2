@@ -30,7 +30,7 @@ RUN ( \
     echo "source /home/ws/install/setup.bash"; \
   ) >> /home/$USERNAME/.bashrc
 
-RUN sed -i 's/#Port 22/Port $SSH_PORT/' /etc/ssh/sshd_config
+RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 RUN mkdir /run/sshd
 
 # Extra steps for having prebuild packages
