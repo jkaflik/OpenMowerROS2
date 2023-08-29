@@ -19,7 +19,6 @@ services:
     - seccomp:unconfined
     volumes:
     - /dev:/dev
-    - ./:/home/ws
     - build:/home/ws/build # keep container pre-build
     - install:/home/ws/install # keep container pre-build
     - log:/home/ws/log # keep container pre-build
