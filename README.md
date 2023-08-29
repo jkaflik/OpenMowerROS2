@@ -29,11 +29,24 @@ Contributions are welcome.
 
 ### Dev container
 
-The project is setup to use a dev container. This is a docker container that has all the dependencies installed. This makes it easy to get started with the project. To use the dev container, you need to have [Docker](https://www.docker.com/) installed.
+The project is set up to use a dev container. This is a docker container that has all the dependencies installed. This makes it easy to get started with the project. To use the dev container, you need to have [Docker](https://www.docker.com/) installed.
 
-The most prefered IDE is [Visual Studio Code](https://code.visualstudio.com/). The project is setup to use the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension. This extension allows you to open the project in a dev container.
+#### Visual Studio Code
+
+The most straightforward IDE is [Visual Studio Code](https://code.visualstudio.com/). The project is set up to use the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension. This extension allows you to open the project in a dev container.
 
 As a side container, Xserver is run with a VNC server and client exposed via a web browser. This allows you to run the Gazebo simulator and view the GUI in a web browser. The VNC server is exposed on port 12345 to the host.
+
+#### CLion
+
+Developing with CLion is also possible, but requires a minimum more effort to get the things running smoothly.
+
+Steps:
+- run `make dev-containers` to get the workspace and xserver containers running
+- configure [remote toolchain](https://www.jetbrains.com/help/clion/remote-projects-support.html#remote-toolchain) for your workspace
+  this repository is shipped with preconfigured CLion project files, so you should be able to just open the project
+  __NOTE__: you need to use `localhost` as the host, port `2222` and `openmower` as the username (password is `openmower`)
+- make sure remote development has correct mapping. Your project path has to be mapped to `/home/ws` in the container
 
 ### Simulator
 

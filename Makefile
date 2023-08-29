@@ -5,6 +5,9 @@ all: deps build
 
 .PHONY: deps build
 
+dev-containers:
+	cd .devcontainer && docker-compose up -d
+
 deps:
 	rosdep install --from-paths src -i -y
 
