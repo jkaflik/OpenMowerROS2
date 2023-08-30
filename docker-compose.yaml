@@ -15,6 +15,7 @@ services:
     image: ghcr.io/jkaflik/openmowerros2:main
     ipc: host
     network_mode: host
+    privileged: true
     security_opt:
     - seccomp:unconfined
     volumes:
