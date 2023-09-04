@@ -68,3 +68,8 @@ It's possible to interact with real hardware without need to run entire stack on
 
 ```bash
 OPENMOWER_REMOTE_IP=192.168.100.100 make remote-devices
+```
+
+## Notes (unstructured)
+
+- installing librealsense from ROS repositories does not setup udev rules, so you need to do it manually: https://github.com/IntelRealSense/librealsense/blob/master/config/99-realsense-libusb.rules

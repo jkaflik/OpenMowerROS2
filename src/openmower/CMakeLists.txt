@@ -26,7 +26,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-INSTALL(DIRECTORY config launch description worlds
+INSTALL(DIRECTORY config launch description worlds maps
   DESTINATION share/${PROJECT_NAME}
 )
 

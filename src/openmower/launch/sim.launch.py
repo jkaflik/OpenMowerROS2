@@ -7,6 +7,7 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, RegisterEventHandler, DeclareLaunchArgument, ExecuteProcess
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
@@ -43,17 +44,6 @@ def generate_launch_description():
             executable="twist_mux",
             parameters=[twist_mux_params, {'use_sim_time': True}],
             remappings=[('/cmd_vel_out','/diff_drive_base_controller/cmd_vel_unstamped')]
-        )
-    
-    rqtRobotSteering = Node(
-        package='rqt_robot_steering',
-        executable='rqt_robot_steering',
-    )
-    
-    rviz = Node(
-        package='rviz2',
-        executable='rviz2',
-        arguments=['-d' + os.path.join(get_package_share_directory('openmower'), 'config', 'view_bot.rviz')]
     )
 
     gz_spawn_entity = Node(
@@ -91,14 +81,16 @@ def generate_launch_description():
         output='screen'
     )
 
+    foxglove_bridge = IncludeLaunchDescription(
+        XMLLaunchDescriptionSource([get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
+    )
+
     # Launch them all!
     return LaunchDescription([
         bridge,
         node_robot_state_publisher,
         joystick,
         twist_mux,
-        # Launch vizualization tools
-        rqtRobotSteering,
         # Launch gazebo environment
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -121,12 +113,6 @@ def generate_launch_description():
             event_handler=OnProcessExit(
                 target_action=load_joint_state_controller,
                 on_exit=[load_mower_controller],
-            )
-        ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=load_joint_state_controller,
-                on_exit=[rviz],
             )
         ),
         gz_spawn_entity,

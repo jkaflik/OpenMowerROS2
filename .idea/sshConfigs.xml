@@ -2,7 +2,9 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
+      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="localhost" id="c544bac6-feb1-4626-9e57-f65eb5d93a93" port="2222" nameFormat="DESCRIPTIVE" username="openmower" useOpenSSHConfig="true" />
       <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="localhost" id="ed3a3828-b714-4b69-8035-a90c07174b96" port="2222" nameFormat="DESCRIPTIVE" username="openmower" useOpenSSHConfig="true" />
+      <sshConfig host="omdev.local" id="4ce0efe1-9ccc-466d-a1d2-0eb3bef2e5a9" keyPath="$USER_HOME$/.ssh/id_rsa" port="22" nameFormat="DESCRIPTIVE" username="jkaflik" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>

@@ -7,6 +7,7 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, RegisterEventHandler, DeclareLaunchArgument, ExecuteProcess
 from launch.event_handlers import OnProcessStart, OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
@@ -89,10 +90,34 @@ def generate_launch_description():
         }.items(),
     )
 
+    localization = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/localization.launch.py']),
+        launch_arguments={
+            'use_sim_time': 'false',
+            # 'map': os.path.join(get_package_share_directory("openmower"), 'maps', 'world.yaml'),
+            'autostart': 'true',
+            'params_file': os.path.join(get_package_share_directory("openmower"), 'config', 'nav2_params.yaml'),
+        }.items(),
+    )
+
+    nav2 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/nav2.launch.py']),
+        launch_arguments={
+            'use_sim_time': 'false',
+            # 'map': os.path.join(get_package_share_directory("openmower"), 'maps', 'world.yaml'),
+            'autostart': 'true',
+            'params_file': os.path.join(get_package_share_directory("openmower"), 'config', 'nav2_params.yaml'),
+        }.items(),
+    )
+
+    foxglove_bridge = IncludeLaunchDescription(
+        XMLLaunchDescriptionSource([get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
+    )
+
     # Launch them all!
     return LaunchDescription([
         node_robot_state_publisher,
-        joystick,
+        # joystick,
         twist_mux,
         controller_manager,
         RegisterEventHandler(
@@ -107,28 +132,24 @@ def generate_launch_description():
                 on_exit=[load_diff_controller],
             )
         ),
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_mower_controller],
-        #     )
-        # ),
+        localization,
+        # nav2,
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_mower_controller],
+            )
+        ),
         ntrip_client,
-        ublox_gps_node,
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            arguments=['-d' + os.path.join(get_package_share_directory('openmower'), 'config', 'view_bot.rviz')]
-        ),
-        Node(
-            package='rqt_robot_steering',
-            executable='rqt_robot_steering',
-        ),
-        Node(
-            package='robot_localization',
-            executable='navsat_transform_node',
-            name='navsat_transform_node',
-            output='screen',
-            parameters=[os.path.join(get_package_share_directory("robot_localization"), 'params', 'navsat_transform.yaml')],
-        ),
+        # ublox_gps_node,
+        # Node(
+        #     package='rviz2',
+        #     executable='rviz2',
+        #     arguments=['-d' + os.path.join(get_package_share_directory('openmower'), 'config', 'view_bot.rviz')]
+        # ),
+        # Node(
+        #     package='rqt_robot_steering',
+        #     executable='rqt_robot_steering',
+        # ),
+        foxglove_bridge,
     ])
