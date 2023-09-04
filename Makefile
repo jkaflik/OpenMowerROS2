@@ -10,7 +10,7 @@ dev-containers:
 	cd .devcontainer && docker-compose up -d
 
 deps:
-	rosdep install --from-paths src -i -y
+	rosdep install --from-paths src -i -y --skip-keys="turtlebot3_gazebo"
 
 custom-deps:
 	sh utils/install-custom-deps.sh
