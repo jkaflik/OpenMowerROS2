@@ -9,3 +9,5 @@ __pycache__/
 .clion.source.upload.marker
 
 cmake-build-debug/
+
+*.pyc

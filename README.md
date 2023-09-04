@@ -57,6 +57,11 @@ Currently supported features:
 - [GPS](src/openmower/description/gps.xacro) - `navsat` sensor
     currently it's broken due to [OSM bug in Qt](https://github.com/gazebosim/gz-gui/issues/482)
 
+TODO:
+- [Bridge topics from Gazebo to ROS 2](https://github.com/gazebosim/ros_gz/tree/ros2/ros_gz_bridge)
+- Depth camera - [plugin example](https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_point_cloud/examples/depth_camera.sdf)
+- Custom sensors: e.g. power source - [instructions](https://github.com/gazebosim/gz-sensors/blob/main/tutorials/custom_sensors.md)
+
 ### Forwarding hardware devices to your dev container
 
 It's possible to interact with real hardware without need to run entire stack on OpenMower robot. To do so, you need to forward serial devices to your dev container. To do so, you need to run following command on your host machine:

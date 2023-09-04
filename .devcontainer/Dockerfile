@@ -26,6 +26,7 @@ RUN mkdir -p /home/ws/build /home/ws/install /home/ws/log \
 RUN ( \
     echo "source /opt/ros/iron/setup.bash"; \
     echo "source /home/ws/install/setup.bash"; \
+    echo "export DISPLAY=:0"; \
   ) >> /home/$USERNAME/.bashrc
 
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
