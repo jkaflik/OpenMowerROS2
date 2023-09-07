@@ -117,7 +117,6 @@ def generate_launch_description():
     # Launch them all!
     return LaunchDescription([
         node_robot_state_publisher,
-        # joystick,
         twist_mux,
         controller_manager,
         RegisterEventHandler(
@@ -133,7 +132,7 @@ def generate_launch_description():
             )
         ),
         localization,
-        # nav2,
+        nav2,
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=load_joint_state_controller,

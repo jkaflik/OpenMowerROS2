@@ -15,7 +15,7 @@ diff_drive_base_controller:
   ros__parameters:
     publish_rate: 50.0
 
-    base_frame_id: base_link
+    enable_odom_tf: false
 
     left_wheel_names: ['left_wheel_joint']
     right_wheel_names: ['right_wheel_joint']

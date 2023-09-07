@@ -13,7 +13,6 @@ RUN apt-get update \
   && apt-get install -y ssh \
     python3-pip \
     curl \
-    rsync \
   && rm -rf /var/lib/apt/lists/*
 
 RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
@@ -29,6 +28,11 @@ RUN ( \
     echo "source /home/ws/install/setup.bash"; \
     echo "export DISPLAY=:0"; \
   ) >> /home/$USERNAME/.bashrc
+
+RUN ( \
+    echo "PasswordAuthentication yes"; \
+    echo "PermitRootLogin yes"; \
+) >> /etc/ssh/sshd_config
 
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 RUN mkdir /run/sshd

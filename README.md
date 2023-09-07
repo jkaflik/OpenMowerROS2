@@ -73,3 +73,6 @@ OPENMOWER_REMOTE_IP=192.168.100.100 make remote-devices
 ## Notes (unstructured)
 
 - installing librealsense from ROS repositories does not setup udev rules, so you need to do it manually: https://github.com/IntelRealSense/librealsense/blob/master/config/99-realsense-libusb.rules
+- http://docs.ros.org/en/melodic/api/robot_localization/html/preparing_sensor_data.html
+- https://manialabs.wordpress.com/2012/08/06/covariance-matrices-with-a-practical-example/
+- http://docs.ros.org/en/melodic/api/robot_localization/html/integrating_gps.html

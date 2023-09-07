@@ -17,7 +17,6 @@ RUN apt-get update \
     python3-pip \
     curl \
     vim \
-    rsync \
   && rm -rf /var/lib/apt/lists/*
 
 RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \

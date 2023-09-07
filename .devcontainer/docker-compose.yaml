@@ -4,9 +4,9 @@ services:
     image: devrt/xserver
     ipc: host
     security_opt:
-      - seccomp:unconfined
+    - seccomp:unconfined
     ports:
-      - "12345:80"
+    - "12345:80"
     healthcheck:
       test: ["CMD-SHELL", "test -e /tmp/.X11-unix/X0"]
       interval: "1s"
@@ -15,20 +15,23 @@ services:
     build: ./
     ipc: host
     security_opt:
-      - seccomp:unconfined
+    - seccomp:unconfined
     ports:
-      - "2222:2222"
+    - "2222:22"
+    - "8082:8082" # Foxglove Studio websocket
+    - "9002:9002" # Gazebo websocket
     volumes:
-      - ../:/home/ws
-      - build:/home/ws/build # keep container pre-build
-      - install:/home/ws/install # keep container pre-build
-      - log:/home/ws/log # keep container pre-build
+    - ../:/home/ws
+    - build:/home/ws/build # keep container pre-build
+    - install:/home/ws/install # keep container pre-build
+    - log:/home/ws/log # keep container pre-build
+    environment:
+    - DISPLAY=:0
     volumes_from:
-      - xserver
+    - xserver
     depends_on:
-      - xserver
+    - xserver
 volumes:
   build:
   install:
   log:
-  xorg:

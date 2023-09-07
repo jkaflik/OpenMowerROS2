@@ -22,7 +22,7 @@ def generate_launch_description():
     lifecycle_nodes = ['controller_server',
                        'planner_server',
                        # 'recoveries_server',
-                       'bt_navigator',
+                       # 'bt_navigator',
                        'waypoint_follower']
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
@@ -102,13 +102,13 @@ def generate_launch_description():
         #     parameters=[configured_params],
         #     remappings=remappings),
 
-        Node(
-            package='nav2_bt_navigator',
-            executable='bt_navigator',
-            name='bt_navigator',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings),
+        # Node(
+        #     package='nav2_bt_navigator',
+        #     executable='bt_navigator',
+        #     name='bt_navigator',
+        #     output='screen',
+        #     parameters=[configured_params],
+        #     remappings=remappings),
 
         Node(
             package='nav2_waypoint_follower',
