@@ -73,23 +73,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    gps_params = os.path.join(get_package_share_directory(package_name), 'config', 'ublox_gps.yaml')
-    ublox_gps_node = Node(package='ublox_gps',
-                                             executable='ublox_gps_node',
-                                             output='both',
-                                             parameters=[gps_params])
-    
-    ntrip_client = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([get_package_share_directory("ntrip_client"), '/ntrip_client_launch.py']),
-        launch_arguments={
-            'host': 'system.asgeupos.pl',
-            'port': '8082',
-            'mountpoint': 'BOGI_RTCM_3_1',
-            'username': 'jkaflik',
-            'password': '7*i4ODRctXfpqkr#',
-        }.items(),
-    )
-
     localization = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/localization.launch.py']),
         launch_arguments={
@@ -110,10 +93,6 @@ def generate_launch_description():
         }.items(),
     )
 
-    foxglove_bridge = IncludeLaunchDescription(
-        XMLLaunchDescriptionSource([get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
-    )
-
     # Launch them all!
     return LaunchDescription([
         node_robot_state_publisher,
@@ -131,24 +110,23 @@ def generate_launch_description():
                 on_exit=[load_diff_controller],
             )
         ),
-        localization,
-        nav2,
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=load_joint_state_controller,
                 on_exit=[load_mower_controller],
             )
         ),
-        ntrip_client,
-        # ublox_gps_node,
-        # Node(
-        #     package='rviz2',
-        #     executable='rviz2',
-        #     arguments=['-d' + os.path.join(get_package_share_directory('openmower'), 'config', 'view_bot.rviz')]
+        # localization,
+        # nav2,
+        IncludeLaunchDescription(
+            XMLLaunchDescriptionSource([get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/micro_ros_agent.launch.py']),
+        ),
+
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/gps.launch.py']),
         # ),
-        # Node(
-        #     package='rqt_robot_steering',
-        #     executable='rqt_robot_steering',
-        # ),
-        foxglove_bridge,
     ])

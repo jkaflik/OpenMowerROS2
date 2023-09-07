@@ -17,7 +17,7 @@ services:
     security_opt:
     - seccomp:unconfined
     ports:
-    - "2222:22"
+    - "2222:2222"
     - "8082:8082" # Foxglove Studio websocket
     - "9002:9002" # Gazebo websocket
     volumes:

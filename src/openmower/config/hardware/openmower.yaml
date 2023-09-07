@@ -1,0 +1,3 @@
+micro_ros_agent:
+  device: /dev/ttyAMA0
+  baudrate: 115200

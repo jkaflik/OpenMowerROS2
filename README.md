@@ -76,3 +76,4 @@ OPENMOWER_REMOTE_IP=192.168.100.100 make remote-devices
 - http://docs.ros.org/en/melodic/api/robot_localization/html/preparing_sensor_data.html
 - https://manialabs.wordpress.com/2012/08/06/covariance-matrices-with-a-practical-example/
 - http://docs.ros.org/en/melodic/api/robot_localization/html/integrating_gps.html
+- https://askubuntu.com/a/1325939 - uart0 configuration on Ubuntu (disabling console and setting up udev rules)

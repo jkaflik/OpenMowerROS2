@@ -7,3 +7,7 @@ repositories:
     type: git
     url: https://github.com/ros-drivers/transport_drivers.git
     version: main
+  micro_ros_agent:
+    type: git
+    url: https://github.com/micro-ROS/micro-ROS-Agent
+    version: iron
