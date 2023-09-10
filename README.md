@@ -77,3 +77,4 @@ OPENMOWER_REMOTE_IP=192.168.100.100 make remote-devices
 - https://manialabs.wordpress.com/2012/08/06/covariance-matrices-with-a-practical-example/
 - http://docs.ros.org/en/melodic/api/robot_localization/html/integrating_gps.html
 - https://askubuntu.com/a/1325939 - uart0 configuration on Ubuntu (disabling console and setting up udev rules)
+- https://github.com/cloudn1ne/MowgliRover/tree/testing/src/mowgli/config/bt - BT for OpenMower

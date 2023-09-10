@@ -9,3 +9,6 @@ __pycache__/
 .clion.source.upload.marker
 
 cmake-build-debug/
+
+/.name
+/.idea
