@@ -7,3 +7,11 @@ repositories:
     type: git
     url: https://github.com/micro-ROS/micro-ROS-Agent
     version: iron
+  ublox_f9p:
+    type: git
+    url: https://github.com/jkaflik/ublox_f9p
+    version: main
+  ntrip_client:
+    type: git
+    url: https://github.com/LORD-MicroStrain/ntrip_client
+    version: feature/ros2_prefer_rtcm_msgs # feature branch with a rtcm_msgs support

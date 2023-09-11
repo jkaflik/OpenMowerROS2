@@ -14,12 +14,15 @@ services:
   workspace:
     build: ./
     ipc: host
+    pid: host
     security_opt:
     - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
     ports:
-    - "2222:2222"
-    - "8082:8082" # Foxglove Studio websocket
-    - "9002:9002" # Gazebo websocket
+      - "2222:2222"
+      - "8082:8082" # Foxglove Studio websocket
+      - "9002:9002" # Gazebo websocket
     volumes:
     - ../:/home/ws
     - build:/home/ws/build # keep container pre-build

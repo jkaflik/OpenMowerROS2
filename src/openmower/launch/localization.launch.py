@@ -99,19 +99,33 @@ def generate_launch_description():
             executable='ekf_node',
             name='eks_se_odom',
             output='screen',
-            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}]),
+            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}],
+            remappings=[
+                ('/imu/data', '/imu'),
+            ],
+        ),
 
         Node(
             package='robot_localization',
             executable='ekf_node',
             name='ekf_se_map',
             output='screen',
-            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}]),
+            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}],
+            remappings=[
+                ('/imu/data', '/imu'),
+                ('/odometry/filtered', '/odometry/filtered_map'),
+            ],
+        ),
 
         Node(
             package='robot_localization',
             executable='ekf_node',
             name='navsat_transform_node',
             output='screen',
-            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}]),
+            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}],
+            remappings=[
+                ('/imu/data', '/imu'),
+                ('/odometry/filtered', '/odometry/filtered_map'),
+            ],
+        ),
     ])

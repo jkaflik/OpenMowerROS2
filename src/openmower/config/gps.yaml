@@ -1,0 +1,15 @@
+ublox_f9p:
+  ros__parameters:
+    port: /dev/ttyAMA1
+    baudrate: 921600
+    debug: false
+
+ntrip_client_node:
+  ros__parameters:
+    host: 'system.asgeupos.pl'
+    port: 8082
+    mountpoint: 'BOGI_RTCM_3_1'
+    authenticate: true
+    username: 'jkaflik'
+    password: '7*i4ODRctXfpqkr#'
+    rtcm_message_package: 'rtcm_msgs'

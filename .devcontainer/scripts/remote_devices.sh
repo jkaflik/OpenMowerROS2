@@ -31,7 +31,7 @@ fi
 
 ssh $username@$host "sudo killall socat || true"
 
-trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+#trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 sshAndSocatSerialToTCP() {
     # $1 = serial port
@@ -43,11 +43,11 @@ sshAndSocatSerialToTCP() {
         sudo socat pty,link=/dev/$1,raw,group-late=dialout,mode=660 tcp:$host:$3 && fg
 }
 
-killall socat || true
+killall socat > /dev/null || true
 
-#sshAndSocatSerialToTCP ttyAMA0 115200 65000 & \
-sshAndSocatSerialToTCP ttyAMA1 921600 65001 && fg # & \
-#sshAndSocatSerialToTCP ttyAMA2 115200 65002 & \
-#sshAndSocatSerialToTCP ttyAMA3 115200 65003 & \
-#sshAndSocatSerialToTCP ttyAMA4 115200 65004 && fg
-#&& fg
+sshAndSocatSerialToTCP ttyAMA0 115200 65000 & \
+sshAndSocatSerialToTCP ttyAMA1 921600 65001 & \
+sshAndSocatSerialToTCP ttyAMA2 115200 65002 & \
+sshAndSocatSerialToTCP ttyAMA3 115200 65003 & \
+sshAndSocatSerialToTCP ttyAMA4 115200 65004 && fg
+&& fg
