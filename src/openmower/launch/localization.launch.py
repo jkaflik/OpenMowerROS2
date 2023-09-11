@@ -43,6 +43,8 @@ def generate_launch_description():
         param_rewrites=param_substitutions,
         convert_types=True)
 
+    localization_params_path = os.path.join(package_path, 'config', 'robot_localization.yaml')
+
     return LaunchDescription([
         # Set env var to print messages to stdout immediately
         SetEnvironmentVariable('RCUTILS_LOGGING_BUFFERED_STREAM', '1'),
@@ -97,9 +99,9 @@ def generate_launch_description():
         Node(
             package='robot_localization',
             executable='ekf_node',
-            name='eks_se_odom',
+            name='ekf_se_odom',
             output='screen',
-            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}],
+            parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
                 ('/imu/data', '/imu'),
             ],
@@ -110,7 +112,7 @@ def generate_launch_description():
             executable='ekf_node',
             name='ekf_se_map',
             output='screen',
-            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}],
+            parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
                 ('/imu/data', '/imu'),
                 ('/odometry/filtered', '/odometry/filtered_map'),
@@ -122,7 +124,7 @@ def generate_launch_description():
             executable='ekf_node',
             name='navsat_transform_node',
             output='screen',
-            parameters=[os.path.join(package_path, 'config', 'robot_localization.yaml'), {'use_sim_time': use_sim_time}],
+            parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
                 ('/imu/data', '/imu'),
                 ('/odometry/filtered', '/odometry/filtered_map'),

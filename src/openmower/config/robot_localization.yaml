@@ -32,7 +32,7 @@ ekf_se_odom:
 
     imu0: imu
     imu0_config: [false, false, false,
-                  false, false , false,
+                  true, true , false,
                   false, false, false,
                   false, false, true,
                   false, false, false]
@@ -122,7 +122,7 @@ ekf_se_map:
 
     imu0: imu
     imu0_config: [false, false, false,
-                  false, false, false,
+                  true, true , false,
                   false, false, false,
                   false, false, true,
                   false, false, false]
@@ -166,15 +166,13 @@ ekf_se_map:
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    1.0,  0.0,
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    1.0]
 
-navsat_transform:
+navsat_transform_node:
   ros__parameters:
     frequency: 10.0
     delay: 3.0
-#    magnetic_declination_radians: 0.04729842  # For lat/long of base
-#    yaw_offset: 1.570796327  # IMU reads 0 facing magnetic north, not east
     zero_altitude: true
     broadcast_utm_transform: true
     publish_filtered_gps: true
     use_odometry_yaw: true
     wait_for_datum: true
-    datum: ["50.23629283", "6.69252950", "0.0", "map", "base_footprint"] # origin of world set to rtk base coordinates
+    datum: ["52.4955621", "21.3852107", "0.0", "map", "base_link"] # origin of world set to rtk base coordinates

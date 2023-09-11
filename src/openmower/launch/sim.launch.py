@@ -67,11 +67,11 @@ def generate_launch_description():
         output='screen'
     )
 
-    load_mower_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             'mower_controller'],
-        output='screen'
-    )
+    # load_mower_controller = ExecuteProcess(
+    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+    #          'mower_controller'],
+    #     output='screen'
+    # )
 
     # Bridge
     bridge = Node(
