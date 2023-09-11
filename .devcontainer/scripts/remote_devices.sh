@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -40,13 +40,14 @@ sshAndSocatSerialToTCP() {
 
     ssh -o ExitOnForwardFailure=yes $username@$host "true && sudo socat TCP-LISTEN:$3,reuseaddr,fork FILE:/dev/$1,b$2,cs8,raw,echo=0" & \
         sleep 1 && \
-        socat pty,link=/dev/$1,raw,group-late=dialout,mode=660 tcp:$host:$3 && fg
+        sudo socat pty,link=/dev/$1,raw,group-late=dialout,mode=660 tcp:$host:$3 && fg
 }
 
 killall socat || true
 
-sshAndSocatSerialToTCP ttyAMA0 115200 65000 & \
-sshAndSocatSerialToTCP ttyAMA1 921600 65001 & \
-sshAndSocatSerialToTCP ttyAMA2 115200 65002 & \
-sshAndSocatSerialToTCP ttyAMA3 115200 65003 & \
-sshAndSocatSerialToTCP ttyAMA4 115200 65004 && fg
+#sshAndSocatSerialToTCP ttyAMA0 115200 65000 & \
+sshAndSocatSerialToTCP ttyAMA1 921600 65001 && fg # & \
+#sshAndSocatSerialToTCP ttyAMA2 115200 65002 & \
+#sshAndSocatSerialToTCP ttyAMA3 115200 65003 & \
+#sshAndSocatSerialToTCP ttyAMA4 115200 65004 && fg
+#&& fg
