@@ -10,7 +10,7 @@ ekf_se_odom:
 
     map_frame: map
     odom_frame: odom
-    base_link_frame: base_footprint
+    base_link_frame: base_link
     world_frame: odom
 
     #x     , y     , z,
@@ -20,9 +20,9 @@ ekf_se_odom:
     #ax    , ay    , az
 
     odom0: diff_drive_base_controller/odom
-    odom0_config: [false, false,  false,
-                   false, false, false,
-                   true,  true,  false,
+    odom0_config: [true, true, false,
+                   false, false, true,
+                   true, false, false,
                    false, false, true,
                    false, false, false]
     odom0_queue_size: 10
@@ -30,12 +30,12 @@ ekf_se_odom:
     odom0_differential: false
     odom0_relative: false
 
-    imu0: imu
+    imu0: imu/data
     imu0_config: [false, false, false,
-                  true, true , false,
+                  false, false, true,
                   false, false, false,
                   false, false, true,
-                  false, false, false]
+                  true, false, false]
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: false
@@ -88,7 +88,7 @@ ekf_se_map:
 
     map_frame: map
     odom_frame: odom
-    base_link_frame: base_footprint
+    base_link_frame: base_link
     world_frame: map
 
 
@@ -100,8 +100,8 @@ ekf_se_map:
 
     odom0: diff_drive_base_controller/odom
     odom0_config: [false, false, false,
-                   false, false, false,
-                   true,  true,  false,
+                   false, false, true,
+                   true, false, false,
                    false, false, true,
                    false, false, false]
     odom0_queue_size: 10
@@ -120,12 +120,12 @@ ekf_se_map:
     odom1_differential: false
     odom1_relative: false
 
-    imu0: imu
+    imu0: imu/data
     imu0_config: [false, false, false,
-                  true, true , false,
+                  false, false, true,
                   false, false, false,
                   false, false, true,
-                  false, false, false]
+                  true, false, false]
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: false
@@ -171,8 +171,7 @@ navsat_transform_node:
     frequency: 10.0
     delay: 3.0
     zero_altitude: true
-    broadcast_utm_transform: true
     publish_filtered_gps: true
     use_odometry_yaw: true
     wait_for_datum: true
-    datum: ["52.4955621", "21.3852107", "0.0", "map", "base_link"] # origin of world set to rtk base coordinates
+    datum: [52.4955621, 21.3852107, 0.0] # todo: remove my coordinates

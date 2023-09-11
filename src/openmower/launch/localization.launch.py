@@ -103,7 +103,7 @@ def generate_launch_description():
             output='screen',
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/imu/data', '/imu'),
+                ('/imu/data', '/imu/raw_data'), # remove once imu has orientation
             ],
         ),
 
@@ -114,20 +114,19 @@ def generate_launch_description():
             output='screen',
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/imu/data', '/imu'),
-                ('/odometry/filtered', '/odometry/filtered_map'),
+                ('/imu/data', '/imu/raw_data'), # remove once imu has orientation
+                ('/odometry/filtered', '/odometry/filtered/map'),
             ],
         ),
 
         Node(
             package='robot_localization',
-            executable='ekf_node',
+            executable='navsat_transform_node',
             name='navsat_transform_node',
             output='screen',
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/imu/data', '/imu'),
-                ('/odometry/filtered', '/odometry/filtered_map'),
+                ('/odometry/filtered', '/odometry/filtered/map'),
             ],
         ),
     ])
