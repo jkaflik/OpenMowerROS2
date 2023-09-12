@@ -11,13 +11,13 @@ This firmware supports only the recent OpenMower mainboard v0.13.x.
 
 ## Features
 
-* [x] DDS communication
-* [x] `sensor_msgs/Imu` message published on `/imu/data_raw` topic
-* [x] `sensor_msgs/BatteryState` message published on `/power` topic
-  * [x] `std_msgs/Float32` message published on `/power/charge_voltage` topic
-  * [x] `std_msgs/Bool` message published on `/power/charger_present` topic
-* [x] OpenMower charging logic
-* [x] ping micro-ROS agent, if not responding for some time, reboot
+* :white_check_mark: DDS communication
+* :white_check_mark: `sensor_msgs/Imu` message published on `/imu/data_raw` topic
+* :white_check_mark: `sensor_msgs/BatteryState` message published on `/power` topic
+  * :white_check_mark: `std_msgs/Float32` message published on `/power/charge_voltage` topic
+  * :white_check_mark: `std_msgs/Bool` message published on `/power/charger_present` topic
+* :white_check_mark: OpenMower charging logic
+* :white_check_mark: ping micro-ROS agent, if not responding for some time, reboot
 
 ## Flash
 
