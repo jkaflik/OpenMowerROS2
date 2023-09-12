@@ -17,15 +17,11 @@ export default withMermaid({
       {
         text: 'Getting started',
         link: '/getting-started',
-        // items: [
-        //   { text: 'Markdown Examples', link: '/markdown-examples' },
-        //   { text: 'Runtime API Examples', link: '/api-examples' }
-        // ]
       },
       {
         text: 'Components explained',
         items: [
-          { text: 'ROS2 workspace', link: '/ros2-workspace' },
+          { text: 'ROS workspace', link: '/ros-workspace' },
           { text: 'Mainboard firmware', link: '/omros2-firmware' },
         ]
       },
@@ -33,8 +29,14 @@ export default withMermaid({
         text: 'Contributing guide',
         link: '/contributing',
         items: [
-            { text: 'Devcontainer', link: '/contributing-devcontainer' },
-            { text: 'Simulation', link: '/contributing-simulation' },
+            {
+              text: 'Devcontainer',
+              link: '/devcontainer',
+              items: [
+                { text: 'CLion alternative', link: '/clion-env' },
+              ],
+            },
+            { text: 'Simulator', link: '/simulator' },
         ],
       },
     ],

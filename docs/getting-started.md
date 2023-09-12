@@ -53,3 +53,10 @@ Project is tested on YardForce Classic 500B model. It should work on other model
 or 
 
 There is no need to install ROS2 on your host machine. You can use [Docker](https://docs.docker.com/engine/install/) instead.
+
+## Installation
+
+::: info
+This section is not complete yet. It will be updated as the project progresses.
+If you are interested in the development, go to the [contributing guide](contributing) to run the project.
+:::
