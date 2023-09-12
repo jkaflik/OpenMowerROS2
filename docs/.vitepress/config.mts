@@ -7,6 +7,9 @@ export default withMermaid({
   description: "Just another software stack for OpenMower lawn mower robot, but this time with ROS2!",
   base: "/OpenMowerROS2/",
   themeConfig: {
+    search: {
+      provider: 'local',
+    },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
