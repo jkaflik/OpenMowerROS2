@@ -5,6 +5,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 export default withMermaid({
   title: "OpenMowerROS2",
   description: "Just another software stack for OpenMower lawn mower robot, but this time with ROS2!",
+  base: "/OpenMowerROS2/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
