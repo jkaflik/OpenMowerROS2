@@ -7,6 +7,8 @@ With ROS2 we can use more advanced communication protocols, like [DDS](https://e
 No need to run a dedicated node that translates serial packets to ROS messages.
 Micro-ROS takes care of that.
 
+This firmware supports only the recent OpenMower mainboard v0.13.x.
+
 ## Features
 
 * [x] DDS communication
