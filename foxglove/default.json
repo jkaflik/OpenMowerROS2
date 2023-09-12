@@ -1,0 +1,391 @@
+{
+  "configById": {
+    "Parameters!2tk0ho3": {
+      "title": "Parameters"
+    },
+    "SourceInfo!f2w7h8": {},
+    "RosOut!1anfqcv": {
+      "searchTerms": [],
+      "minLogLevel": 1
+    },
+    "3D!2gz3kf4": {
+      "cameraState": {
+        "perspective": true,
+        "distance": 14.70183781243095,
+        "phi": 51.15722910343571,
+        "thetaOffset": 32.968204010013444,
+        "targetOffset": [
+          2.935055849217841,
+          -7.049400716494065,
+          -4.8151705682163236e-15
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 45,
+        "near": 0.5,
+        "far": 5000
+      },
+      "followMode": "follow-pose",
+      "followTf": "map",
+      "scene": {
+        "transforms": {
+          "labelSize": 0.05,
+          "showLabel": false,
+          "editable": false
+        },
+        "enableStats": false
+      },
+      "transforms": {
+        "frame:camera_link": {
+          "visible": false
+        },
+        "frame:camera_accel_frame": {
+          "visible": false
+        },
+        "frame:camera_accel_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_color_frame": {
+          "visible": false
+        },
+        "frame:camera_depth_frame": {
+          "visible": false
+        },
+        "frame:camera_color_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_gyro_frame": {
+          "visible": false
+        },
+        "frame:camera_depth_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_imu_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_gyro_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_infra1_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_infra1_frame": {
+          "visible": false
+        },
+        "frame:camera_infra2_frame": {
+          "visible": false
+        },
+        "frame:camera_infra2_optical_frame": {
+          "visible": false
+        },
+        "frame:camera_bottom_screw_frame": {
+          "visible": false
+        },
+        "frame:chassis": {
+          "visible": true
+        },
+        "frame:map": {
+          "visible": true
+        }
+      },
+      "topics": {
+        "/robot_description": {
+          "visible": true
+        },
+        "/camera/depth/color/points": {
+          "visible": true,
+          "colorMode": "rgb",
+          "stixelsEnabled": false,
+          "colorField": "rgb",
+          "colorMap": "turbo"
+        },
+        "/camera/depth/camera_info": {
+          "visible": false
+        },
+        "/camera/color/camera_info": {
+          "visible": false
+        },
+        "/camera/color/image_raw": {
+          "visible": false,
+          "frameLocked": true,
+          "cameraInfoTopic": "/camera/color/camera_info",
+          "distance": 1,
+          "planarProjectionFactor": 0,
+          "color": "#ffffff"
+        },
+        "/camera/depth/image_rect_raw": {
+          "visible": false,
+          "frameLocked": true,
+          "cameraInfoTopic": "/camera/depth/camera_info",
+          "distance": 1,
+          "planarProjectionFactor": 0,
+          "color": "#ffffff"
+        },
+        "/move_base_simple/goal": {
+          "visible": false,
+          "axisScale": 2.7
+        },
+        "/initialpose": {
+          "visible": false
+        },
+        "/map": {
+          "visible": false
+        },
+        "/scan": {
+          "visible": false
+        },
+        "/amcl_pose": {
+          "visible": false
+        },
+        "/camera/infra1/image_rect_raw": {
+          "visible": false,
+          "frameLocked": true,
+          "cameraInfoTopic": "/camera/infra1/camera_info",
+          "distance": 1,
+          "planarProjectionFactor": 0,
+          "color": "#ffffff"
+        },
+        "/camera/infra1/camera_info": {
+          "visible": false
+        },
+        "/local_costmap/costmap": {
+          "visible": false
+        },
+        "/local_costmap/voxel_layer": {
+          "visible": false
+        },
+        "/local_plan": {
+          "visible": false
+        },
+        "/transformed_global_plan": {
+          "visible": false
+        },
+        "/marker": {
+          "visible": false
+        },
+        "/cost_cloud": {
+          "visible": false
+        },
+        "/local_costmap/static_layer": {
+          "visible": false
+        },
+        "/global_costmap/costmap": {
+          "visible": false
+        },
+        "/global_costmap/obstacle_layer": {
+          "visible": false
+        },
+        "/global_costmap/static_layer": {
+          "visible": false
+        }
+      },
+      "layers": {
+        "00763ac2-076e-494b-bf0f-fa441cb46f1c": {
+          "visible": true,
+          "frameLocked": true,
+          "label": "Grid",
+          "instanceId": "00763ac2-076e-494b-bf0f-fa441cb46f1c",
+          "layerId": "foxglove.Grid",
+          "size": 10,
+          "divisions": 10,
+          "lineWidth": 1,
+          "color": "#248eff",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "order": 1
+        }
+      },
+      "publish": {
+        "type": "pose",
+        "poseTopic": "/move_base_simple/goal",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {}
+    },
+    "map!3i1j9xz": {
+      "center": {
+        "lat": 52.4954655142106,
+        "lon": 21.385255157947544
+      },
+      "customTileUrl": "",
+      "disabledTopics": [
+        "/gps/filtered"
+      ],
+      "followTopic": "/gps/fix",
+      "layer": "map",
+      "topicColors": {
+        "/gps/fix": "#4e98e2",
+        "/gps/filtered": "#4e98e2"
+      },
+      "zoomLevel": 19,
+      "maxNativeZoom": 18
+    },
+    "virtual-joystick.Virtual Joystick!1bz242v": {
+      "topic": "/cmd_vel",
+      "publishRate": 30,
+      "maxLinearSpeed": 3,
+      "maxAngularSpeed": 3
+    },
+    "Gauge!1nkddo2": {
+      "path": "/power.percentage",
+      "minValue": 0,
+      "maxValue": 100,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": false,
+      "foxglovePanelTitle": "battery percentage"
+    },
+    "Indicator!1otv6hv": {
+      "path": "/power/charger_present.data",
+      "style": "background",
+      "fallbackColor": "#fffb17",
+      "fallbackLabel": "False",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#25bb00",
+          "label": "True"
+        }
+      ],
+      "foxglovePanelTitle": "in charger"
+    },
+    "Plot!1rdecvu": {
+      "paths": [
+        {
+          "value": "/power/charge_voltage.data",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "charge V"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "DiagnosticSummary!dqya88": {
+      "minLevel": 0,
+      "pinnedIds": [],
+      "hardwareIdFilter": "",
+      "topicToRender": "/diagnostics",
+      "sortByLevel": true
+    },
+    "DiagnosticStatusPanel!42w5qw9": {
+      "topicToRender": "/diagnostics",
+      "selectedHardwareId": "none",
+      "selectedName": "ekf_se_odom: Filter diagnostic updater",
+      "collapsedSections": []
+    },
+    "RawMessages!28hnlsl": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/gps/fix"
+    },
+    "Tab!3h75d6h": {
+      "activeTabIdx": 1,
+      "tabs": [
+        {
+          "title": "settings",
+          "layout": {
+            "first": "Parameters!2tk0ho3",
+            "second": {
+              "first": "SourceInfo!f2w7h8",
+              "second": "RosOut!1anfqcv",
+              "direction": "column",
+              "splitPercentage": 49.780380673499266
+            },
+            "direction": "row",
+            "splitPercentage": 59.50834879406308
+          }
+        },
+        {
+          "title": "3D",
+          "layout": {
+            "first": {
+              "first": "3D!2gz3kf4",
+              "second": "map!3i1j9xz",
+              "direction": "row",
+              "splitPercentage": 83.8126159554731
+            },
+            "second": {
+              "first": "virtual-joystick.Virtual Joystick!1bz242v",
+              "second": {
+                "first": {
+                  "first": "Gauge!1nkddo2",
+                  "second": {
+                    "first": "Indicator!1otv6hv",
+                    "second": "Plot!1rdecvu",
+                    "direction": "row"
+                  },
+                  "direction": "column"
+                },
+                "second": {
+                  "direction": "row",
+                  "second": "RawMessages!28hnlsl",
+                  "first": {
+                    "direction": "row",
+                    "second": "DiagnosticStatusPanel!42w5qw9",
+                    "first": "DiagnosticSummary!dqya88",
+                    "splitPercentage": 57.19063545150501
+                  },
+                  "splitPercentage": 69.26640926640925
+                },
+                "direction": "row",
+                "splitPercentage": 25.36023054755044
+              },
+              "direction": "row",
+              "splitPercentage": 19.52690166975881
+            },
+            "direction": "column",
+            "splitPercentage": 62.29868228404099
+          }
+        }
+      ]
+    }
+  },
+  "globalVariables": {
+    "globalVariable": 1
+  },
+  "userNodes": {
+    "0a710a06-464e-4f15-a8cf-ab93711d06b4": {
+      "sourceCode": "// The ./types module provides helper types for your Input events and messages.\nimport { Input, Message } from \"./types\";\n\n// Your script can output well-known message types, any of your custom message types, or\n// complete custom message types.\n//\n// Use `Message` to access types from the schemas defined in your data source:\n// type Twist = Message<\"geometry_msgs/Twist\">;\n//\n// Import from the @foxglove/schemas package to use foxglove schema types:\n// import { Pose, LocationFix } from \"@foxglove/schemas\";\n//\n// Conventionally, it's common to make a _type alias_ for your script's output type\n// and use that type name as the return type for your script function.\n// Here we've called the type `Output` but you can pick any type name.\ntype Output = {\n  hello: string;\n};\n\n// These are the topics your script \"subscribes\" to. Studio will invoke your script function\n// when any message is received on one of these topics.\nexport const inputs = [\"/input/topic\"];\n\n// Any output your script produces is \"published\" to this topic. Published messages are only visible within Studio, not to your original data source.\nexport const output = \"/studio_script/output_topic\";\n\n// This function is called with messages from your input topics.\n// The first argument is an event with the topic, receive time, and message.\n// Use the `Input<...>` helper to get the correct event type for your input topic messages.\nexport default function script(event: Input<\"/input/topic\">): Output {\n  return {\n    hello: \"world!\",\n  };\n};",
+      "name": "0a710a06"
+    }
+  },
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": "Tab!3h75d6h"
+}

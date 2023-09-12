@@ -1,14 +1,22 @@
 ublox_f9p:
   ros__parameters:
+    frame_id: gps
+    child_frame_id: base_link
     port: /dev/ttyAMA1
     baudrate: 921600
     debug: false
+    config:
+      enabled: true
+      measurement_rate: 5
+      uart_output_rate: 5
+    publish:
+      motion_odometry: true
 
 ntrip_client_node:
   ros__parameters:
     host: 'system.asgeupos.pl'
     port: 8082
-    mountpoint: 'BOGI_RTCM_3_1'
+    mountpoint: 'XX'
     authenticate: true
     username: 'jkaflik'
     password: '7*i4ODRctXfpqkr#'

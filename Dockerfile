@@ -32,9 +32,6 @@ RUN ( \
     echo "source /home/ws/install/setup.bash"; \
   ) >> /home/$USERNAME/.bashrc
 
-RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
-RUN mkdir /run/sshd
-
 # Extra steps for having prebuild packages
 
 USER $USERNAME
@@ -55,6 +52,4 @@ RUN source /opt/ros/iron/setup.bash \
     && cd /home/ws \
     && make build
 
-USER root
-
-CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config"]
+CMD ["bash", "-c", "ros2 launch openmower openmower.launch.py"]
