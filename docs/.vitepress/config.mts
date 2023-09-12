@@ -6,6 +6,10 @@ export default withMermaid({
   title: "OpenMowerROS2",
   description: "Just another software stack for OpenMower lawn mower robot, but this time with ROS2!",
   base: "/OpenMowerROS2/",
+  ignoreDeadLinks: [
+    // ignore all localhost links
+    /^https?:\/\/localhost/,
+  ],
   themeConfig: {
     search: {
       provider: 'local',
