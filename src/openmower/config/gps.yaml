@@ -16,8 +16,6 @@ ntrip_client_node:
   ros__parameters:
     host: 'system.asgeupos.pl'
     port: 8082
-    mountpoint: 'BOGI_RTCM_3_1'
-    authenticate: true
-    username: 'jkaflik'
-    password: '7*i4ODRctXfpqkr#'
+    mountpoint: 'XX'
+    authenticate: false
     rtcm_message_package: 'rtcm_msgs'
