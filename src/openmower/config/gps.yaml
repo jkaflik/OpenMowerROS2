@@ -17,5 +17,7 @@ ntrip_client_node:
     host: 'system.asgeupos.pl'
     port: 8082
     mountpoint: 'XX'
-    authenticate: false
+    authenticate: true
+    username: 'jkaflik'
+    password: '7*i4ODRctXfpqkr#'
     rtcm_message_package: 'rtcm_msgs'

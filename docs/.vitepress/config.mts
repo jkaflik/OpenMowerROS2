@@ -43,6 +43,7 @@ export default withMermaid({
                 { text: 'CLion alternative', link: '/clion-env' },
               ],
             },
+            { text: 'Visualisation', link: '/visualisation' },
             { text: 'Simulator', link: '/simulator' },
         ],
       },
