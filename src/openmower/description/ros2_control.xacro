@@ -12,10 +12,9 @@
                 <param name="port">${vesc['serial']['left']}</param>
                 <param name="gear_ratio">${robot['wheel']['gear_ratio']}</param>
                 <param name="command_mode">velocity</param>
-                <param name="num_rotor_poles">14</param>
+                <param name="num_rotor_poles">4</param>
                 <param name="num_hall_sensors">8</param>
-                <param name="gear_ratio">0.5</param>
-                <param name="torque_const">1.0</param>
+                <param name="torque_const">3.0</param>
             </hardware>
             <joint name="left_wheel_joint">
                 <command_interface name="position"/>
@@ -37,10 +36,10 @@
                 <param name="joint_type">continuous</param>
                 <param name="port">${vesc['serial']['mower']}</param>
                 <param name="command_mode">effort</param>
-                <param name="num_rotor_poles">14</param>
+                <param name="num_rotor_poles">4</param>
                 <param name="num_hall_sensors">8</param>
                 <param name="gear_ratio">1.0</param>
-                <param name="torque_const">1.0</param>
+                <param name="torque_const">2.0</param>
             </hardware>
 
             <joint name="mower_joint">
@@ -62,12 +61,11 @@
                 <param name="joint_name">right_wheel_joint</param>
                 <param name="joint_type">continuous</param>
                 <param name="port">${vesc['serial']['right']}</param>
-                <param name="gear_ratio">${robot['wheel']['gear_ratio']}</param>
+                <param name="gear_ratio">-${robot['wheel']['gear_ratio']}</param>
                 <param name="command_mode">velocity</param>
-                <param name="num_rotor_poles">14</param>
+                <param name="num_rotor_poles">4</param>
                 <param name="num_hall_sensors">8</param>
-                <param name="gear_ratio">-0.5</param>
-                <param name="torque_const">1.0</param>
+                <param name="torque_const">3.0</param>
             </hardware>
             <joint name="right_wheel_joint">
                 <command_interface name="position"/>
