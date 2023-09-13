@@ -11,10 +11,18 @@
                 <param name="joint_type">continuous</param>
                 <param name="port">${vesc['serial']['left']}</param>
                 <param name="gear_ratio">${robot['wheel']['gear_ratio']}</param>
-                <param name="command_mode">velocity</param>
+                <param name="command_mode">velocity_duty</param>
                 <param name="num_rotor_poles">4</param>
-                <param name="num_hall_sensors">8</param>
+                <param name="num_hall_sensors">6</param>
                 <param name="torque_const">3.0</param>
+
+                <param name="motor/Kp">0.00400</param>
+                <param name="motor/Ki">0.00400</param>
+                <param name="motor/Kd">0.00010</param>
+                <param name="motor/i_clamp">3.0</param>
+                <param name="motor/duty_limiter">0.25</param>
+                <param name="motor/antiwindup">true</param>
+                <param name="motor/control_rate">50</param>
             </hardware>
             <joint name="left_wheel_joint">
                 <command_interface name="position"/>
@@ -37,7 +45,7 @@
                 <param name="port">${vesc['serial']['mower']}</param>
                 <param name="command_mode">effort</param>
                 <param name="num_rotor_poles">4</param>
-                <param name="num_hall_sensors">8</param>
+                <param name="num_hall_sensors">6</param>
                 <param name="gear_ratio">1.0</param>
                 <param name="torque_const">2.0</param>
             </hardware>
@@ -62,10 +70,18 @@
                 <param name="joint_type">continuous</param>
                 <param name="port">${vesc['serial']['right']}</param>
                 <param name="gear_ratio">-${robot['wheel']['gear_ratio']}</param>
-                <param name="command_mode">velocity</param>
+                <param name="command_mode">velocity_duty</param>
                 <param name="num_rotor_poles">4</param>
-                <param name="num_hall_sensors">8</param>
+                <param name="num_hall_sensors">6</param>
                 <param name="torque_const">3.0</param>
+
+                <param name="motor/Kp">0.00400</param>
+                <param name="motor/Ki">0.00400</param>
+                <param name="motor/Kd">0.00010</param>
+                <param name="motor/i_clamp">3.0</param>
+                <param name="motor/duty_limiter">0.25</param>
+                <param name="motor/antiwindup">true</param>
+                <param name="motor/control_rate">50</param>
             </hardware>
             <joint name="right_wheel_joint">
                 <command_interface name="position"/>

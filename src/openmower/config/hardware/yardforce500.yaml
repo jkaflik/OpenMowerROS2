@@ -33,11 +33,11 @@ wheel:
 
   # velocity in m/s
   velocity: 
-    max: 0.2
-    min: -0.2
+    max: 0.5
+    min: -0.5
   # gear ratio between motor and wheel
-  gear_ratio: 0.003378378378378 # 1:296 (motor:wheel) - calculated based on value 1600 ticks per m
-
+#  gear_ratio: 0.003378378378378 # 1:296 (motor:wheel) - calculated based on value 1600 ticks per m
+  gear_ratio: 0.027027027027027
 caster_wheel:
   # x, y offset in m of caster wheel from center of chassis
   offset: [0.5, 0.1]
