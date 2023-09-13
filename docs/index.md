@@ -13,7 +13,7 @@ hero:
       text: View on GitHub
       link: https://github.com/jkaflik/OpenMowerROS2
   image:
-    src: /assets/logo.png
+    src: ./assets/logo.png
     alt: OpenMowerROS2
 ---
 <style>
