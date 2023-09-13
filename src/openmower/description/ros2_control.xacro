@@ -20,7 +20,7 @@
                 <param name="motor/Ki">0.00400</param>
                 <param name="motor/Kd">0.00010</param>
                 <param name="motor/i_clamp">3.0</param>
-                <param name="motor/duty_limiter">0.25</param>
+                <param name="motor/duty_limiter">1.0</param>
                 <param name="motor/antiwindup">true</param>
                 <param name="motor/control_rate">50</param>
             </hardware>
@@ -79,7 +79,7 @@
                 <param name="motor/Ki">0.00400</param>
                 <param name="motor/Kd">0.00010</param>
                 <param name="motor/i_clamp">3.0</param>
-                <param name="motor/duty_limiter">0.25</param>
+                <param name="motor/duty_limiter">1.0</param>
                 <param name="motor/antiwindup">true</param>
                 <param name="motor/control_rate">50</param>
             </hardware>
