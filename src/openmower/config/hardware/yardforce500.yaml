@@ -38,7 +38,6 @@ wheel:
   # gear ratio between motor and wheel
   gear_ratio: 0.003378378378378 # 1:296 (motor:wheel) - calculated based on value 1600 ticks per m
 
-
 caster_wheel:
   # x, y offset in m of caster wheel from center of chassis
   offset: [0.5, 0.1]
