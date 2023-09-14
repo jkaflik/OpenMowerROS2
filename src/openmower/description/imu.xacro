@@ -3,24 +3,10 @@
     <joint name="imu_joint" type="fixed">
         <parent link="base_link"/>
         <child link="imu"/>
-        <origin xyz="0.5 0 0.05" rpy="0 0 0"/>
+        <origin xyz="${robot['imu']['chip']['offset'][0]} ${robot['imu']['chip']['offset'][1]} ${robot['imu']['chip']['offset'][2]}" rpy="0 0 0"/>
     </joint>
 
     <link name="imu">
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.08 0.08 0.04"></box>
-            </geometry>
-        </collision>
-
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.08 0.08 0.04"></box>
-            </geometry>
-            <material name="red"/>
-        </visual>
     </link>
 
     <gazebo reference="imu">
