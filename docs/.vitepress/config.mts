@@ -24,6 +24,9 @@ export default withMermaid({
       {
         text: 'Getting started',
         link: '/getting-started',
+        items: [
+          { text: 'Roadmap', link: '/roadmap' },
+        ],
       },
       {
         text: 'Components explained',
