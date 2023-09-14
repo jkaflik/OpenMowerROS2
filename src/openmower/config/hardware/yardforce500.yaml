@@ -1,23 +1,25 @@
 chassis:
   # x, y, z offset in m of chassis from center of robot
-  offset: [-0.1, 0.0, -0.05]
+  offset: [-0.1, 0.0, -0.035] # m
 
   # width, height, length of chassis in m
-  width: 0.325
-  height: 0.10
-  length: 0.6
+  width: 0.325 #m
+  height: 0.15 # m
+  length: 0.55 # m
+
+  mass: 10 # kg
 
 mower:
   # x, y, z offset in m of mower from center of robot
-  offset: [0.15, 0.0, -0.001]
+  offset: [0.18, 0.0, -0.06] #m
 
   # mower blades cut radius in m when spinning 
-  cut_radius: 0.065
+  cut_radius: 0.065 # m
 
   # thickness in m
-  thickness: 0.01
+  thickness: 0.01 # m
   # mass in kg
-  mass: 0.05
+  mass: 0.2 # kg
 
 wheel:
   # x, y, z offset in m of wheel from center of robot
@@ -29,7 +31,7 @@ wheel:
   # radius in m
   radius: 0.0925
   # thickness in m
-  thickness: 0.05
+  thickness: 0.04
 
   # velocity in m/s
   velocity: 
@@ -39,16 +41,18 @@ wheel:
 #  gear_ratio: 0.003378378378378 # 1:296 (motor:wheel) - calculated based on value 1600 ticks per m
   gear_ratio: 0.027027027027027
 caster_wheel:
-  # x, y offset in m of caster wheel from center of chassis
-  offset: [0.5, 0.1]
-  radius: 0.0925
+  # x, y offset in m of caster wheel from center of base link
+  # z is calculated based on the radius of the wheel and it's offset
+  offset: [0.35, 0.1]
+  radius: 0.05
   mass: 0.05
 
 gps:
   antenna:
-    # x, y, z offset in m of gps antenna from center of chassis
-    offset: [0.3, 0.0, 0.2]
+    # x, y, z offset in m of gps antenna from center of base_link
+    offset: [0.32, 0.0, 0.1]
 
-battery:
-  empty_voltage: 25.0
-  full_voltage: 28.5
+imu:
+  chip:
+    # x, y, z offset in m of gps antenna from center of chassis
+    offset: [0.0, 0.0, 0.0] # m

@@ -17,11 +17,11 @@
     <xacro:property name="wheel_offset_x" value="${robot['wheel']['offset'][0]}"/>
     <xacro:property name="wheel_offset_y" value="${robot['wheel']['offset'][1]}"/>
     <xacro:property name="wheel_offset_z" value="${robot['wheel']['offset'][2]}"/>
-    <xacro:property name="caster_wheel_radius" value="${robot['caster_wheel']['mass']}"/>
+    <xacro:property name="caster_wheel_radius" value="${robot['caster_wheel']['radius']}"/>
     <xacro:property name="caster_wheel_mass" value="${robot['caster_wheel']['mass']}"/>
     <xacro:property name="caster_wheel_offset_x" value="${robot['caster_wheel']['offset'][0]}"/>
     <xacro:property name="caster_wheel_offset_y" value="${robot['caster_wheel']['offset'][1]}"/>
-    <xacro:property name="caster_wheel_offset_z" value="${wheel_offset_z - wheel_radius + caster_wheel_radius*2}"/>
+    <xacro:property name="caster_wheel_offset_z" value="${wheel_offset_z - wheel_radius + caster_wheel_radius}"/>
 
     <material name="white">
         <color rgba="1 1 1 1" />
@@ -192,7 +192,7 @@
     <!-- LEFT CASTER WHEEL LINK -->
 
     <joint name="left_caster_wheel_joint" type="fixed">
-        <parent link="chassis"/>
+        <parent link="base_link"/>
         <child link="left_caster_wheel"/>
         <origin xyz="${caster_wheel_offset_x} ${caster_wheel_offset_y} ${caster_wheel_offset_z}"/>
     </joint>
@@ -203,7 +203,7 @@
             <geometry>
                 <sphere radius="${caster_wheel_radius}"/>
             </geometry>
-            <material name="white"/>
+            <material name="black"/>
         </visual>
         <collision>
             <geometry>
@@ -216,7 +216,7 @@
     </link>
 
     <gazebo reference="left_caster_wheel">
-        <material>Gazebo/White</material>
+        <material>Gazebo/Black</material>
         <mu1 value="0.001"/>
         <mu2 value="0.001"/>
     </gazebo>
@@ -224,7 +224,7 @@
     <!-- RIGHT CASTER WHEEL LINK -->
 
     <joint name="right_caster_wheel_joint" type="fixed">
-        <parent link="chassis"/>
+        <parent link="base_link"/>
         <child link="right_caster_wheel"/>
         <origin xyz="${caster_wheel_offset_x} ${-caster_wheel_offset_y} ${caster_wheel_offset_z}"/>
     </joint>
@@ -235,7 +235,7 @@
             <geometry>
                 <sphere radius="${caster_wheel_radius}"/>
             </geometry>
-            <material name="white"/>
+            <material name="black"/>
         </visual>
         <collision>
             <geometry>
@@ -248,7 +248,7 @@
     </link>
 
     <gazebo reference="right_caster_wheel">
-        <material>Gazebo/White</material>
+        <material>Gazebo/Black</material>
         <mu1 value="0.001"/>
         <mu2 value="0.001"/>
     </gazebo>

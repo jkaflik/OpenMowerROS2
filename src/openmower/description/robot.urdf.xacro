@@ -10,7 +10,7 @@
     <xacro:include filename="robot_core.xacro" />
     <xacro:include filename="gps.xacro" />
     <xacro:include filename="imu.xacro" />
-    <xacro:include filename="camera.xacro" />
+<!--    <xacro:include filename="camera.xacro" />-->
 
     <xacro:if value="$(arg use_ros2_control)">
         <xacro:include filename="ros2_control.xacro" />

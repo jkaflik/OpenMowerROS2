@@ -3,28 +3,13 @@
     <joint name="gps_joint" type="fixed">
         <parent link="base_link"/>
         <child link="gps"/>
-        <origin xyz="0.3 0 0.05" rpy="0 0 0"/>
+        <origin xyz="${robot['gps']['antenna']['offset'][0]} ${robot['gps']['antenna']['offset'][1]} ${robot['gps']['antenna']['offset'][2]}" rpy="0 0 0"/>
     </joint>
 
     <link name="gps">
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.08 0.08 0.04"></box>
-            </geometry>
-        </collision>
-
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.08 0.08 0.04"></box>
-            </geometry>
-            <material name="black"/>
-        </visual>
-
         <sensor name="navsat_sensor" type="navsat">
           <always_on>1</always_on>
-          <update_rate>30</update_rate>
+          <update_rate>5</update_rate>
           <topic>gps</topic>
         </sensor>
     </link>
