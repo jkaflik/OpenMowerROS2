@@ -120,6 +120,19 @@ ekf_se_map:
     odom1_differential: false
     odom1_relative: false
 
+    # motion heading from GPS
+    # yaw only
+    odom2: gps/odom
+    odom2_config: [false, false, false,
+                   false, false, false,
+                   false, false, false,
+                   false, false, true,
+                   false, false, false]
+    odom2_queue_size: 10
+    odom2_nodelay: true
+    odom2_differential: false
+    odom2_relative: false
+
     imu0: imu/data
     imu0_config: [false, false, false,
                   false, false, true,
