@@ -1,0 +1,9 @@
+<library path="rosbag2_storage_clickhouse">
+    <class
+            name="clickhouse"
+            type="ClickHouseStorage"
+            base_class_type="rosbag2_storage::storage_interfaces::ReadWriteInterface"
+    >
+        <description>Rosbag2 storage plugin for ClickHouse.</description>
+    </class>
+</library>

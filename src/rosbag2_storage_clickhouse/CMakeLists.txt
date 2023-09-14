@@ -1,0 +1,128 @@
+cmake_minimum_required(VERSION 3.5)
+project(rosbag2_storage_clickhouse)
+
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# Windows supplies macros for min and max by default. We should only use min and max from stl
+if(WIN32)
+  add_definitions(-DNOMINMAX)
+endif()
+
+# add ExternalLibrary using git https://github.com/ClickHouse/clickhouse-cpp
+
+include(ExternalProject)
+set(CLICKHOUSE_CPP "clickhouse-cpp")
+ExternalProject_Add(
+        ${CLICKHOUSE_CPP}
+
+        PREFIX ${CLICKHOUSE_CPP}
+        GIT_REPOSITORY https://github.com/ClickHouse/clickhouse-cpp
+        GIT_TAG v2.4.0
+        GIT_SHALLOW OFF
+
+        BUILD_ALWAYS OFF
+
+        INSTALL_COMMAND cmake -E echo "Skipping install step."
+
+        CMAKE_CACHE_ARGS
+        BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
+)
+
+
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rcpputils REQUIRED)
+find_package(rcutils REQUIRED)
+find_package(rosbag2_storage REQUIRED)
+#find_package(sqlite3_vendor REQUIRED)
+#find_package(SQLite3 REQUIRED)  # provided by sqlite3_vendor
+find_package(yaml_cpp_vendor REQUIRED)
+
+#ament_python_install_package(ros2bag_sqlite3_cli)
+
+add_library(${PROJECT_NAME} SHARED
+        src/ClickHouseStorage.cpp)
+
+target_link_libraries(${PROJECT_NAME}
+        pluginlib::pluginlib
+        rosbag2_storage::rosbag2_storage
+        rcpputils::rcpputils
+        rcutils::rcutils
+#        SQLite::SQLite3
+        yaml-cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+)
+
+# Causes the visibility macros to use dllexport rather than dllimport,
+# which is appropriate when building the dll but not consuming it.
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        ROSBAG2_STORAGE_DEFAULT_PLUGINS_BUILDING_DLL)
+
+pluginlib_export_plugin_description_file(rosbag2_storage plugin_description.xml)
+
+install(
+        DIRECTORY include/
+        DESTINATION include/${PROJECT_NAME})
+
+install(
+        TARGETS ${PROJECT_NAME}
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+
+# Export old-style CMake variables
+ament_export_include_directories("include/${PROJECT_NAME}")
+ament_export_libraries(${PROJECT_NAME})
+
+ament_export_dependencies(rosbag2_storage rcpputils rcutils) # sqlite3_vendor SQLite3)
+
+#if(BUILD_TESTING)
+#  find_package(ament_cmake_gmock REQUIRED)
+#  find_package(ament_lint_auto REQUIRED)
+#  find_package(rosbag2_test_common REQUIRED)
+#  ament_lint_auto_find_test_dependencies()
+#
+#  set(TEST_LINK_LIBRARIES
+#          ${PROJECT_NAME}
+#          rosbag2_storage::rosbag2_storage
+#          rosbag2_test_common::rosbag2_test_common
+#          rcutils::rcutils
+#          SQLite::SQLite3
+#          pluginlib::pluginlib
+#  )
+#
+#  ament_add_gmock(test_sqlite_wrapper
+#          test/rosbag2_storage_sqlite3/test_sqlite_wrapper.cpp
+#          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#  if(TARGET test_sqlite_wrapper)
+#    target_link_libraries(test_sqlite_wrapper ${TEST_LINK_LIBRARIES})
+#  endif()
+#
+#  ament_add_gmock(test_sqlite_storage
+#          test/rosbag2_storage_sqlite3/test_sqlite_storage.cpp
+#          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+#  if(TARGET test_sqlite_storage)
+#    target_link_libraries(test_sqlite_storage ${TEST_LINK_LIBRARIES})
+#  endif()
+#endif()
+
+ament_package()
