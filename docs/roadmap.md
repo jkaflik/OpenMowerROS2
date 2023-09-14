@@ -39,6 +39,14 @@ It does not limit to base mower only. What about other sensors?
 ### More fancy stuff
 What about other capabilities? Your robot could be a mower, but also be responsible for other garden chores.
 
+## GitHub issues
+
+All the work is tracked in [GitHub issues](https://github.com/jkaflik/OpenMowerROS2/issues):
+
+- Feature parity issues can be [filter out with feature-parity label](https://github.com/jkaflik/OpenMowerROS2/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-parity). Not all gaps are identified yet.
+- Future improvements are tracked with [future-ideas label](https://github.com/jkaflik/OpenMowerROS2/issues?q=is%3Aopen+is%3Aissue+label%3Afuture-ideas).
+
+Feel free to add your own.
 
 ## Conclusion
 
