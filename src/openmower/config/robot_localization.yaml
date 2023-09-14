@@ -120,6 +120,13 @@ ekf_se_map:
     odom1_differential: false
     odom1_relative: false
 
+    odom2: gps/odometry # only for orientation
+    odom2_config: [false, false, false,
+                   false, false, false,
+                   false, false, false,
+                   false, false, false,
+                   false, false, true]
+
     imu0: imu/data
     imu0_config: [false, false, false,
                   false, false, true,

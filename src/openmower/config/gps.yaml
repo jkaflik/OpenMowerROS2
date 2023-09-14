@@ -7,7 +7,7 @@ ublox_f9p:
     debug: false
     config:
       enabled: true
-      measurement_rate: 5
+      measurement_rate: 1
       uart_output_rate: 5
     publish:
       motion_odometry: true
