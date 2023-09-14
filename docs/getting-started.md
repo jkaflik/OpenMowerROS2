@@ -31,9 +31,9 @@ This section is not complete yet. It will be updated as the project progresses.
   - :white_check_mark: GPS
 - :construction: Simulation using Gazebo
 
-### Planned
+### Roadmap
 
-The list of identified missing features or enhancements can be found in GitHub [issues](https://github.com/jkaflik/OpenMowerROS2/issues).
+What was already said, the project is in early development stage. Please get familiar with [Roadmap](roadmap) to get an idea of what is planned for the future.
 
 ## Requirements
 
