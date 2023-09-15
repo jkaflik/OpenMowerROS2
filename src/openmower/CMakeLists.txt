@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.8)
 project(openmower)
 
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -13,6 +18,23 @@ find_package(ament_cmake REQUIRED)
 
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(geographic_msgs REQUIRED)
+find_package(robot_localization REQUIRED)
+
+add_executable(openmower_datum_publisher_node
+        src/datum_publisher/node.cpp
+        src/datum_publisher/node.hpp
+        src/datum_publisher/node_main.cpp
+)
+
+ament_target_dependencies(openmower_datum_publisher_node
+        rclcpp
+        std_msgs
+        sensor_msgs
+        geographic_msgs
+        robot_localization
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -26,10 +48,14 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-INSTALL(DIRECTORY config launch description worlds maps
+INSTALL(
+  DIRECTORY config launch description worlds maps
   DESTINATION share/${PROJECT_NAME}
 )
 
-# ament_target_dependencies(rclcpp std_msgs)
+# Installation and export info
+install(TARGETS openmower_datum_publisher_node
+        DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()

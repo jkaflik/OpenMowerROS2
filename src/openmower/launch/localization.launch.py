@@ -129,4 +129,15 @@ def generate_launch_description():
                 ('/odometry/filtered', '/odometry/filtered/map'),
             ],
         ),
+
+        Node(
+            package='openmower',
+            executable='openmower_datum_publisher_node',
+            output='screen',
+            parameters=[{
+                'datum.latitude': float(os.getenv('OM_DATUM_LAT')),
+                'datum.longitude': float(os.getenv('OM_DATUM_LONG')),
+                'datum.publish_as_fix': True,
+            }],
+        )
     ])

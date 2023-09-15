@@ -187,4 +187,3 @@ navsat_transform_node:
     publish_filtered_gps: true
     use_odometry_yaw: true
     wait_for_datum: true
-    datum: [52.4955621, 21.3852107, 0.0] # todo: remove my coordinates
