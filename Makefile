@@ -28,6 +28,9 @@ run:
 run-realsense:
 	ros2 launch realsense2_camera rs_launch.py initial_reset:=true pointcloud.enable:=true publish_tf:=false enable_infra1:=true enable_depth:=true enable_gyro:=true enable_accel:=true unite_imu_method:=1
 
+run-foxglove:
+	ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+
 rsp:
 	ros2 launch src/openmower/launch/rsp.launch.py
 
