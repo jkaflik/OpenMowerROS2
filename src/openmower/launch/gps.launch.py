@@ -15,7 +15,15 @@ def generate_launch_description():
             name='ntrip_client_node',
             package='ntrip_client',
             executable='ntrip_ros.py',
-            parameters=[os.path.join(get_package_share_directory("openmower"), 'config', 'gps.yaml')],
+            parameters=[{
+                'host': os.getenv('OM_NTRIP_HOSTNAME'),
+                'port': int(os.getenv('OM_NTRIP_PORT')),
+                'mountpoint': os.getenv('OM_NTRIP_ENDPOINT'),
+                'authenticate': True,
+                'username': os.getenv('OM_NTRIP_USER'),
+                'password': os.getenv('OM_NTRIP_PASSWORD'),
+                'rtcm_message_package': 'rtcm_msgs',
+            }],
         ),
 
         Node(
