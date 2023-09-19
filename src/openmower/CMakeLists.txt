@@ -19,8 +19,12 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(geographic_msgs REQUIRED)
 find_package(robot_localization REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(Kalman REQUIRED)
 
 add_executable(openmower_datum_publisher_node
         src/datum_publisher/node.cpp
@@ -28,10 +32,30 @@ add_executable(openmower_datum_publisher_node
         src/datum_publisher/node_main.cpp
 )
 
+add_executable(openmower_gps_orientation_node
+        src/gps_orientation/node.cpp
+        src/gps_orientation/node.hpp
+        src/gps_orientation/node_main.cpp
+        src/gps_orientation/core.hpp
+        src/gps_orientation/system_model.hpp
+        src/gps_orientation/core.cpp
+)
+
 ament_target_dependencies(openmower_datum_publisher_node
         rclcpp
         std_msgs
         sensor_msgs
+        geographic_msgs
+        robot_localization
+)
+
+ament_target_dependencies(openmower_gps_orientation_node
+        rclcpp
+        std_msgs
+        sensor_msgs
+        nav_msgs
+        tf2
+        tf2_geometry_msgs
         geographic_msgs
         robot_localization
 )
@@ -55,6 +79,11 @@ INSTALL(
 
 # Installation and export info
 install(TARGETS openmower_datum_publisher_node
+        DESTINATION lib/${PROJECT_NAME}
+)
+
+# Installation and export info
+install(TARGETS openmower_gps_orientation_node
         DESTINATION lib/${PROJECT_NAME}
 )
 
