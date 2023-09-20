@@ -19,6 +19,8 @@ namespace OpenMower {
 
             fix_subscriber_ = this->create_subscription<sensor_msgs::msg::NavSatFix>(
                     "gps/fix", 10, std::bind(&Node::fixCallback, this, std::placeholders::_1));
+
+            imu_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("gps/orientation", 10);
         }
 
         void Node::fixCallback(const sensor_msgs::msg::NavSatFix::SharedPtr fix) {
@@ -61,7 +63,7 @@ namespace OpenMower {
             }
 
             // calculate theta that report 0 heading east
-            double theta = normalize_angle(atan2(y - last_y, x - last_x) - M_PI_2);
+            double theta = atan2(y - last_y, x - last_x);
 
             sensor_msgs::msg::Imu msg;
             msg.header.stamp = this->now();
@@ -70,6 +72,8 @@ namespace OpenMower {
             msg.orientation_covariance[8] = (last_known_fix_->position_covariance[0] + fix->position_covariance[0]) / 2;
             msg.linear_acceleration_covariance[0] = -1;
             msg.angular_velocity_covariance[0] = -1;
+
+            imu_publisher_->publish(msg);
 
             last_known_fix_ = fix;
         }

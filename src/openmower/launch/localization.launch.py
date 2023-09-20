@@ -127,17 +127,18 @@ def generate_launch_description():
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
                 ('/odometry/filtered', '/odometry/filtered/map'),
+                ('/imu', '/gps/orientation'),
             ],
         ),
 
-        Node(
-            package='openmower',
-            executable='openmower_datum_publisher_node',
-            output='screen',
-            parameters=[{
-                'datum.latitude': float(os.getenv('OM_DATUM_LAT')),
-                'datum.longitude': float(os.getenv('OM_DATUM_LONG')),
-                'datum.publish_as_fix': True,
-            }],
-        )
+        # Node(
+        #     package='openmower',
+        #     executable='openmower_datum_publisher_node',
+        #     output='screen',
+        #     parameters=[{
+        #         'datum.latitude': float(os.getenv('OM_DATUM_LAT')),
+        #         'datum.longitude': float(os.getenv('OM_DATUM_LONG')),
+        #         'datum.publish_as_fix': True,
+        #     }],
+        # )
     ])

@@ -32,7 +32,7 @@ ekf_se_odom:
 
     imu0: imu/data
     imu0_config: [false, false, false,
-                  false, false, true,
+                  false, false, false,
                   false, false, false,
                   false, false, true,
                   true, false, false]
@@ -111,9 +111,9 @@ ekf_se_map:
 
     odom1: odometry/gps
     odom1_config: [true,  true,  false,
+                   false, false, true,
                    false, false, false,
-                   false, false, false,
-                   false, false, false,
+                   false, false, true,
                    false, false, false]
     odom1_queue_size: 10
     odom1_nodelay: true
@@ -122,7 +122,7 @@ ekf_se_map:
 
     imu0: imu/data
     imu0_config: [false, false, false,
-                  false, false, true,
+                  false, false, false,
                   false, false, false,
                   false, false, true,
                   true, false, false]
@@ -172,5 +172,5 @@ navsat_transform_node:
     delay: 3.0
     zero_altitude: true
     publish_filtered_gps: true
-    use_odometry_yaw: true
-    wait_for_datum: true
+    wait_for_datum: false
+    use_odometry_yaw: false

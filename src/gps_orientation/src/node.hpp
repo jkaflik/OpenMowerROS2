@@ -16,7 +16,7 @@ namespace OpenMower {
             double min_gps_distance_;
 
             rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr fix_subscriber_;
-            rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr odom_publisher_;
+            rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_publisher_;
 
             sensor_msgs::msg::NavSatFix::SharedPtr last_known_fix_;
 
