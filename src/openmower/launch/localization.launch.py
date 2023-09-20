@@ -124,21 +124,13 @@ def generate_launch_description():
             executable='navsat_transform_node',
             name='navsat_transform_node',
             output='screen',
-            parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
+            parameters=[localization_params_path, {
+                'use_sim_time': use_sim_time,
+                'datum': [float(os.getenv('OM_DATUM_LAT')), float(os.getenv('OM_DATUM_LONG')), 0.0],
+            }],
             remappings=[
                 ('odometry/filtered', 'odometry/filtered/map'),
                 ('imu', 'gps/orientation'),
             ],
         ),
-
-        # Node(
-        #     package='openmower',
-        #     executable='openmower_datum_publisher_node',
-        #     output='screen',
-        #     parameters=[{
-        #         'datum.latitude': float(os.getenv('OM_DATUM_LAT')),
-        #         'datum.longitude': float(os.getenv('OM_DATUM_LONG')),
-        #         'datum.publish_as_fix': True,
-        #     }],
-        # )
     ])

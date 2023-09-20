@@ -33,6 +33,7 @@ export default withMermaid({
         items: [
           { text: 'ROS workspace', link: '/ros-workspace' },
           { text: 'Mainboard firmware', link: '/omros2-firmware' },
+          { text: 'Robot localization', link: '/localization' },
         ]
       },
       {

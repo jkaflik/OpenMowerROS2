@@ -1,1 +1,0 @@
-# openmower_gps_orientation_node
