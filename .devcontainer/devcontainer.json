@@ -19,5 +19,6 @@
 			]
         }
     },
-    "postCreateCommand": "sudo chown -R openmower /home/ws/ && sudo rosdep update && sudo rosdep install --from-paths src --ignore-src -y"
+    "containerUser": "openmower",
+    "postCreateCommand": "sudo apt update && rosdep update && make custom-deps deps"
 }

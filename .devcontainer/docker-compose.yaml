@@ -21,7 +21,7 @@ services:
       - SYS_PTRACE
     ports:
       - "2222:2222"
-      - "8082:8082" # Foxglove Studio websocket
+      - "8765:8765" # Foxglove Studio websocket
       - "9002:9002" # Gazebo websocket
     volumes:
     - ../:/home/ws

@@ -26,6 +26,7 @@ RUN mkdir -p /home/ws/build /home/ws/install /home/ws/log \
 RUN ( \
     echo "source /opt/ros/iron/setup.bash"; \
     echo "source /home/ws/install/setup.bash"; \
+    echo "source /home/ws/src/openmower/config/sim-config.env.sh"; \
     echo "export DISPLAY=:0"; \
   ) >> /home/$USERNAME/.bashrc
 

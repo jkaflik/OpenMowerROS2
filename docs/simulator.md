@@ -9,14 +9,12 @@ If you are not familiar with Gazebo, please refer to [Gazebo tutorials](http://g
 :::
 
 ::: warning
-This project uses new version of Gazebo formerly known as Ignition Gazebo.
+This project uses Gazebo Fortress. Formerly known as Ignition Fortress.
 :::
+
+![Robot simulation](assets/gazebo.jpg)
 
 ## Getting started
-
-::: info
-Simulator is not yet fully functional. It is still under development.
-:::
 
 Run the following command to start the simulator:
 
@@ -30,3 +28,19 @@ If run inside [devcontainer](devcontainer), Gazebo GUI will be displayed in a VN
 ::: tip
 Learn more about [VNC client](devcontainer#detailed).
 :::
+
+It's possible to run the simulator with GUI on external host machine. I haven't done it myself since GUI is unstable on MacOS.
+
+## Current state
+
+- :white_check_mark: Robot model
+- :white_check_mark: ros2_control controller
+- :white_check_mark: GPS sensor
+- :white_check_mark: IMU sensor
+- :white_check_mark: can of Coke
+- :construction: Emulate OpenMowerROS2 firmware
+
+## World definition
+
+<<< ../src/openmower/worlds/empty.sdf{xml}
+
