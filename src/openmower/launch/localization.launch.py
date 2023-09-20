@@ -103,7 +103,7 @@ def generate_launch_description():
             output='screen',
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/imu/data', '/imu/raw_data'), # remove once imu has orientation
+                ('imu/data', 'imu/data_raw'),
             ],
         ),
 
@@ -114,8 +114,8 @@ def generate_launch_description():
             output='screen',
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/imu/data', '/imu/raw_data'), # remove once imu has orientation
-                ('/odometry/filtered', '/odometry/filtered/map'),
+                ('imu/data', 'imu/data_raw'),
+                ('odometry/filtered', 'odometry/filtered/map'),
             ],
         ),
 
@@ -126,8 +126,8 @@ def generate_launch_description():
             output='screen',
             parameters=[localization_params_path, {'use_sim_time': use_sim_time}],
             remappings=[
-                ('/odometry/filtered', '/odometry/filtered/map'),
-                ('/imu', '/gps/orientation'),
+                ('odometry/filtered', 'odometry/filtered/map'),
+                ('imu', 'gps/orientation'),
             ],
         ),
 
