@@ -1,6 +1,0 @@
-ntrip_client:
-  host: 'system.asgeupos.pl'
-  port: '8082'
-  mountpoint: 'BOGI_RTCM_3_1'
-  username: 'jkaflik'
-  password: '7*i4ODRctXfpqkr#'
