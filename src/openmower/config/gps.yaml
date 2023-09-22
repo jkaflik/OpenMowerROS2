@@ -7,17 +7,6 @@ ublox_f9p:
     debug: false
     config:
       enabled: true
-      measurement_rate: 5
-      uart_output_rate: 5
+      measurement_frequency: 5
     publish:
       motion_odometry: true
-
-ntrip_client_node:
-  ros__parameters:
-    host: 'system.asgeupos.pl'
-    port: 8082
-    mountpoint: 'XX'
-    authenticate: true
-    username: 'jkaflik'
-    password: '7*i4ODRctXfpqkr#'
-    rtcm_message_package: 'rtcm_msgs'
