@@ -38,9 +38,7 @@ services:
   groot:
     profiles:
       - with_groot
-    build:
-      context: ./
-      dockerfile: groot.Dockerfile
+    image: jkaflik/behaviortree-groot:latest
     ipc: host
     pid: host
     security_opt:

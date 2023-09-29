@@ -138,6 +138,6 @@ def generate_launch_description():
         ),
         gz_spawn_entity,
         localization,
-        nav2,
+        # nav2,
         foxglove_bridge,
     ])
