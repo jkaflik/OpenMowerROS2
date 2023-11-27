@@ -4,29 +4,34 @@
 
 namespace open_mower_map_server {
     MapServerNode::MapServerNode(const rclcpp::NodeOptions &options) : rclcpp::Node("map_server_node", options) {
-        loadMap();
-        loadGaussianBlur();
+        configureMap();
+        configureGaussianBlur();
+
+        auto topic_name = declare_parameter("topic_name", "map");
+        map_publisher_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>(topic_name,
+                                                                        rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
+
+        current_map_ = map_io_->load();
+        map_publisher_->publish(mapToOccupancyGrid(current_map_));
     }
 
-    void MapServerNode::loadMap() {
-        map_type_ = declare_parameter("map.type", "geojson");
-        map_file_ = declare_parameter("map.path", "~/.openmower/map.json");
+    void MapServerNode::configureMap() {
+        map_type_ = declare_parameter("type", "geojson");
+        map_file_ = declare_parameter("path", "~/.openmower/map.geojson");
 
         if (map_type_ == "geojson") {
-            map_io_ = new GeoJSONMap(map_file_);
+            map_io_ = new GeoJSONMap(map_file_, std::shared_ptr<MapServerNode>(this, [](MapServerNode *) {}));
         } else {
             throw std::runtime_error("Unsupported map type: " + map_type_);
         }
     }
 
-    void MapServerNode::loadGaussianBlur() {
-        use_gaussian_blur_ = declare_parameter("map.use_gaussian_blur", false);
+    void MapServerNode::configureGaussianBlur() {
+        use_gaussian_blur_ = declare_parameter("grid.use_gaussian_blur", false);
         if (use_gaussian_blur_) {
             RCLCPP_INFO(get_logger(), "Using Gaussian blur");
 
             std::vector<double> kernel = declare_parameter("map.gaussian_blur.kernel", std::vector<double>{1, 2, 1, 2, 4, 2, 1, 2, 1});
-
-            // std::vector<double> to std::vector<float>
             std::vector<float> kernel_float(kernel.begin(), kernel.end());
 
             gaussian_filter_ = new SomeGaussianFilter(kernel_float);
@@ -60,9 +65,17 @@ namespace open_mower_map_server {
         occupancy_grid.info.map_load_time = this->now();
 
         for (const auto &area : map.areas) {
-            uint8_t value = area.type == open_mower_map_server::msg::Area::TYPE_EXCLUSION ? 100 : 0;
+            uint8_t value = area.type == msg::Area::TYPE_EXCLUSION ? 100 : 0;
 
             fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
+        }
+
+        RCLCPP_INFO(get_logger(), "Map size: %d x %d (%.2fm resolution)", occupancy_grid.info.width, occupancy_grid.info.height, occupancy_grid.info.resolution);
+
+        if (gaussian_filter_) {
+            RCLCPP_INFO(get_logger(), "Applying Gaussian filter");
+
+            gaussian_filter_->apply(occupancy_grid.data, occupancy_grid.info.width, occupancy_grid.info.height);
         }
 
         return occupancy_grid;

@@ -72,22 +72,22 @@ def generate_launch_description():
             default_value=os.path.join(package_path, 'config', 'nav2_params.yaml'),
             description='Full path to the ROS2 parameters file to use'),
 
-        Node(
-            package='nav2_map_server',
-            executable='map_server',
-            name='map_server',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings),
-
-        Node(
-            package='nav2_lifecycle_manager',
-            executable='lifecycle_manager',
-            name='lifecycle_manager_localization',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time},
-                        {'autostart': autostart},
-                        {'node_names': lifecycle_nodes}]),
+        # Node(
+        #     package='nav2_map_server',
+        #     executable='map_server',
+        #     name='map_server',
+        #     output='screen',
+        #     parameters=[configured_params],
+        #     remappings=remappings),
+        #
+        # Node(
+        #     package='nav2_lifecycle_manager',
+        #     executable='lifecycle_manager',
+        #     name='lifecycle_manager_localization',
+        #     output='screen',
+        #     parameters=[{'use_sim_time': use_sim_time},
+        #                 {'autostart': autostart},
+        #                 {'node_names': lifecycle_nodes}]),
 
         Node(
             package='robot_localization',

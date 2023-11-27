@@ -11,9 +11,9 @@ namespace open_mower_map_server {
     public:
         virtual ~MapIO() = default;
 
-        virtual void save(open_mower_map_server::msg::Map::SharedPtr map) = 0;
+        virtual void save(open_mower_map_server::msg::Map map) = 0;
 
-        virtual open_mower_map_server::msg::Map::SharedPtr load() = 0;
+        virtual open_mower_map_server::msg::Map load() = 0;
     };
 
     class MapServerNode final : public rclcpp::Node {
@@ -36,12 +36,14 @@ namespace open_mower_map_server {
         std::string map_file_;
         bool use_gaussian_blur_;
 
-        void loadGaussianBlur();
+        void configureGaussianBlur();
 
         std::shared_ptr<rclcpp::ParameterEventHandler> param_subscriber_;
 
-        void loadMap();
+        void configureMap();
 
         SomeGaussianFilter *gaussian_filter_;
+        open_mower_map_server::msg::Map current_map_;
+        rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr map_publisher_;
     };
 }

@@ -14,7 +14,7 @@ private:
 
 public:
     SomeGaussianFilter(const std::vector<float>& kernel) : kernel_(kernel) {
-        int length = kernel_.size();
+        const int length = kernel_.size();
         kernel_size_ = std::sqrt(length);
         if (kernel_size_ * kernel_size_ != length) {
             throw std::invalid_argument("Invalid kernel size: Kernel must form a square matrix");
@@ -23,9 +23,9 @@ public:
         half_kernel_size_ = kernel_size_ / 2;
     }
 
-    void apply(std::vector<uint8_t>& image, int width, int height) const {
+    void apply(std::vector<int8_t, std::allocator<int8_t>> &image, int width, int height) const {
         // Create an output vector to store the result
-        std::vector<uint8_t> output(width * height);
+        std::vector<uint8_t, std::allocator<int8_t>> buffer(width * height);
 
         // Apply convolution
         for (int x = half_kernel_size_; x < width - half_kernel_size_; ++x) {
@@ -37,11 +37,10 @@ public:
                         newValue += image[(y + j) * width + (x + i)] * kernelValue;
                     }
                 }
-                output[y * width + x] = std::round(newValue);
+                buffer[y * width + x] = std::round(newValue);
             }
         }
 
-        // Copy the result back to the original vector
-        image = std::move(output);
+        std::move(buffer.begin(), buffer.end(), image.begin());
     }
 };

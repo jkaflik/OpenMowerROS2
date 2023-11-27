@@ -18,6 +18,6 @@ if [ "$(uname -m)" = "aarch64" ]; then
       | tar xz -C src/lib --wildcards "*/nav2_bringup" --strip-components=1
 
     # remove "turtlebot3_gazebo" dependency from nav2_bringup/package.xml since it has not arm64 build
-    sed -i '/turtlebot3_gazebo/d' src/nav2_bringup/package.xml
+    sed -i '/turtlebot3_gazebo/d' src/lib/nav2_bringup/package.xml
   fi
 fi

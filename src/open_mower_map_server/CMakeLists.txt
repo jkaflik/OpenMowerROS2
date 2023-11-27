@@ -16,9 +16,8 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(robot_localization REQUIRED)
-#find_package(grid_map_core REQUIRED)
-#find_package(grid_map_cv REQUIRED)
-#find_package(grid_map_ros REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 add_executable(map_server_node
         src/node_main.cpp
@@ -41,15 +40,18 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         std_msgs
         geometry_msgs
         nav_msgs
+        tf2
+        tf2_geometry_msgs
 )
 
 ament_target_dependencies(map_server_node
+        std_msgs
         geometry_msgs
+        nav_msgs
         rclcpp
         robot_localization
-#        grid_map_core
-#        grid_map_cv
-#        grid_map_ros
+        tf2
+        tf2_geometry_msgs
 )
 
 rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
