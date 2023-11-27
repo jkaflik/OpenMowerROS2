@@ -55,6 +55,7 @@ namespace open_mower_map_server {
 
             RCLCPP_WARN(node_->get_logger(), "Unsupported geometry type: %s", feature["geometry"]["type"].get<std::string>().c_str());
         }
+        return map;
     }
 
     void GeoJSONMap::save(msg::Map map) {
