@@ -18,6 +18,7 @@ This firmware supports only the recent OpenMower mainboard v0.13.x.
   * :white_check_mark: `std_msgs/Bool` message published on `/power/charger_present` topic
 * :white_check_mark: OpenMower charging logic
 * :white_check_mark: ping micro-ROS agent, if not responding for some time, reboot
+* :red_circle: safety features
 
 ## Flash
 

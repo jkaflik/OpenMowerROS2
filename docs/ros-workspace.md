@@ -7,6 +7,14 @@ It's no different for OpenMowerROS2. The root of the repository is a ROS workspa
 
 ## Main packages
 
+### Map management
+
+The map management is a ROS package responsible for managing map. It is a drop-in replacement for [nav2 map server](https://navigation.ros.org/configuration/packages/configuring-map-server.html).
+
+More information can be found in [map management](map-management.md) section.
+
+## External packages
+
 There are few biggest chunks to mention:
 
 - [ros2_control](https://control.ros.org/master/index.html) - differential drive controller, but also a hardware layer provider

@@ -24,6 +24,7 @@ services:
       - "8765:8765" # Foxglove Studio websocket
       - "9002:9002" # Gazebo websocket
     volumes:
+    - ./home:/home/openmower/.openmower
     - /opt/ros
     - ../:/home/ws
     - build:/home/ws/build # keep container pre-build

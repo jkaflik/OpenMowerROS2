@@ -25,9 +25,10 @@ For CLion users there is an alternative approach described in [CLion development
 
 ## Detailed
 
-Devcontainer comes up with two containers configured with Docker Compose:
+Devcontainer comes up with some containers configured with Docker Compose:
 - `workspace` - main container with all the tools and dependencies and mounted workspace
 - `xserver` - container with X server and VNC server for GUI applications
+- `groot` - container with groot, a GUI for [BehaviourTree.CPP](https://www.behaviortree.dev/). It does not start by default. See [GRoot](./groot.md) for more details.
 
-Both containers share the same X server socket, so GUI applications can be run from the `workspace` container and displayed in the `xserver` container.
+All containers share the same X server socket, so GUI applications can be run from the `workspace` container and displayed in the `xserver` container.
 VNC server in `xserver` runs a web server on port `12345` with a VNC client. You can access it by opening [`http://localhost:12345`](http://localhost:12345) in your browser.

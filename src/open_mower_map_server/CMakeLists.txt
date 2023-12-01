@@ -26,7 +26,9 @@ add_executable(map_server_node
         src/geo_json_map.cpp
         include/open_mower_map_server/geo_json_map.hpp
         include/open_mower_map_server/polygon_iterator.hpp
-        include/open_mower_map_server/some_gaussian_filter.hpp)
+        include/open_mower_map_server/some_gaussian_filter.hpp
+        include/open_mower_map_server/polygon_utils.hpp
+        include/open_mower_map_server/polygon_utils.hpp)
 target_include_directories(map_server_node PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
