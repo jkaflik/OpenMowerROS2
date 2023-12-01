@@ -13,6 +13,7 @@ RUN apt-get update \
   && apt-get install -y ssh \
     python3-pip \
     curl \
+    rsync \
   && rm -rf /var/lib/apt/lists/*
 
 RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
@@ -26,7 +27,7 @@ RUN mkdir -p /home/ws/build /home/ws/install /home/ws/log \
 RUN ( \
     echo "source /opt/ros/iron/setup.bash"; \
     echo "source /home/ws/install/setup.bash"; \
-    echo "source /home/ws/src/openmower/config/sim-config.env.sh"; \
+    echo "source /home/ws/.devcontainer/openmower_config.env"; \
     echo "export DISPLAY=:0"; \
   ) >> /home/$USERNAME/.bashrc
 
@@ -38,4 +39,11 @@ RUN ( \
 RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 RUN mkdir /run/sshd
 
-CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+USER $USERNAME
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/bin/sudo", "/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config"]

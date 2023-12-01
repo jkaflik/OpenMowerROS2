@@ -19,6 +19,5 @@
 			]
         }
     },
-    "containerUser": "openmower",
-    "postCreateCommand": "sudo apt update && rosdep update && make custom-deps deps"
+    "containerUser": "openmower"
 }

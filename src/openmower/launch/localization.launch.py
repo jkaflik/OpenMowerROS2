@@ -3,7 +3,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, TimerAction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
@@ -35,7 +35,8 @@ def generate_launch_description():
     # Create our own temporary YAML files that include substitutions
     param_substitutions = {
         'use_sim_time': use_sim_time,
-        'yaml_filename': map_yaml_file}
+        'yaml_filename': map_yaml_file,
+    }
 
     configured_params = RewrittenYaml(
         source_file=params_file,
@@ -71,30 +72,20 @@ def generate_launch_description():
             default_value=os.path.join(package_path, 'config', 'nav2_params.yaml'),
             description='Full path to the ROS2 parameters file to use'),
 
-        Node(
-            package='nav2_map_server',
-            executable='map_server',
+        TimerAction(period=3.0, actions=[Node(
+            package='open_mower_map_server',
+            executable='map_server_node',
             name='map_server',
             output='screen',
-            parameters=[configured_params],
-            remappings=remappings),
-
-        # Node(
-        #     package='nav2_amcl',
-        #     executable='amcl',
-        #     name='amcl',
-        #     output='screen',
-        #     parameters=[configured_params],
-        #     remappings=remappings),
-
-        Node(
-            package='nav2_lifecycle_manager',
-            executable='lifecycle_manager',
-            name='lifecycle_manager_localization',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time},
-                        {'autostart': autostart},
-                        {'node_names': lifecycle_nodes}]),
+            parameters=[{
+                'use_sim_time': use_sim_time,
+                'path': os.getenv('OM_MAP_PATH'),
+            }],
+            remappings=[
+                ('map_grid', 'map'), # occupancy grid topic
+                ('map', 'mowing_map'), # map topic
+            ],
+        )]),
 
         Node(
             package='robot_localization',

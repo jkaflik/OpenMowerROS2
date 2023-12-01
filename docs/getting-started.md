@@ -30,6 +30,8 @@ This section is not complete yet. It will be updated as the project progresses.
   - :white_check_mark: IMU
   - :white_check_mark: GPS
 - :construction: Simulation using Gazebo
+- :construction: [Map management](https://github.com/jkaflik/OpenMowerROS2/issues/19)
+- :pencil2: [Mower logic](https://github.com/jkaflik/OpenMowerROS2/issues/9)
 
 ### Roadmap
 

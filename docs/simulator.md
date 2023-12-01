@@ -38,7 +38,7 @@ It's possible to run the simulator with GUI on external host machine. I haven't 
 - :white_check_mark: GPS sensor
 - :white_check_mark: IMU sensor
 - :white_check_mark: can of Coke
-- :construction: Emulate OpenMowerROS2 firmware
+- :construction: [Emulate OpenMowerROS2 firmware](https://github.com/jkaflik/OpenMowerROS2/issues/8)
 
 ## World definition
 

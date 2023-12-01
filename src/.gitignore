@@ -1,3 +1,4 @@
 /nav2_bringup
 /vesc
 /transport_drivers
+src/lib/**

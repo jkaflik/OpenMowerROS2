@@ -24,6 +24,8 @@ services:
       - "8765:8765" # Foxglove Studio websocket
       - "9002:9002" # Gazebo websocket
     volumes:
+    - ./home:/home/openmower/.openmower
+    - /opt/ros
     - ../:/home/ws
     - build:/home/ws/build # keep container pre-build
     - install:/home/ws/install # keep container pre-build
@@ -34,6 +36,26 @@ services:
     - xserver
     depends_on:
     - xserver
+  groot:
+    profiles:
+      - with_groot
+    image: jkaflik/behaviortree-groot:latest
+    ipc: host
+    pid: host
+    security_opt:
+    - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+    - ../:/home/ws
+    environment:
+    - DISPLAY=:0
+    volumes_from:
+    - xserver
+    - workspace
+    depends_on:
+    - xserver
+    - workspace
 volumes:
   build:
   install:
