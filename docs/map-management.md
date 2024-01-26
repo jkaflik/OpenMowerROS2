@@ -14,7 +14,7 @@ The second concept is a pose of docking station. It consists of a position and o
 
 ### ROS message definition
 
-<<< ../src/open_mower_map_server/msg/Map.msg
+<<< ../src/map_server/msg/Map.msg
 
 ## Area
 
@@ -31,7 +31,7 @@ Area name is used to identify the area. It's not required to be unique, but it's
 
 ### ROS message definition
 
-<<< ../src/open_mower_map_server/msg/Area.msg
+<<< ../src/map_server/msg/Area.msg
 
 
 ## Docking station
@@ -43,4 +43,4 @@ Pose is a position and orientation of the docking station. Position is a middle 
 
 ### ROS message definition
 
-<<< ../src/open_mower_map_server/msg/DockingStation.msg
+<<< ../src/map_server/msg/DockingStation.msg

@@ -31,7 +31,7 @@
   <gazebo>
     <!-- Joint state publisher -->
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <parameters>$(find openmower)/config/controllers.yaml</parameters>
+      <parameters>$(find open_mower_next)/config/controllers.yaml</parameters>
     </plugin>
   </gazebo>
 

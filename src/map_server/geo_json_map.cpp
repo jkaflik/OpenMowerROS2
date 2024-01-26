@@ -1,8 +1,8 @@
-#include "open_mower_map_server/geo_json_map.hpp"
+#include "map_server/geo_json_map.hpp"
 #include <fstream>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
-namespace open_mower_map_server
+namespace open_mower_next::map_server
 {
     GeoJSONMap::GeoJSONMap(std::string path, MapServerNode::SharedPtr map_server_node)
         : path_(path), node_(map_server_node)

@@ -9,7 +9,7 @@
 
 using json = nlohmann::json;
 
-namespace open_mower_map_server {
+namespace open_mower_next::map_server {
     class GeoJSONMap : public MapIO {
     public:
         explicit GeoJSONMap(std::string path, MapServerNode::SharedPtr map_server_node);

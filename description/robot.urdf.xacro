@@ -4,7 +4,7 @@
     <xacro:arg name="sim_mode" default="false"/>
 
 
-    <xacro:property name="robot_yaml" value="$(find openmower)/config/hardware/yardforce500.yaml" />
+    <xacro:property name="robot_yaml" value="$(find open_mower_next)/config/hardware/yardforce500.yaml" />
     <xacro:property name="robot" value="${xacro.load_yaml(robot_yaml)}"/>
 
     <xacro:include filename="robot_core.xacro" />

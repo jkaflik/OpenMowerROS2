@@ -15,9 +15,9 @@ from launch_ros.actions import Node
 import xacro
 
 def generate_launch_description():
-    package_name='openmower'
+    package_name='open_mower_next'
     
-    xacro_file = os.path.join(get_package_share_directory('openmower'), 'description/robot.urdf.xacro')
+    xacro_file = os.path.join(get_package_share_directory(package_name), 'description/robot.urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file, mappings={
         'use_ros2_control': '1',
         'use_sim_time': '0'
@@ -101,26 +101,26 @@ def generate_launch_description():
         # ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/gps.launch.py']),
+            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/gps.launch.py']),
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/localization.launch.py']),
+            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/localization.launch.py']),
             launch_arguments={
                 'use_sim_time': 'false',
                 # 'map': os.path.join(get_package_share_directory("openmower"), 'maps', 'world.yaml'),
                 'autostart': 'true',
-                'params_file': os.path.join(get_package_share_directory("openmower"), 'config', 'nav2_params.yaml'),
+                'params_file': os.path.join(get_package_share_directory(package_name), 'config', 'nav2_params.yaml'),
             }.items(),
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/nav2.launch.py']),
+            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/nav2.launch.py']),
             launch_arguments={
                 'use_sim_time': 'false',
                 # 'map': os.path.join(get_package_share_directory("openmower"), 'maps', 'world.yaml'),
                 'autostart': 'true',
-                'params_file': os.path.join(get_package_share_directory("openmower"), 'config', 'nav2_params.yaml'),
+                'params_file': os.path.join(get_package_share_directory(package_name), 'config', 'nav2_params.yaml'),
             }.items(),
         ),
 
@@ -129,6 +129,6 @@ def generate_launch_description():
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory("openmower"), '/launch/micro_ros_agent.launch.py']),
+            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/micro_ros_agent.launch.py']),
         ),
     ])

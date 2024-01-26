@@ -14,7 +14,7 @@ def generate_launch_description():
 
     # Fetch package path and set the default YAML file location
     default_yaml_path = os.path.join(
-        get_package_share_directory('openmower'),
+        get_package_share_directory('open_mower_next'),
         'config', 'hardware', 'openmower.yaml'
     )
 

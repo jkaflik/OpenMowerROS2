@@ -11,9 +11,8 @@ from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
     # Get the launch directory
-    package_path = get_package_share_directory('openmower')
-    
-    
+    package_path = get_package_share_directory('open_mower_next')
+
     bringup_path = get_package_share_directory('nav2_bringup')
 
     namespace = LaunchConfiguration('namespace')
@@ -73,7 +72,7 @@ def generate_launch_description():
             description='Full path to the ROS2 parameters file to use'),
 
         TimerAction(period=3.0, actions=[Node(
-            package='open_mower_map_server',
+            package='open_mower_next',
             executable='map_server_node',
             name='map_server',
             output='screen',
@@ -82,7 +81,7 @@ def generate_launch_description():
                 'path': os.getenv('OM_MAP_PATH'),
             }],
             remappings=[
-                ('map_grid', 'map'), # occupancy grid topic
+                ('map_grid', 'map_grid'), # occupancy grid topic
                 ('map', 'mowing_map'), # map topic
             ],
         )]),

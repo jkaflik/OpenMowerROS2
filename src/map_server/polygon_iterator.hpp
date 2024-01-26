@@ -4,7 +4,7 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <algorithm>
 
-namespace open_mower_map_server {
+namespace open_mower_next::map_server {
 
     class PolygonGridIterator {
     public:

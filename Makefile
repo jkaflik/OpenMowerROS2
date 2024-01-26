@@ -11,19 +11,22 @@ dev-containers:
 
 # turtlebot3_gazebo does not have a build on iron arm64
 deps:
-	rosdep install --from-paths src -i -y --skip-keys="turtlebot3_gazebo"
+	rosdep install --from-paths ./ -i -y -r --skip-keys="turtlebot3_gazebo"
 
 custom-deps:
 	sh utils/install-custom-deps.sh
+
+build-libs:
+	colcon build --paths "src/lib/**"
 
 build:
 	colcon build --symlink-install
 
 sim:
-	ros2 launch src/openmower/launch/sim.launch.py
+	ros2 launch launch/sim.launch.py
 
 run:
-	ros2 launch src/openmower/launch/openmower.launch.py
+	ros2 launch launch/openmower.launch.py
 
 dev:
 	cd .devcontainer && docker-compose up -d
@@ -35,7 +38,7 @@ run-foxglove:
 	ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 
 rsp:
-	ros2 launch src/openmower/launch/rsp.launch.py
+	ros2 launch launch/rsp.launch.py
 
 remote-devices:
 	sudo bash .devcontainer/scripts/remote_devices.sh $(OPENMOWER_REMOTE_IP) $(OPENMOWER_REMOTE_USER)

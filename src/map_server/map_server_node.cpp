@@ -1,12 +1,13 @@
-#include "open_mower_map_server/map_server_node.hpp"
-#include "open_mower_map_server/polygon_iterator.hpp"
-#include "open_mower_map_server/polygon_utils.hpp"
-#include "open_mower_map_server/geo_json_map.hpp"
+#include "map_server/map_server_node.hpp"
+#include "map_server/polygon_iterator.hpp"
+#include "map_server/polygon_utils.hpp"
+#include "map_server/geo_json_map.hpp"
 
-namespace open_mower_map_server
+namespace open_mower_next::map_server
 {
     MapServerNode::MapServerNode(const rclcpp::NodeOptions& options) : rclcpp::Node("map_server_node", options)
     {
+        configureServices();
         configureMap();
         configureGaussianBlur();
 
@@ -78,6 +79,90 @@ namespace open_mower_map_server
         }
     }
 
+    void MapServerNode::saveAndPublishMap(){
+        RCLCPP_INFO(get_logger(), "Saving map");
+        map_io_->save(current_map_);
+        publishMap();
+    }
+
+    void MapServerNode::configureServices() {
+        save_area_service_ = this->create_service<srv::SaveArea>("save_area", std::bind(&MapServerNode::saveAreaHandler, this, std::placeholders::_1, std::placeholders::_2));
+        remove_area_service_ = this->create_service<srv::RemoveArea>("remove_area", std::bind(&MapServerNode::removeAreaHandler, this, std::placeholders::_1, std::placeholders::_2));
+        save_docking_station_service_ = this->create_service<srv::SaveDockingStation>("save_docking_station", std::bind(&MapServerNode::saveDockingStationHandler, this, std::placeholders::_1, std::placeholders::_2));
+        remove_docking_station_service_ = this->create_service<srv::RemoveDockingStation>("remove_docking_station", std::bind(&MapServerNode::removeDockingStationHandler, this, std::placeholders::_1, std::placeholders::_2));
+    }
+
+    void MapServerNode::saveAreaHandler(srv::SaveArea::Request::SharedPtr request, srv::SaveArea::Response::SharedPtr response){
+        RCLCPP_INFO(get_logger(), "Saving area %s", request->area.id.c_str());
+
+        for (auto& area : current_map_.areas)
+        {
+            if (area.id == request->area.id)
+            {
+                RCLCPP_INFO(get_logger(), "Updating area %s", request->area.id.c_str());
+                area = request->area;
+
+                saveAndPublishMap();
+                return;
+            }
+        }
+
+        RCLCPP_INFO(get_logger(), "Adding area %s", request->area.id.c_str());
+        current_map_.areas.push_back(request->area);
+
+        saveAndPublishMap();
+    }
+
+    void MapServerNode::removeAreaHandler(srv::RemoveArea::Request::SharedPtr request, srv::RemoveArea::Response::SharedPtr response){
+        RCLCPP_INFO(get_logger(), "Removing area %s", request->id.c_str());
+
+        for (auto it = current_map_.areas.begin(); it != current_map_.areas.end(); ++it)
+        {
+            if (it->id == request->id)
+            {
+                current_map_.areas.erase(it);
+                saveAndPublishMap();
+                return;
+            }
+        }
+
+        RCLCPP_WARN(get_logger(), "Area %s not found", request->id.c_str());
+    }
+    void MapServerNode::saveDockingStationHandler(srv::SaveDockingStation::Request::SharedPtr request, srv::SaveDockingStation::Response::SharedPtr response){
+        RCLCPP_INFO(get_logger(), "Saving docking station %s", request->docking_station.id.c_str());
+
+        for (auto& docking_station : current_map_.docking_stations)
+        {
+            if (docking_station.id == request->docking_station.id)
+            {
+                RCLCPP_INFO(get_logger(), "Updating docking station %s", request->docking_station.id.c_str());
+                docking_station = request->docking_station;
+
+                saveAndPublishMap();
+                return;
+            }
+        }
+
+        RCLCPP_INFO(get_logger(), "Adding docking station %s", request->docking_station.id.c_str());
+        current_map_.docking_stations.push_back(request->docking_station);
+        saveAndPublishMap();
+    }
+    void MapServerNode::removeDockingStationHandler(srv::RemoveDockingStation::Request::SharedPtr request, srv::RemoveDockingStation::Response::SharedPtr response){
+        RCLCPP_INFO(get_logger(), "Removing docking station %s", request->id.c_str());
+
+        for (auto it = current_map_.docking_stations.begin(); it != current_map_.docking_stations.end(); ++it)
+        {
+            if (it->id == request->id)
+            {
+                current_map_.docking_stations.erase(it);
+                saveAndPublishMap();
+                return;
+            }
+        }
+
+        RCLCPP_WARN(get_logger(), "Docking station %s not found", request->id.c_str());
+    }
+
     void MapServerNode::configureGaussianBlur()
     {
         use_gaussian_blur_ = declare_parameter("grid.use_gaussian_blur", false);
@@ -108,7 +193,7 @@ namespace open_mower_map_server
         return areas;
     }
 
-    nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(open_mower_map_server::msg::Map map)
+    nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
     {
         float minX, minY, maxX, maxY;
 

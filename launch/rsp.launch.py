@@ -12,7 +12,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_ros2_control = LaunchConfiguration('use_ros2_control')
 
-    xacro_file = os.path.join(get_package_share_directory('openmower'), 'description/robot.urdf.xacro')
+    xacro_file = os.path.join(get_package_share_directory('open_mower_ros'), 'description/robot.urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file, use_ros2_control=False, use_sim_time=use_sim_time).toxml()
 
     # Create a robot_state_publisher node
