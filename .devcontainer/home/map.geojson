@@ -6,8 +6,11 @@
       "properties": {
         "id": "0859c0c1-ec2d-4197-96b7-2d12f6cf1cd9",
         "name": "backyard",
-        "type": "lawn",
-        "fill": "#00ff00"
+        "type": "operation",
+        "fill": "#00ff00",
+        "style": {
+            "color": "#00ff00"
+        }
       },
       "geometry": {
         "coordinates": [
@@ -84,7 +87,10 @@
         "id": "6387f8e9-bc4e-48a5-95e2-fedd3b3b5c09",
         "name": "driveway",
         "type": "navigation",
-        "fill": "#ffffff"
+        "fill": "#ffffff",
+        "style": {
+             "color": "#ffffff"
+         }
       },
       "geometry": {
         "coordinates": [
@@ -119,8 +125,11 @@
       "type": "Feature",
       "properties": {
         "id": "a7a3e913-5e9e-4959-8044-059f40356996",
-        "type": "lawn",
-        "fill": "#00ff00"
+        "type": "operation",
+        "fill": "#00ff00",
+        "style": {
+            "color": "#00ff00"
+        }
       },
       "geometry": {
         "coordinates": [
@@ -170,10 +179,13 @@
     {
       "type": "Feature",
       "properties": {
-        "fill": "#ff0000",
         "type": "obstacle",
         "name": "tree",
-        "id": "90cd67cb-a606-4878-be1c-2c08f8fc085d"
+        "id": "90cd67cb-a606-4878-be1c-2c08f8fc085d",
+        "fill": "#ff0000",
+        "style": {
+            "color": "#ff0000"
+        }
       },
       "geometry": {
         "coordinates": [

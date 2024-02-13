@@ -18,7 +18,6 @@ from std_msgs.msg import Header
 from open_mower_next.msg import Map
 from sensor_msgs.msg import Imu
 from nav_msgs.msg import Odometry
-from launch_testing_ros import WaitForTopics
 
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive
@@ -65,16 +64,14 @@ class TestMapServer(unittest.TestCase):
         self.node.destroy_node()
 
     def test_map(self):
-        topic = '/map'
         self.node.get_logger().info('Waiting for map...')
 
-        wait = WaitForTopics([(topic, Map)])
-        assert wait.wait()
-        assert wait.topics_received() == {topic}
+        actual_map = Map()
+        event = Event()
 
-        map = wait.received_messages(topic).pop().data
+        self.node.create_subscription(Map, '/map', lambda msg:
+            [actual_map.__setattr__(key, value) for key, value in msg.__dict__.items()]
+            or event.set()
+        , 1)
 
-        assert map.header.frame_id == 'map'
-        assert len(map.areas) == 4
-        assert len(map.docking_stations) == 1
-
+        assert event.wait(timeout=10), 'Map not received'

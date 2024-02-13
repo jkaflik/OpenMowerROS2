@@ -38,7 +38,7 @@ namespace open_mower_next::map_server
             std::string type = area.type == msg::Area::TYPE_NAVIGATION
                                    ? "navigation"
                                    : (
-                                       area.type == msg::Area::TYPE_LAWN ? "lawn" : "exclusion");
+                                       area.type == msg::Area::TYPE_operation ? "operation" : "exclusion");
 
             auto calculated = polygonArea(area.area.polygon);
 

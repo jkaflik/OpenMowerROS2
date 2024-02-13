@@ -21,7 +21,7 @@ timeline
 
 ### Feature parity with open_mower_ros
 
-I'd like to focus first on making sure everyone who is OpenMower user can use OpenMowerROS2 as a drop-in replacement for open_mower_ros.
+I'd like to focus first on making sure everyone who is OpenMower user can use OpenMowerNext as a drop-in replacement for open_mower_ros.
 
 This definitely means implementing all the features that are already implemented in open_mower_ros, but done in a different way.
 
@@ -41,10 +41,10 @@ What about other capabilities? Your robot could be a mower, but also be responsi
 
 ## GitHub issues
 
-All the work is tracked in [GitHub issues](https://github.com/jkaflik/OpenMowerROS2/issues):
+All the work is tracked in [GitHub issues](https://github.com/jkaflik/OpenMowerNext/issues):
 
-- Feature parity issues can be [filter out with feature-parity label](https://github.com/jkaflik/OpenMowerROS2/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-parity). Not all gaps are identified yet.
-- Future improvements are tracked with [future-ideas label](https://github.com/jkaflik/OpenMowerROS2/issues?q=is%3Aopen+is%3Aissue+label%3Afuture-ideas).
+- Feature parity issues can be [filter out with feature-parity label](https://github.com/jkaflik/OpenMowerNext/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-parity). Not all gaps are identified yet.
+- Future improvements are tracked with [future-ideas label](https://github.com/jkaflik/OpenMowerNext/issues?q=is%3Aopen+is%3Aissue+label%3Afuture-ideas).
 
 Feel free to add your own.
 

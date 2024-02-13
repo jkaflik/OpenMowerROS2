@@ -37,6 +37,11 @@ namespace open_mower_next::map_server
 
             RCLCPP_INFO(node_->get_logger(), "service not available, waiting for the robot localization /toLL...");
         }
+
+        auto topic_name = node_->declare_parameter("foxglove_geojson_topic_name", "map/foxglove_geojson");
+        foxglove_geo_json_publisher_ = node_->create_publisher<foxglove_msgs::msg::GeoJSON>(topic_name,
+                                                          rclcpp::QoS(
+                                                              rclcpp::KeepLast(1)).transient_local().reliable());
     }
 
     json GeoJSONMap::pointToCoordinates(const geometry_msgs::msg::Point& point) const
@@ -81,6 +86,22 @@ namespace open_mower_next::map_server
 
     json GeoJSONMap::mapAreaToGeoJSONFeature(const msg::Area& area)
     {
+        auto colorByType = [](const std::string& type) -> std::string {
+            if (type == "navigation")
+            {
+                return "#0000ff";
+            }
+            if (type == "operation")
+            {
+                return "#00ff00";
+            }
+            if (type == "exclusion")
+            {
+                return "#ff0000";
+            }
+            return "#000000";
+        };
+
         json feature;
         feature["type"] = "Feature";
         feature["properties"]["id"] = area.id;
@@ -88,7 +109,9 @@ namespace open_mower_next::map_server
         feature["properties"]["type"] = area.type == msg::Area::TYPE_NAVIGATION
                                             ? "navigation"
                                             : (
-                                                area.type == msg::Area::TYPE_LAWN ? "lawn" : "exclusion");
+                                                area.type == msg::Area::TYPE_operation ? "operation" : "exclusion");
+        feature["properties"]["fill"] = colorByType(feature["properties"]["type"].get<std::string>());
+        feature["properties"]["style"]["color"] = feature["properties"]["fill"];
 
         feature["geometry"]["type"] = "Polygon";
         feature["geometry"]["coordinates"] = json::array();
@@ -147,6 +170,19 @@ namespace open_mower_next::map_server
         return feature;
     }
 
+    void GeoJSONMap::eventuallyPublishFoxgloveGeoJSON(json data){
+        if (foxglove_geo_json_publisher_ == nullptr)
+        {
+            RCLCPP_INFO(node_->get_logger(), "Foxglove GeoJSON publisher not initialized, skipping");
+            return;
+        }
+
+        foxglove_msgs::msg::GeoJSON msg;
+        msg.geojson = data.dump();
+
+        foxglove_geo_json_publisher_->publish(msg);
+    }
+
     msg::Map GeoJSONMap::load()
     {
         std::ifstream f(path_, std::ios::in);
@@ -189,6 +225,9 @@ namespace open_mower_next::map_server
             RCLCPP_WARN(node_->get_logger(), "Unsupported geometry type: %s",
                         feature["geometry"]["type"].get<std::string>().c_str());
         }
+
+        eventuallyPublishFoxgloveGeoJSON(data);
+
         return map;
     }
 
@@ -209,6 +248,8 @@ namespace open_mower_next::map_server
             auto feature = dockingStationToGeoJSONFeature(docking_station);
             data["features"].push_back(feature);
         }
+
+        eventuallyPublishFoxgloveGeoJSON(data);
     }
 
     void GeoJSONMap::parsePolygonFeature(msg::Map& map, const json& feature)
@@ -220,7 +261,7 @@ namespace open_mower_next::map_server
         area.type = feature["properties"]["type"] == "navigation"
                         ? msg::Area::TYPE_NAVIGATION
                         : (
-                            feature["properties"]["type"] == "lawn" ? msg::Area::TYPE_LAWN : msg::Area::TYPE_EXCLUSION);
+                            feature["properties"]["type"] == "operation" ? msg::Area::TYPE_operation : msg::Area::TYPE_EXCLUSION);
 
         for (const auto& ll : feature["geometry"]["coordinates"][0])
         {

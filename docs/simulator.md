@@ -2,7 +2,7 @@
 
 ## Overview
 
-OpenMowerROS2 incorporates a [Gazebo](http://gazebosim.org/) simulator and [ros_gz](https://github.com/gazebosim/ros_gz) integration.
+OpenMowerNext incorporates a [Gazebo](http://gazebosim.org/) simulator and [ros_gz](https://github.com/gazebosim/ros_gz) integration.
 
 ::: tip
 If you are not familiar with Gazebo, please refer to [Gazebo tutorials](http://gazebosim.org/tutorials).
@@ -38,9 +38,9 @@ It's possible to run the simulator with GUI on external host machine. I haven't 
 - :white_check_mark: GPS sensor
 - :white_check_mark: IMU sensor
 - :white_check_mark: can of Coke
-- :construction: [Emulate OpenMowerROS2 firmware](https://github.com/jkaflik/OpenMowerROS2/issues/8)
+- :construction: [Emulate OpenMowerNext firmware](https://github.com/jkaflik/OpenMowerNext/issues/8)
 
 ## World definition
 
-<<< ../src/openmower/worlds/empty.sdf{xml}
+<<< ../worlds/empty.sdf{xml}
 

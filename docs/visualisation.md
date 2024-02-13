@@ -2,7 +2,7 @@
 
 ## Overview
 
-![Foxglove with OpenMowerROS2 visualisation](./assets/foxglove.png)
+![Foxglove with OpenMowerNext visualisation](./assets/foxglove.png)
 
 [Foxglove Studio](https://foxglove.dev/) is a visualisation tool for robotics developers. It's designed to be easy to use, and to work with any ROS system.
 Alternatively RViz2 can be used for visualisation.

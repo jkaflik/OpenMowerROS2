@@ -3,6 +3,7 @@
 #include <robot_localization/srv/from_ll.hpp>
 #include <robot_localization/srv/to_ll.hpp>
 #include <nlohmann/json.hpp>
+#include <foxglove_msgs/msg/geo_json.hpp>
 
 #include "map_server_node.hpp"
 
@@ -32,6 +33,9 @@ namespace open_mower_next::map_server {
         MapServerNode::SharedPtr node_;
         rclcpp::Client<robot_localization::srv::FromLL>::SharedPtr from_ll_client_;
         rclcpp::Client<robot_localization::srv::ToLL>::SharedPtr to_ll_client_;
+
+        void eventuallyPublishFoxgloveGeoJSON(json data);
+        rclcpp::Publisher<foxglove_msgs::msg::GeoJSON>::SharedPtr foxglove_geo_json_publisher_;
 
         std::string path_;
     };

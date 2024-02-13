@@ -37,4 +37,4 @@ More on this in [GPS](gps.md) section.
 
 ## Configuration
 
-<<< ../src/openmower/config/robot_localization.yaml{yaml}
+<<< ../config/robot_localization.yaml{yaml}
