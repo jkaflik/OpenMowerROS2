@@ -15,3 +15,7 @@ repositories:
     type: git
     url: https://github.com/LORD-MicroStrain/ntrip_client
     version: feature/ros2_prefer_rtcm_msgs # feature branch with a rtcm_msgs support
+  opennav_coverage:
+    type: git
+    url: https://github.com/open-navigation/opennav_coverage.git
+    version: iron

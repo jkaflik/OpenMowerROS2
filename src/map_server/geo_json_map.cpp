@@ -20,6 +20,7 @@ namespace open_mower_next::map_server
                 RCLCPP_ERROR(node_->get_logger(),
                              "Interrupted while waiting for the robot localization /fromLL service. Exiting.");
                 rclcpp::shutdown();
+                rclcpp::sleep_for(std::chrono::seconds(10));
             }
 
             RCLCPP_INFO(node_->get_logger(), "service not available, waiting for the robot localization /fromLL...");
@@ -33,6 +34,7 @@ namespace open_mower_next::map_server
                 RCLCPP_ERROR(node_->get_logger(),
                              "Interrupted while waiting for the robot localization /toLL service. Exiting.");
                 rclcpp::shutdown();
+                rclcpp::sleep_for(std::chrono::seconds(10));
             }
 
             RCLCPP_INFO(node_->get_logger(), "service not available, waiting for the robot localization /toLL...");
@@ -109,7 +111,7 @@ namespace open_mower_next::map_server
         feature["properties"]["type"] = area.type == msg::Area::TYPE_NAVIGATION
                                             ? "navigation"
                                             : (
-                                                area.type == msg::Area::TYPE_operation ? "operation" : "exclusion");
+                                                area.type == msg::Area::TYPE_OPERATION ? "operation" : "exclusion");
         feature["properties"]["fill"] = colorByType(feature["properties"]["type"].get<std::string>());
         feature["properties"]["style"]["color"] = feature["properties"]["fill"];
 
@@ -261,7 +263,7 @@ namespace open_mower_next::map_server
         area.type = feature["properties"]["type"] == "navigation"
                         ? msg::Area::TYPE_NAVIGATION
                         : (
-                            feature["properties"]["type"] == "operation" ? msg::Area::TYPE_operation : msg::Area::TYPE_EXCLUSION);
+                            feature["properties"]["type"] == "operation" ? msg::Area::TYPE_OPERATION : msg::Area::TYPE_EXCLUSION);
 
         for (const auto& ll : feature["geometry"]["coordinates"][0])
         {

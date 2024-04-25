@@ -2,7 +2,7 @@ OPENMOWER_REMOTE_IP ?= 10.0.251.104
 OPENMOWER_REMOTE_USER ?= openmower
 ROS_LOG_DIR = log/
 
-all: deps build
+all: custom-deps deps build
 
 .PHONY: deps build
 
@@ -11,13 +11,13 @@ dev-containers:
 
 # turtlebot3_gazebo does not have a build on iron arm64
 deps:
-	rosdep install --from-paths ./ -i -y -r --skip-keys="turtlebot3_gazebo"
+	rosdep install --from-paths ./* -i -y -r
 
 custom-deps:
 	sh utils/install-custom-deps.sh
 
 build-libs:
-	colcon build --paths "src/lib/**"
+	colcon build --base-paths "src/lib/*"
 
 build:
 	colcon build --symlink-install

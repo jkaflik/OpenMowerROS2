@@ -53,8 +53,9 @@
   <exec_depend>ntrip_client</exec_depend>
 
   <exec_depend>navigation2</exec_depend>
+  <exec_depend>openav_coverage_bt</exec_depend>
+  <exec_depend>fields2cover</exec_depend>
   <exec_depend>robot_localization</exec_depend>
-  <exec_depend>nav2_bringup</exec_depend>
 
   <exec_depend>foxglove_msgs</exec_depend>
   <exec_depend>foxglove_bridge</exec_depend>
