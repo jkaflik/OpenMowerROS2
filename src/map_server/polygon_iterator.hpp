@@ -44,7 +44,7 @@ namespace open_mower_next::map_server {
                 x_ += resolution_;
                 if (x_ > max_x_) {
                     x_ = min_x_;
-                    y_++;
+                    y_ += resolution_;
                 }
 
                 if (isPointInsidePolygon(x_, y_, polygon_.points)) {
