@@ -11,7 +11,7 @@ dev-containers:
 
 # turtlebot3_gazebo does not have a build on iron arm64
 deps:
-	rosdep install --from-paths ./* -i -y -r
+	rosdep install --from-paths ./ -i -y -r
 
 custom-deps:
 	sh utils/install-custom-deps.sh

@@ -178,16 +178,16 @@ namespace open_mower_next::map_server
         }
     }
 
-    std::vector<msg::Area::SharedPtr> MapServerNode::areasWithExclusionsLast(std::vector<msg::Area::SharedPtr> areas)
+    std::vector<msg::Area> MapServerNode::areasWithExclusionsLast(std::vector<msg::Area> areas)
     {
-        std::sort(areas.begin(), areas.end(), [](const msg::Area::SharedPtr& a, const msg::Area::SharedPtr& b)
+        std::sort(areas.begin(), areas.end(), [](const msg::Area& a, const msg::Area& b)
         {
-            if (a->type == b->type)
+            if (a.type == b.type)
             {
-                return a->type == msg::Area::TYPE_EXCLUSION;
+                return a.type == msg::Area::TYPE_EXCLUSION;
             }
 
-            return a->type < b->type;
+            return a.type < b.type;
         });
 
         return areas;
@@ -233,13 +233,13 @@ namespace open_mower_next::map_server
 
         for (const auto& area : map.areas)
         {
-            uint8_t value = area.type == msg::Area::TYPE_EXCLUSION ? 1 : 0;
+            uint8_t value = area.type == msg::Area::TYPE_EXCLUSION ? 1 : 0.2;
 
             fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
         }
 
-        RCLCPP_INFO(get_logger(), "Occupancy grid size: %dm x %dm (%.2fm resolution)", occupancy_grid.info.width,
-                    occupancy_grid.info.height, occupancy_grid.info.resolution);
+        RCLCPP_INFO(get_logger(), "Occupancy grid size: %dm x %dm (%.2fm resolution)", occupancy_grid.info.width * occupancy_grid.info.resolution,
+                    occupancy_grid.info.height * occupancy_grid.info.resolution, occupancy_grid.info.resolution);
 
         if (gaussian_filter_)
         {
@@ -270,9 +270,9 @@ namespace open_mower_next::map_server
                 continue;
             }
 
-            if (occupancy_grid.data[index] > -1)
+            if (occupancy_grid.data[index] > value)
             {
-                continue; // do not overwrite existing values
+                continue; // do not overwrite higher values
             }
 
             occupancy_grid.data[index] = value;

@@ -121,7 +121,6 @@ def generate_launch_description():
                               'launch', 'gz_sim.launch.py')]),
             launch_arguments={
                 'gz_args': '-r -v 6 {}'.format(world_path),
-                'gz_version': '6'
             }.items()),
         RegisterEventHandler(
             event_handler=OnProcessExit(

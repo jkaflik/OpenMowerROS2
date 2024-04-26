@@ -5,11 +5,16 @@ from launch_ros.actions import LoadComposableNodes
 from launch_ros.actions import Node
 from launch_ros.descriptions import ComposableNode, ParameterFile
 from nav2_common.launch import RewrittenYaml
+from ament_index_python.packages import get_package_share_directory
+import os
 
 def generate_launch_description():
+
     params_file = LaunchConfiguration('params_file')
 
     lifecycle_nodes = ['controller_server',
+                       'planner_server',
+                       'behavior_server',
                        'bt_navigator',
                        'velocity_smoother',
                        'coverage_server']
@@ -34,8 +39,6 @@ def generate_launch_description():
 
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
-
-    declare_params_file_cmd = DeclareLaunchArgument('params_file')
 
     create_container = Node(
         name='nav2_container',
@@ -67,6 +70,18 @@ def generate_launch_description():
                 parameters=[configured_params],
                 remappings=remappings),
             ComposableNode(
+                package='nav2_behaviors',
+                plugin='behavior_server::BehaviorServer',
+                name='behavior_server',
+                parameters=[configured_params],
+                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],),
+            ComposableNode(
+                package='nav2_planner',
+                plugin='nav2_planner::PlannerServer',
+                name='planner_server',
+                parameters=[configured_params],
+                remappings=remappings),
+            ComposableNode(
                 package='nav2_velocity_smoother',
                 plugin='nav2_velocity_smoother::VelocitySmoother',
                 name='velocity_smoother',
@@ -84,9 +99,11 @@ def generate_launch_description():
     )
 
     # # Create the launch description and populate
-    ld = LaunchDescription()
-    ld.add_action(stdout_linebuf_envvar)
-    ld.add_action(declare_params_file_cmd)
-    ld.add_action(create_container)
-    ld.add_action(load_composable_nodes)
+    ld = LaunchDescription([
+        DeclareLaunchArgument('params_file', default_value=os.path.join(get_package_share_directory("open_mower_next"), 'config', 'nav2_params.yaml')),
+        DeclareLaunchArgument('use_sim_time', default_value='True'),
+        DeclareLaunchArgument('autostart', default_value='True'),
+        create_container,
+        load_composable_nodes
+    ])
     return ld

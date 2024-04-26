@@ -28,7 +28,7 @@ namespace open_mower_next::map_server {
         ~MapServerNode() override = default;
 
     private:
-        std::vector<msg::Area::SharedPtr> areasWithExclusionsLast(std::vector<msg::Area::SharedPtr> areas);
+        std::vector<msg::Area> areasWithExclusionsLast(std::vector<msg::Area> areas);
         nav_msgs::msg::OccupancyGrid mapToOccupancyGrid(msg::Map map);
 
         MapIO *map_io_;
