@@ -78,7 +78,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          
+          file: .devcontainer/Dockerfile
           platforms: ${{ matrix.arch }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=ghcr.io/${{env.REPOSITORY_LC}},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
