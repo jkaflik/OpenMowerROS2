@@ -74,7 +74,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: .devcontainer/
           file: .devcontainer/Dockerfile
           platforms: ${{ matrix.arch }}
           labels: ${{ steps.meta.outputs.labels }}
