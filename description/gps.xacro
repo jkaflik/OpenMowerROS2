@@ -11,7 +11,7 @@
 
     <gazebo reference="gps">
         <sensor name="gps" type="navsat">
-            <ignition_frame_id>gps</ignition_frame_id>
+            <gz_frame_id>gps</gz_frame_id>
             <always_on>1</always_on>
             <update_rate>5</update_rate>
             <topic>gps/fix</topic>

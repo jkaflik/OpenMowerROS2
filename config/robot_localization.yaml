@@ -1,7 +1,7 @@
 ekf_se_odom:
   ros__parameters:
-    frequency: 30.0
-    sensor_timeout: 0.1
+    frequency: 50.0
+    sensor_timeout: 0.025
     two_d_mode: true
     transform_time_offset: 0.0
     transform_timeout: 0.0
@@ -25,7 +25,7 @@ ekf_se_odom:
                    true,  true,  true,
                    false, false, true,
                    false, false, false]
-    odom0_queue_size: 10
+    odom0_queue_size: 50
     odom0_nodelay: true
     odom0_differential: false
     odom0_relative: false
@@ -39,7 +39,7 @@ ekf_se_odom:
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: false
-    imu0_queue_size: 10
+    imu0_queue_size: 100
     imu0_remove_gravitational_acceleration: true
 
     use_control: false
@@ -78,7 +78,7 @@ ekf_se_odom:
 
 ekf_se_map:
   ros__parameters:
-    frequency: 10.0
+    frequency: 50.0
     sensor_timeout: 0.1
     two_d_mode: true
     transform_time_offset: 0.0

@@ -46,7 +46,7 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         output='screen',
-        arguments=['-string', robot_description_config,
+        arguments=['-topic', 'robot_description',
                    '-world', 'empty',
                    '-name', 'openmower',
                    '-z', '10',
@@ -76,9 +76,9 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock',
-            '/gps/fix@sensor_msgs/msg/NavSatFix[ignition.msgs.NavSat',
-            '/imu/data_raw@sensor_msgs/msg/Imu[ignition.msgs.IMU',
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/gps/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat',
+            '/imu/data_raw@sensor_msgs/msg/Imu[gz.msgs.IMU',
         ],
         output='screen'
     )
@@ -88,7 +88,6 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'true',
             'autostart': 'true',
-            'params_file': os.path.join(get_package_share_directory(package_name), 'config', 'nav2_params.yaml'),
         }.items(),
     )
 

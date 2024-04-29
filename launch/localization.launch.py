@@ -11,7 +11,6 @@ from launch_ros.actions import Node
 def generate_launch_description():
     package_path = get_package_share_directory('open_mower_next')
 
-    map_yaml_file = LaunchConfiguration('map')
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     localization_params_path = os.path.join(package_path, 'config', 'robot_localization.yaml')

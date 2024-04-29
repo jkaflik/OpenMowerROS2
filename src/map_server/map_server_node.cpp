@@ -2,6 +2,7 @@
 #include "map_server/polygon_iterator.hpp"
 #include "map_server/polygon_utils.hpp"
 #include "map_server/geo_json_map.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
 
 namespace open_mower_next::map_server
 {
