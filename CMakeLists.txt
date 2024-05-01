@@ -22,6 +22,7 @@ find_package(robot_localization REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(foxglove_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 
 ###
 # map_server_node
@@ -46,6 +47,7 @@ ament_target_dependencies(map_server_node
         geometry_msgs
         nav_msgs
         foxglove_msgs
+        visualization_msgs
         rclcpp
         robot_localization
         tf2
@@ -75,7 +77,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         nav_msgs
         tf2
         tf2_geometry_msgs
-        foxglove_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)

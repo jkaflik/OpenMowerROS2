@@ -2,6 +2,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <nav_msgs/nav_msgs/msg/occupancy_grid.hpp>
+#include <visualization_msgs/visualization_msgs/msg/marker_array.hpp>
 
 #include "open_mower_next/msg/map.hpp"
 #include "map_server/some_gaussian_filter.hpp"
@@ -30,6 +31,7 @@ namespace open_mower_next::map_server {
     private:
         std::vector<msg::Area> areasWithExclusionsLast(std::vector<msg::Area> areas);
         nav_msgs::msg::OccupancyGrid mapToOccupancyGrid(msg::Map map);
+        visualization_msgs::msg::MarkerArray mapToVisualizationMarkers(msg::Map map);
 
         MapIO *map_io_;
 
@@ -53,6 +55,8 @@ namespace open_mower_next::map_server {
         msg::Map current_map_;
         rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr occupancy_grid_publisher_;
         rclcpp::Publisher<msg::Map>::SharedPtr map_publisher_;
+        rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr map_visualization_publisher_;
+
 
         rclcpp::Service<srv::SaveArea>::SharedPtr save_area_service_;
         rclcpp::Service<srv::RemoveArea>::SharedPtr remove_area_service_;

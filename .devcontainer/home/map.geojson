@@ -179,7 +179,7 @@
     {
       "type": "Feature",
       "properties": {
-        "type": "obstacle",
+        "type": "exclusion",
         "name": "tree",
         "id": "90cd67cb-a606-4878-be1c-2c08f8fc085d",
         "fill": "#ff0000",

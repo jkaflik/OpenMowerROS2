@@ -1,5 +1,5 @@
-OPENMOWER_REMOTE_IP ?= 10.0.251.104
-OPENMOWER_REMOTE_USER ?= openmower
+REMOTE_HOST ?= omdev.local
+REMOTE_USER ?= openmower
 ROS_LOG_DIR = log/
 
 all: custom-deps deps build
@@ -23,6 +23,7 @@ build:
 	colcon build --symlink-install
 
 sim:
+	killall -9 ruby || true
 	ros2 launch launch/sim.launch.py
 
 run:
@@ -41,4 +42,4 @@ rsp:
 	ros2 launch launch/rsp.launch.py
 
 remote-devices:
-	sudo bash .devcontainer/scripts/remote_devices.sh $(OPENMOWER_REMOTE_IP) $(OPENMOWER_REMOTE_USER)
+	sudo bash .devcontainer/scripts/remote_devices.sh $(REMOTE_HOST) $(REMOTE_USER)

@@ -19,6 +19,7 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>tf2</depend>
+  <depend>visualization_msgs</depend>
 
   <build_depend>nlohmann_json_schema_validator_vendor</build_depend>
 

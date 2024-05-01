@@ -9,8 +9,7 @@ from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
-
-    params_file = LaunchConfiguration('params_file')
+    params_file = os.path.join(get_package_share_directory("open_mower_next"), 'config', 'nav2_params.yaml')
 
     lifecycle_nodes = ['controller_server',
                        'planner_server',

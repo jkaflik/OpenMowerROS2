@@ -2,7 +2,6 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 
-
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, RegisterEventHandler, DeclareLaunchArgument, ExecuteProcess
 from launch.event_handlers import OnProcessStart, OnProcessExit
@@ -14,14 +13,16 @@ from launch_ros.actions import Node
 
 import xacro
 
+
 def generate_launch_description():
-    package_name='open_mower_next'
-    
-    xacro_file = os.path.join(get_package_share_directory(package_name), 'description/robot.urdf.xacro')
+    package_name = 'open_mower_next'
+
+    share_directory = get_package_share_directory(package_name)
+    xacro_file = os.path.join(share_directory, 'description/robot.urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file, mappings={
         'use_ros2_control': '1',
         'use_sim_time': '0'
-        }).toxml()
+    }).toxml()
 
     # Create a robot_state_publisher node
     params = {'robot_description': robot_description_config, 'use_sim_time': False}
@@ -33,20 +34,20 @@ def generate_launch_description():
     )
 
     joystick = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory(package_name),'launch','joystick.launch.py'
-                )]), launch_arguments={'use_sim_time': 'false'}.items()
+        PythonLaunchDescriptionSource([os.path.join(
+            share_directory, 'launch', 'joystick.launch.py'
+        )]), launch_arguments={'use_sim_time': 'false'}.items()
     )
 
-    twist_mux_params = os.path.join(get_package_share_directory(package_name),'config','twist_mux.yaml')
+    twist_mux_params = os.path.join(share_directory, 'config', 'twist_mux.yaml')
     twist_mux = Node(
-            package="twist_mux",
-            executable="twist_mux",
-            parameters=[twist_mux_params, {'use_sim_time': False}],
-            remappings=[('/cmd_vel_out','/diff_drive_base_controller/cmd_vel_unstamped')]
-        )
-    
-    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','controllers.yaml')
+        package="twist_mux",
+        executable="twist_mux",
+        parameters=[twist_mux_params, {'use_sim_time': False}],
+        remappings=[('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel_unstamped')]
+    )
+
+    controller_params_file = os.path.join(share_directory, 'config', 'controllers.yaml')
 
     controller_manager = Node(
         package="controller_manager",
@@ -101,34 +102,32 @@ def generate_launch_description():
         # ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/gps.launch.py']),
+            PythonLaunchDescriptionSource([share_directory, '/launch/gps.launch.py']),
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/localization.launch.py']),
+            PythonLaunchDescriptionSource([share_directory, '/launch/localization.launch.py']),
             launch_arguments={
                 'use_sim_time': 'false',
-                # 'map': os.path.join(get_package_share_directory("openmower"), 'maps', 'world.yaml'),
                 'autostart': 'true',
-                'params_file': os.path.join(get_package_share_directory(package_name), 'config', 'nav2_params.yaml'),
             }.items(),
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/nav2.launch.py']),
+            PythonLaunchDescriptionSource([share_directory, '/launch/nav2.launch.py']),
             launch_arguments={
                 'use_sim_time': 'false',
-                # 'map': os.path.join(get_package_share_directory("openmower"), 'maps', 'world.yaml'),
                 'autostart': 'true',
-                'params_file': os.path.join(get_package_share_directory(package_name), 'config', 'nav2_params.yaml'),
             }.items(),
         ),
 
         IncludeLaunchDescription(
-            XMLLaunchDescriptionSource([get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
+            XMLLaunchDescriptionSource(
+                [get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory(package_name), '/launch/micro_ros_agent.launch.py']),
+            PythonLaunchDescriptionSource(
+                [share_directory, '/launch/micro_ros_agent.launch.py']),
         ),
     ])

@@ -23,6 +23,10 @@ namespace open_mower_next::map_server
                                                           rclcpp::QoS(
                                                               rclcpp::KeepLast(1)).transient_local().reliable());
 
+        auto visualization_topic_name_ = declare_parameter("visualization.topic_name", "map_visualization");
+        map_visualization_publisher_ = this->create_publisher<visualization_msgs::msg::MarkerArray>(
+            visualization_topic_name_, rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
+
         publishMap();
     }
 
@@ -58,8 +62,12 @@ namespace open_mower_next::map_server
 
         RCLCPP_INFO(get_logger(), "Publishing map");
         map_publisher_->publish(current_map_);
+
         RCLCPP_INFO(get_logger(), "Publishing occupancy grid");
         occupancy_grid_publisher_->publish(mapToOccupancyGrid(current_map_));
+
+        RCLCPP_INFO(get_logger(), "Publishing visualization markers");
+        map_visualization_publisher_->publish(mapToVisualizationMarkers(current_map_));
     }
 
     void MapServerNode::configureMap()
@@ -250,6 +258,101 @@ namespace open_mower_next::map_server
         }
 
         return occupancy_grid;
+    }
+
+    visualization_msgs::msg::MarkerArray MapServerNode::mapToVisualizationMarkers(msg::Map map){
+        visualization_msgs::msg::MarkerArray markers;
+
+        for (const auto& area : map.areas)
+        {
+            visualization_msgs::msg::Marker marker;
+            marker.header = map.header;
+            marker.ns = "areas";
+            marker.id = std::hash<std::string>{}(area.id);
+            marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
+            marker.action = visualization_msgs::msg::Marker::ADD;
+            marker.pose.orientation.w = 1.0;
+            marker.scale.x = 0.05;
+
+            if (area.type == msg::Area::TYPE_EXCLUSION)
+            {
+                marker.ns = "exclusion";
+
+                // red color
+                marker.color.a = 1.0;
+                marker.color.r = 1.0;
+                marker.color.g = 0.0;
+                marker.color.b = 0.0;
+            }
+            else if (area.type == msg::Area::TYPE_OPERATION)
+            {
+                marker.ns = "operation";
+
+                // green color
+                marker.color.a = 1.0;
+                marker.color.r = 0.0;
+                marker.color.g = 1.0;
+                marker.color.b = 0.0;
+            }
+            else
+            {
+                marker.ns = "navigation";
+
+                // white color
+                marker.color.a = 1.0;
+                marker.color.r = 1.0;
+                marker.color.g = 1.0;
+                marker.color.b = 1.0;
+            }
+
+            for (const auto& point : area.area.polygon.points)
+            {
+                geometry_msgs::msg::Point p;
+                p.x = point.x;
+                p.y = point.y;
+                p.z = 0;
+                marker.points.push_back(p);
+            }
+
+            if (!area.area.polygon.points.empty())
+            {
+                auto point = area.area.polygon.points.front();
+                geometry_msgs::msg::Point p;
+                p.x = point.x;
+                p.y = point.y;
+                p.z = 0;
+                marker.points.push_back(p);
+            }
+
+            markers.markers.push_back(marker);
+        }
+
+        for (const auto& docking_station : map.docking_stations)
+        {
+            visualization_msgs::msg::Marker marker;
+            marker.header = map.header;
+            marker.ns = "docking_station";
+            marker.id = std::hash<std::string>{}(docking_station.id);
+            marker.type = visualization_msgs::msg::Marker::CUBE;
+            marker.action = visualization_msgs::msg::Marker::ADD;
+            marker.pose.position.x = docking_station.pose.pose.position.x;
+            marker.pose.position.y = docking_station.pose.pose.position.y;
+            marker.pose.position.z = 0.1;
+            marker.pose.orientation.w = docking_station.pose.pose.orientation.w;
+            marker.scale.x = 0.5;
+            marker.scale.y = 0.5;
+            marker.scale.z = 0.05;
+
+            // black color
+            marker.color.a = 1.0;
+            marker.color.r = 0.0;
+            marker.color.g = 0.0;
+            marker.color.b = 0.0;
+
+            markers.markers.push_back(marker);
+        }
+
+        return markers;
     }
 
     void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_grid,

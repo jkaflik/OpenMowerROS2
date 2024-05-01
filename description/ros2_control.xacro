@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:unless value="$(arg sim_mode)">
-        <xacro:property name="vesc_yaml" value="$(find openmower)/config/hardware/vesc.yaml" />
+        <xacro:property name="vesc_yaml" value="$(find open_mower_next)/config/hardware/vesc.yaml" />
         <xacro:property name="vesc" value="${xacro.load_yaml(vesc_yaml)}"/>
 
         <ros2_control name="left_wheel" type="actuator">

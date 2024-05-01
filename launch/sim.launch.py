@@ -104,6 +104,9 @@ def generate_launch_description():
     foxglove_bridge = IncludeLaunchDescription(
         XMLLaunchDescriptionSource(
             [get_package_share_directory("foxglove_bridge"), '/launch/foxglove_bridge_launch.xml']),
+        launch_arguments={
+            'include_hidden': 'true',
+        }.items(),
     )
 
     world_path = os.path.join(get_package_share_directory(package_name), 'worlds', 'empty.sdf')
