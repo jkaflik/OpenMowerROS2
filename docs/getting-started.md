@@ -7,13 +7,13 @@ Let's get started with a quick overview of the project.
 
 ::: warning
 Project is in early development stage. Actual mower logic is missing and things are likely to change.
-The list of identified missing features can be found in GitHub [issues](https://github.com/jkaflik/OpenMowerROS2/issues).
+The list of identified missing features can be found in GitHub [issues](https://github.com/jkaflik/OpenMowerNext/issues).
 :::
 
 ## Overview
 
 The purpose of this project is no different from original [OpenMower project ROS implementation](https://github.com/ClemensElflein/open_mower_ros).
-OpenMowerROS2 is build on top of [ROS2](https://index.ros.org/doc/ros2/) following all the best practices and recommendations.
+OpenMowerNext is build on top of [ROS2](https://index.ros.org/doc/ros2/) following all the best practices and recommendations.
 
 At this stage of the project, only one intention to use it is contributing to the project. If you are interested in the project, please feel free to contribute.
 It was started as a learning project for myself, but I hope it will be useful for others as well.
@@ -30,8 +30,10 @@ This section is not complete yet. It will be updated as the project progresses.
   - :white_check_mark: IMU
   - :white_check_mark: GPS
 - :construction: Simulation using Gazebo
-- :construction: [Map management](https://github.com/jkaflik/OpenMowerROS2/issues/19)
-- :pencil2: [Mower logic](https://github.com/jkaflik/OpenMowerROS2/issues/9)
+- :construction: [Map management](https://github.com/jkaflik/OpenMowerNext/issues/19)
+- :pencil2: [Mower logic](https://github.com/jkaflik/OpenMowerNext/issues/9)
+- :pencil2: [Configuration](configuration.md)
+- :pencil2: User interface
 
 ### Roadmap
 

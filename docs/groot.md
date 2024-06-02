@@ -11,7 +11,7 @@ GRoot is a GUI for [BehaviourTree.CPP](https://www.behaviortree.dev/). It is a g
 ![GRoot](https://raw.githubusercontent.com/BehaviorTree/Groot/master/groot-screenshot.png)
 
 ::: warning
-BehaviourTree.CPP is not yet implemented in this project. See [issue](https://github.com/jkaflik/OpenMowerROS2/issues/9).
+BehaviourTree.CPP is not yet implemented in this project. See [issue](https://github.com/jkaflik/OpenMowerNext/issues/9).
 :::
 
 ## Run GRoot

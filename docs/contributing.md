@@ -14,7 +14,7 @@ If you are not familiar with ROS, you can start with [ROS2 tutorials](https://do
 
 2. **Clone the Repository**:
     ```bash
-    git clone https://github.com/your_username/OpenMowerROS2.git
+    git clone https://github.com/your_username/OpenMowerNext.git
     ```
 
 3. **Set Up ROS2**: Ensure you have ROS2 installed and configured on your system.
@@ -23,7 +23,7 @@ If you are not familiar with ROS, you can start with [ROS2 tutorials](https://do
 
     ::: info
     This section is not complete yet. It will be updated as the project progresses.
-    There is no instruction how to setup ROS2 workspace standalone yet. For a reference, [Dockerfile](https://github.com/jkaflik/OpenMowerROS2/blob/main/Dockerfile) can be used.
+    There is no instruction how to setup ROS2 workspace standalone yet. For a reference, [Dockerfile](https://github.com/jkaflik/OpenMowerNext/blob/main/Dockerfile) can be used.
     :::
 
 ---

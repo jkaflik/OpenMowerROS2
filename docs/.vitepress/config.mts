@@ -3,9 +3,9 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  title: "OpenMowerROS2",
+  title: "OpenMowerNext",
   description: "Just another software stack for OpenMower lawn mower robot, but this time with ROS2!",
-  base: "/OpenMowerROS2/",
+  base: "/OpenMowerNext/",
   ignoreDeadLinks: [
     // ignore all localhost links
     /^https?:\/\/localhost/,
@@ -55,7 +55,7 @@ export default withMermaid({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/jkaflik/OpenMowerROS2' },
+      { icon: 'github', link: 'https://github.com/jkaflik/OpenMowerNext' },
       { icon: 'discord', link: 'https://discord.gg/jE7QNaSxW7' },
     ]
   }

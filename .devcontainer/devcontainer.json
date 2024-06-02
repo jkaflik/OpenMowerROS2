@@ -1,5 +1,5 @@
 {
-    "name": "OpenMowerROS2 development environment",
+    "name": "OpenMowerNext development environment",
     "privileged": true,
     "remoteUser": "openmower",
     "dockerComposeFile": "docker-compose.yaml",

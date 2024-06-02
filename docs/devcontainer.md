@@ -32,3 +32,9 @@ Devcontainer comes up with some containers configured with Docker Compose:
 
 All containers share the same X server socket, so GUI applications can be run from the `workspace` container and displayed in the `xserver` container.
 VNC server in `xserver` runs a web server on port `12345` with a VNC client. You can access it by opening [`http://localhost:12345`](http://localhost:12345) in your browser.
+
+## Default environment variables loaded in the image
+
+<<< ../.devcontainer/openmower_config.env{bash}
+
+For more details about the environment variables, see [Configuration](configuration.md).

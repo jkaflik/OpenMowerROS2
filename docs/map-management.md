@@ -14,7 +14,7 @@ The second concept is a pose of docking station. It consists of a position and o
 
 ### ROS message definition
 
-<<< ../src/open_mower_map_server/msg/Map.msg
+<<< ../src/msg/Map.msg
 
 ## Area
 
@@ -27,11 +27,11 @@ Area name is used to identify the area. It's not required to be unique, but it's
 
 - **Exclusion area** is an area that is not allowed to be occupied by the robot. It is used to exclude areas that are not safe for the robot to drive on. For example, a pond or a flower bed.
 - **Navigation area** is an area that is allowed to be occupied by the robot. It is used to define the area where the robot is allowed to drive on. For example, a driveway.
-- **Lawn area** is an area that is allowed to be occupied by the robot. It is used to define the area where the robot is allowed to drive on and execute mowing pattern.
+- **Operation area** is an area that is allowed to be occupied by the robot. It is used to define the area where the robot is allowed to drive on and execute its operation - mowing a lawn.
 
 ### ROS message definition
 
-<<< ../src/open_mower_map_server/msg/Area.msg
+<<< ../src/msg/Area.msg
 
 
 ## Docking station
@@ -43,4 +43,43 @@ Pose is a position and orientation of the docking station. Position is a middle 
 
 ### ROS message definition
 
-<<< ../src/open_mower_map_server/msg/DockingStation.msg
+<<< ../src/msg/DockingStation.msg
+
+## Map management API
+
+Area and docking station can be added, removed or updated at any time.
+All operations are performed using ROS services. After each operation, the map is published to the `/map` topic and persisted.
+
+### Services
+
+#### Save area `/save_area`
+
+<<< ../src/srv/SaveArea.srv
+
+#### Remove area `/remove_area`
+
+<<< ../src/srv/RemoveArea.srv
+
+#### Save docking station `/save_docking_station`
+
+<<< ../src/srv/SaveDockingStation.srv
+
+#### Remove docking station `/remove_docking_station`
+
+<<< ../src/srv/RemoveDockingStation.srv
+
+## Supported map types
+
+### GeoJSON
+
+Currently the only supported map type is GeoJSON. It's a format for encoding a variety of geographic data structures. It's a human-readable and easy to parse format.
+OpenMowerNext uses a `Feature` of `polygon` type objects to represent areas and docking stations.
+
+Map server will automatically load the map from the file specified in the `OM_MAP_PATH` environment variable:
+```bash
+OM_MAP_PATH=$HOME/.openmower/map.geojson
+```
+
+#### Examples
+
+- [test_map.geojson](../src/map_server/test/test_map.geojson)

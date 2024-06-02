@@ -1,4 +1,4 @@
-# OpenMower ROS 2
+cd# OpenMower ROS 2
 
 > Just another software stack for OpenMower lawn mower robot, but this time with ROS2!
 
@@ -10,4 +10,4 @@ The initial goal of this project is to get learn about robot development using R
 
 ## Documentation
 
-Documentation is available at [jkaflik.github.io/OpenMowerROS2](https://jkaflik.github.io/OpenMowerROS2/).
+Documentation is available at [jkaflik.github.io/OpenMowerNext](https://jkaflik.github.io/OpenMowerNext/).

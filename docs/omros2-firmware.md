@@ -1,4 +1,4 @@
-# OpenMowerROS2 firmware
+# OpenMowerNext firmware
 
 ## Overview
 

@@ -14,4 +14,20 @@ repositories:
   ntrip_client:
     type: git
     url: https://github.com/LORD-MicroStrain/ntrip_client
-    version: feature/ros2_prefer_rtcm_msgs # feature branch with a rtcm_msgs support
+    version: ros2
+  fields2cover:
+    type: git
+    url: https://github.com/Fields2Cover/Fields2Cover.git
+    version: v1.2.1
+  opennav_coverage:
+    type: git
+    url: https://github.com/open-navigation/opennav_coverage.git
+    version: iron
+  ros_gz:
+    type: git
+    url: https://github.com/gazebosim/ros_gz.git
+    version: iron
+  gz_ros2_control:
+    type: git
+    url: https://github.com/ros-controls/gz_ros2_control
+    version: iron

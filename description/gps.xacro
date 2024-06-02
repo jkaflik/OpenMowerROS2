@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="gps">
+    <joint name="gps_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="gps"/>
+        <origin xyz="${robot['gps']['antenna']['offset'][0]} ${robot['gps']['antenna']['offset'][1]} ${robot['gps']['antenna']['offset'][2]}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="gps">
+    </link>
+
+    <gazebo reference="gps">
+        <sensor name="gps" type="navsat">
+            <gz_frame_id>gps</gz_frame_id>
+            <always_on>1</always_on>
+            <update_rate>5</update_rate>
+            <topic>gps/fix</topic>
+        </sensor>
+
+        <material>Gazebo/Black</material>
+    </gazebo>
+</robot>

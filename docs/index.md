@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "OpenMowerROS2"
+  name: "OpenMowerNext"
   tagline: Just another software stack for OpenMower lawn mower robot, but this time with ROS2!
   actions:
     - theme: brand
@@ -11,10 +11,10 @@ hero:
       link: /getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/jkaflik/OpenMowerROS2
+      link: https://github.com/jkaflik/OpenMowerNext
   image:
     src: /logo.png
-    alt: OpenMowerROS2
+    alt: OpenMowerNext
 ---
 <style>
 :root {

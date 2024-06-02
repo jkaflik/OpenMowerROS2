@@ -37,8 +37,6 @@ services:
     depends_on:
     - xserver
   groot:
-    profiles:
-      - with_groot
     image: jkaflik/behaviortree-groot:latest
     ipc: host
     pid: host
