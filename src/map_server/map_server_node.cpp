@@ -81,11 +81,11 @@ namespace open_mower_next::map_server
             map_io_ = new GeoJSONMap(map_file_, std::shared_ptr<MapServerNode>(this, [](MapServerNode*)
             {
             }));
+
+            return;
         }
-        else
-        {
-            throw std::runtime_error("Unsupported map type: " + map_type_);
-        }
+
+        throw std::runtime_error("Unsupported map type: " + map_type_);
     }
 
     void MapServerNode::saveAndPublishMap(){
@@ -136,6 +136,7 @@ namespace open_mower_next::map_server
         }
 
         RCLCPP_WARN(get_logger(), "Area %s not found", request->id.c_str());
+        throw std::runtime_error("Area not found : " + request->id);
     }
     void MapServerNode::saveDockingStationHandler(srv::SaveDockingStation::Request::SharedPtr request, srv::SaveDockingStation::Response::SharedPtr response){
         RCLCPP_INFO(get_logger(), "Saving docking station %s", request->docking_station.id.c_str());
@@ -170,6 +171,7 @@ namespace open_mower_next::map_server
         }
 
         RCLCPP_WARN(get_logger(), "Docking station %s not found", request->id.c_str());
+        throw std::runtime_error("Docking station not found: " + request->id);
     }
 
     void MapServerNode::configureGaussianBlur()
@@ -247,7 +249,7 @@ namespace open_mower_next::map_server
             fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
         }
 
-        RCLCPP_INFO(get_logger(), "Occupancy grid size: %dm x %dm (%.2fm resolution)", occupancy_grid.info.width * occupancy_grid.info.resolution,
+        RCLCPP_INFO(get_logger(), "Occupancy grid size: %.2fm x %.2fm (%.2fm resolution)", occupancy_grid.info.width * occupancy_grid.info.resolution,
                     occupancy_grid.info.height * occupancy_grid.info.resolution, occupancy_grid.info.resolution);
 
         if (gaussian_filter_)

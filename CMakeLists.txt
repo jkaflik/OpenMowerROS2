@@ -63,6 +63,35 @@ INSTALL(TARGETS map_server_node
 # map_server_node
 ##
 
+###
+# sim_node
+###
+add_executable(sim_node
+        src/sim/node_main.cpp
+        src/sim/sim_node.hpp
+        src/sim/sim_node.cpp
+        src/sim/sim_node.cpp
+        src/sim/sim_node.hpp
+        src/sim/node_main.cpp)
+target_compile_features(sim_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(sim_node PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(sim_node
+        rclcpp
+        tf2
+        tf2_geometry_msgs
+)
+
+INSTALL(TARGETS sim_node
+        DESTINATION lib/${PROJECT_NAME})
+
+##
+# sim_node
+##
+
 rosidl_generate_interfaces(${PROJECT_NAME}
         "src/srv/RemoveArea.srv"
         "src/srv/RemoveDockingStation.srv"
@@ -74,13 +103,14 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         DEPENDENCIES
         std_msgs
         geometry_msgs
-        nav_msgs
+        sensor_msgs
         tf2
         tf2_geometry_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)
 rosidl_target_interfaces(map_server_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(sim_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 if (BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)

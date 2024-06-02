@@ -13,7 +13,7 @@ using json = nlohmann::json;
 namespace open_mower_next::map_server {
     class GeoJSONMap : public MapIO {
     public:
-        explicit GeoJSONMap(std::string path, MapServerNode::SharedPtr map_server_node);
+        void publishDatum();explicit GeoJSONMap(std::string path, MapServerNode::SharedPtr map_server_node);
         void save(msg::Map map);
         msg::Map load();
 
@@ -36,6 +36,7 @@ namespace open_mower_next::map_server {
 
         void eventuallyPublishFoxgloveGeoJSON(json data);
         rclcpp::Publisher<foxglove_msgs::msg::GeoJSON>::SharedPtr foxglove_geo_json_publisher_;
+        rclcpp::Publisher<geographic_msgs::msg::GeoPoint>::SharedPtr datum_geopoint_publisher_;
 
         std::string path_;
     };

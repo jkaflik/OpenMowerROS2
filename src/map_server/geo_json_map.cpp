@@ -44,6 +44,9 @@ namespace open_mower_next::map_server
         foxglove_geo_json_publisher_ = node_->create_publisher<foxglove_msgs::msg::GeoJSON>(topic_name,
                                                           rclcpp::QoS(
                                                               rclcpp::KeepLast(1)).transient_local().reliable());
+
+        // todo: requires refactor
+        publishDatum();
     }
 
     json GeoJSONMap::pointToCoordinates(const geometry_msgs::msg::Point& point) const
@@ -344,5 +347,21 @@ namespace open_mower_next::map_server
         docking_station.pose = calculateTwoPointsPose(origin, orientation);
 
         map.docking_stations.push_back(docking_station);
+    }
+
+    void GeoJSONMap::publishDatum() {
+        datum_geopoint_publisher_ = node_->create_publisher<geographic_msgs::msg::GeoPoint>("map/datum",
+                                                          rclcpp::QoS(
+                                                              rclcpp::KeepLast(1)).transient_local().reliable());
+
+        // send a 0,0 point to the robot localization to get the datum
+        auto request = std::make_shared<robot_localization::srv::ToLL_Request>();
+        auto result = to_ll_client_->async_send_request(request);
+        if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)) !=
+            rclcpp::FutureReturnCode::SUCCESS)
+        {
+            throw std::runtime_error("Could not retrieve datum point from robot localization");
+        }
+        datum_geopoint_publisher_->publish(result.get()->ll_point);
     }
 } // OpenMowerMapServer

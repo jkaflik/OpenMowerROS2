@@ -47,7 +47,7 @@ def generate_launch_description():
         executable='create',
         output='screen',
         arguments=['-topic', 'robot_description',
-                   '-world', 'empty',
+                   '-world', 'map',
                    '-name', 'openmower',
                    '-z', '10',
                    '-Y', '120.0'],
@@ -79,6 +79,7 @@ def generate_launch_description():
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/gps/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat',
             '/imu/data_raw@sensor_msgs/msg/Imu[gz.msgs.IMU',
+            '/model/openmower/pose@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
         ],
         output='screen'
     )
