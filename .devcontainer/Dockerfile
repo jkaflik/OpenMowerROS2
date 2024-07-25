@@ -41,7 +41,7 @@ RUN sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 RUN mkdir /run/sshd
 
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +rx /entrypoint.sh
 
 USER $USERNAME
 
