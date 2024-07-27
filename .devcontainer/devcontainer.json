@@ -1,23 +1,39 @@
 {
-    "name": "OpenMowerNext development environment",
-    "privileged": true,
-    "remoteUser": "openmower",
-    "dockerComposeFile": "docker-compose.yaml",
-    "service": "workspace",
-    "workspaceFolder": "/home/ws",
-    "customizations": {
-        "vscode": {
-            "extensions":[
-				"ms-vscode.cpptools",
-				"ms-vscode.cpptools-themes",
-				"twxs.cmake",
-				"donjayamanne.python-extension-pack",
-				"eamodio.gitlens",
-				"ms-iot.vscode-ros",
-				"ms-vscode.makefile-tools",
-				"DotJoshJohnson.xml"
-			]
-        }
-    },
-    "containerUser": "openmower"
+  "name": "OpenMowerNext development environment",
+  "privileged": true,
+  "remoteUser": "dev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "cacheFrom": "ghcr.io/jkaflik/openmowerros2-devcontainer:main",
+    "args": {
+      "USERNAME": "dev"
+    }
+  },
+  "containerUser": "dev",
+  "workspaceFolder": "/opt/ws",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/opt/ws,type=bind",
+  "containerEnv": {
+    "DISPLAY": ":0",
+    "ROS_LOCALHOST_ONLY": "1",
+    "ROS_DOMAIN_ID": "42"
+  },
+  "runArgs": [
+    "--net=host",
+    "-e", "DISPLAY=${env:DISPLAY}"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-themes",
+        "twxs.cmake",
+        "donjayamanne.python-extension-pack",
+        "eamodio.gitlens",
+        "ms-iot.vscode-ros",
+        "ms-vscode.makefile-tools",
+        "DotJoshJohnson.xml"
+      ]
+    }
+  },
+  "postCreateCommand": "sudo apt update && rosdep update && make custom-deps deps && sudo chown -R $(whoami) /opt/ws/"
 }
