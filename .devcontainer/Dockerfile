@@ -1,6 +1,6 @@
-FROM ros:iron
+FROM ros:jazzy
 ARG USERNAME=dev
-ARG USER_UID=1000
+ARG USER_UID=1001
 ARG USER_GID=$USER_UID
 
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -21,6 +21,7 @@ RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
   && chmod 0440 /etc/sudoers.d/$USERNAME
 
 ENV SHELL /bin/bash
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/$USERNAME/.bashrc
 
 USER $USERNAME
 CMD ["/bin/bash"]

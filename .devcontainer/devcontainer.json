@@ -35,5 +35,5 @@
       ]
     }
   },
-  "postCreateCommand": "sudo apt update && rosdep update && make custom-deps deps && sudo chown -R $(whoami) /opt/ws/"
+  "postCreateCommand": "bash scripts/post_create_command.sh"
 }
