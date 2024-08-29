@@ -1,4 +1,4 @@
-name: Build
+name: Build devcontainer
 
 on:
   workflow_dispatch:
