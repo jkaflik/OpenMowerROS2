@@ -12,7 +12,7 @@ on:
 
 # Allow to stop obsolete workflows
 concurrency:
-  group: ci-buildtrain-${{ github.ref }}-1
+  group: ci-buildtrain-${{ github.ref }}-image
   cancel-in-progress: true
 
 # permissions are needed if pushing to ghcr.io

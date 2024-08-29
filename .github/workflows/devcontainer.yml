@@ -6,11 +6,14 @@ on:
     branches:
       - 'main'
   pull_request:
-    branches:
-      - 'main'
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
 
 concurrency:
-  group: ci-buildtrain-${{ github.ref }}-1
+  group: ci-buildtrain-${{ github.ref }}-devcontainer
   cancel-in-progress: true
 
 permissions:
@@ -19,6 +22,7 @@ permissions:
 
 jobs:
   build:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'devcontainer:build'))
     strategy:
       matrix:
         arch: [ linux/arm64 , linux/amd64 ]
