@@ -82,7 +82,7 @@ jobs:
           file: .devcontainer/Dockerfile
           platforms: ${{ matrix.arch }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=ghcr.io/${{env.REPOSITORY_LC}},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
+          outputs: type=image,name=ghcr.io/${{env.REPOSITORY_LC}},push-by-digest=true,name-canonical=true,push=${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'devcontainer:push')) }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
