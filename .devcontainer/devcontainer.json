@@ -14,12 +14,9 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/opt/ws,type=bind",
   "containerEnv": {
     "DISPLAY": ":0",
-    "ROS_LOCALHOST_ONLY": "1",
-    "ROS_DOMAIN_ID": "42"
   },
   "runArgs": [
     "--net=host",
-    "-e", "DISPLAY=${env:DISPLAY}"
   ],
   "customizations": {
     "vscode": {

@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Installing ROS packages..."
+
 sudo apt update
 rosdep update
 make custom-deps deps

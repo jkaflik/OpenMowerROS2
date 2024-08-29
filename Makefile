@@ -6,9 +6,6 @@ all: custom-deps deps build
 
 .PHONY: deps build
 
-dev-containers:
-	cd .devcontainer && docker-compose up -d
-
 # turtlebot3_gazebo does not have a build on iron arm64
 deps:
 	rosdep install --from-paths ./ -i -y -r
@@ -24,7 +21,7 @@ build:
 
 sim:
 	killall -9 ruby || true
-	ros2 launch -d launch/sim.launch.py
+	ros2 launch launch/sim.launch.py
 
 run:
 	ros2 launch launch/openmower.launch.py
