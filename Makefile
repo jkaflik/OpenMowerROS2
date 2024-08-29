@@ -24,7 +24,7 @@ build:
 
 sim:
 	killall -9 ruby || true
-	ros2 launch launch/sim.launch.py
+	ros2 launch -d launch/sim.launch.py
 
 run:
 	ros2 launch launch/openmower.launch.py
