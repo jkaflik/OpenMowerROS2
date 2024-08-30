@@ -1,8 +1,8 @@
 #pragma once
 
 #include <rclcpp/rclcpp.hpp>
-#include <nav_msgs/nav_msgs/msg/occupancy_grid.hpp>
-#include <visualization_msgs/visualization_msgs/msg/marker_array.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 #include "open_mower_next/msg/map.hpp"
 #include "map_server/some_gaussian_filter.hpp"

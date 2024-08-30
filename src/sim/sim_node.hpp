@@ -2,7 +2,7 @@
 #include <rclcpp/node.hpp>
 #include <tf2_msgs/msg/tf_message.hpp>
 #include <std_msgs/msg/bool.hpp>
-#include <sensor_msgs/sensor_msgs/msg/battery_state.hpp>
+#include <sensor_msgs/msg/battery_state.hpp>
 #include "open_mower_next/msg/map.hpp"
 
 namespace open_mower_next::sim {

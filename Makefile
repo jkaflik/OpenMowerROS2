@@ -6,9 +6,6 @@ all: custom-deps deps build
 
 .PHONY: deps build
 
-dev-containers:
-	cd .devcontainer && docker-compose up -d
-
 # turtlebot3_gazebo does not have a build on iron arm64
 deps:
 	rosdep install --from-paths ./ -i -y -r
