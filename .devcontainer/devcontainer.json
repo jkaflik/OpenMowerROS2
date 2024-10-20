@@ -16,7 +16,7 @@
     "DISPLAY": ":0",
   },
   "runArgs": [
-    "--net=host",
+    "--net=host", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"
   ],
   "customizations": {
     "vscode": {
@@ -32,5 +32,6 @@
       ]
     }
   },
-  "postCreateCommand": "bash scripts/post_create_command.sh"
+  "overrideCommand": false,
+  "postCreateCommand": "bash .devcontainer/scripts/post_create_command.sh"
 }
