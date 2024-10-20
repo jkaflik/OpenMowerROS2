@@ -23,6 +23,8 @@ For CLion users there is an alternative approach described in [CLion development
     - VSCode will reopen in the container.
 3. **Enjoy your development environment.**
 
+## Getting Started with 
+
 ## Detailed
 
 Devcontainer comes up with some containers configured with Docker Compose:
