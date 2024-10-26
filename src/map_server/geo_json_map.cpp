@@ -58,7 +58,8 @@ namespace open_mower_next::map_server
         if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)) !=
             rclcpp::FutureReturnCode::SUCCESS)
         {
-            throw std::runtime_error("Could not convert map coordinates to LL");
+            // throw an exception with details why request failed
+
         }
 
         auto v = *result.get();
@@ -288,7 +289,8 @@ namespace open_mower_next::map_server
         if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)) !=
             rclcpp::FutureReturnCode::SUCCESS)
         {
-            throw std::runtime_error("Could not convert LL to map coordinates");
+            // fetch result details and throw exception
+
         }
 
         auto v = *result.get();

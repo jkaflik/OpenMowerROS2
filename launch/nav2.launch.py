@@ -16,7 +16,8 @@ def generate_launch_description():
                        'behavior_server',
                        'bt_navigator',
                        'velocity_smoother',
-                       'coverage_server']
+                       # 'coverage_server'
+                       ]
 
     remappings = [('/tf', 'tf'),
                   ('/tf_static', 'tf_static')]
@@ -56,12 +57,12 @@ def generate_launch_description():
                 name='controller_server',
                 parameters=[configured_params],
                 remappings=remappings + [('cmd_vel', 'cmd_vel_nav')]),
-            ComposableNode(
-                package='opennav_coverage',
-                plugin='opennav_coverage::CoverageServer',
-                name='coverage_server',
-                parameters=[configured_params],
-                remappings=remappings),
+            # ComposableNode(
+            #     package='opennav_coverage',
+            #     plugin='opennav_coverage::CoverageServer',
+            #     name='coverage_server',
+            #     parameters=[configured_params],
+            #     remappings=remappings),
             ComposableNode(
                 package='nav2_bt_navigator',
                 plugin='nav2_bt_navigator::BtNavigator',

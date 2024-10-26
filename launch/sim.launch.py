@@ -38,7 +38,7 @@ def generate_launch_description():
         executable="twist_mux",
         parameters=[twist_mux_params, {'use_sim_time': True}],
         remappings=[
-            ('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel_unstamped'),
+            ('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel'),
         ],
     )
 
