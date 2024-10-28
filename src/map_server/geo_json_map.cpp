@@ -51,15 +51,14 @@ namespace open_mower_next::map_server
 
     json GeoJSONMap::pointToCoordinates(const geometry_msgs::msg::Point& point) const
     {
-        auto request = std::make_shared<robot_localization::srv::ToLL_Request>();
+        const auto request = std::make_shared<robot_localization::srv::ToLL_Request>();
         request->map_point.x = point.x;
         request->map_point.y = point.y;
         auto result = to_ll_client_->async_send_request(request);
-        if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)) !=
-            rclcpp::FutureReturnCode::SUCCESS)
+        if (const auto return_code =  rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)); return_code != rclcpp::FutureReturnCode::SUCCESS)
         {
-            // throw an exception with details why request failed
-
+            const auto error_msg = "Failed to convert map points to LL: " + rclcpp::to_string(return_code);
+            throw std::runtime_error(error_msg);
         }
 
         auto v = *result.get();
@@ -70,16 +69,15 @@ namespace open_mower_next::map_server
         return p;
     }
 
-    json GeoJSONMap::pointToCoordinates(const geometry_msgs::msg::Point32& point) const
-    {
+    json GeoJSONMap::pointToCoordinates(const geometry_msgs::msg::Point32 &point) const {
         auto request = std::make_shared<robot_localization::srv::ToLL_Request>();
         request->map_point.x = point.x;
         request->map_point.y = point.y;
         auto result = to_ll_client_->async_send_request(request);
-        if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(1)) !=
-            rclcpp::FutureReturnCode::SUCCESS)
+        if (const auto return_code =  rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)); return_code != rclcpp::FutureReturnCode::SUCCESS)
         {
-            throw std::runtime_error("Could not convert map coordinates to LL");
+            const auto error_msg = "Failed to convert map points to LL: " + rclcpp::to_string(return_code);
+            throw std::runtime_error(error_msg);
         }
 
         auto v = *result.get();
@@ -90,8 +88,7 @@ namespace open_mower_next::map_server
         return p;
     }
 
-    json GeoJSONMap::mapAreaToGeoJSONFeature(const msg::Area& area)
-    {
+    json GeoJSONMap::mapAreaToGeoJSONFeature(const msg::Area& area) const {
         auto colorByType = [](const std::string& type) -> std::string {
             if (type == "navigation")
             {
@@ -176,7 +173,7 @@ namespace open_mower_next::map_server
         return feature;
     }
 
-    void GeoJSONMap::eventuallyPublishFoxgloveGeoJSON(json data){
+    void GeoJSONMap::eventuallyPublishFoxgloveGeoJSON(json data) const {
         if (foxglove_geo_json_publisher_ == nullptr)
         {
             RCLCPP_INFO(node_->get_logger(), "Foxglove GeoJSON publisher not initialized, skipping");
