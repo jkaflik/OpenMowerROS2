@@ -38,7 +38,7 @@ def generate_launch_description():
         executable="twist_mux",
         parameters=[twist_mux_params, {'use_sim_time': True}],
         remappings=[
-            ('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel_unstamped'),
+            ('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel'),
         ],
     )
 
@@ -112,7 +112,6 @@ def generate_launch_description():
 
     world_path = os.path.join(get_package_share_directory(package_name), 'worlds', 'empty.sdf')
 
-    # Launch them all!
     return LaunchDescription([
         bridge,
         node_robot_state_publisher,

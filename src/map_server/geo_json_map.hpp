@@ -24,7 +24,7 @@ namespace open_mower_next::map_server {
         void parseLineStringFeature(msg::Map &map, const json &feature);
         json pointToCoordinates(const geometry_msgs::msg::Point& point) const;
         json pointToCoordinates(const geometry_msgs::msg::Point32& point) const;
-        json mapAreaToGeoJSONFeature(const msg::Area& area);
+        json mapAreaToGeoJSONFeature(const msg::Area& area) const;
         geometry_msgs::msg::Point movePointTowardsOrientation(const geometry_msgs::msg::Point& point,
                                                               const geometry_msgs::msg::Quaternion& quaternion,
                                                               double x) const;
@@ -34,7 +34,7 @@ namespace open_mower_next::map_server {
         rclcpp::Client<robot_localization::srv::FromLL>::SharedPtr from_ll_client_;
         rclcpp::Client<robot_localization::srv::ToLL>::SharedPtr to_ll_client_;
 
-        void eventuallyPublishFoxgloveGeoJSON(json data);
+        void eventuallyPublishFoxgloveGeoJSON(json data) const;
         rclcpp::Publisher<foxglove_msgs::msg::GeoJSON>::SharedPtr foxglove_geo_json_publisher_;
         rclcpp::Publisher<geographic_msgs::msg::GeoPoint>::SharedPtr datum_geopoint_publisher_;
 

@@ -1,16 +1,3 @@
-coverage_server:
-  ros__parameters:
-    use_sim_time: True
-    default_headland_width: 0.25
-    robot_width: 0.7
-    operation_width: 0.7
-    min_turning_radius: 0.35
-    linear_curv_change: 200.0
-    coordinates_in_cartesian_frame: true
-    default_allow_overlap: false
-    default_swath_angle_type: "SET_ANGLE"
-    default_swath_angle: 0.0 # We know its aligned for the demo
-
 bt_navigator:
   ros__parameters:
     use_sim_time: True
@@ -19,17 +6,12 @@ bt_navigator:
     odom_topic: /odometry/filtered/map
     bt_loop_duration: 10
     default_server_timeout: 20
-    default_coverage_bt_xml: /home/ws/config/behavior_tree.xml
-    # 'default_coverage_bt_xml' uses defaults:
-    # opennav_coverage_bt/behavior_tree/navigate_w_basic_complete_coverage.xml
-    navigators: ["navigate_complete_coverage", "navigate_to_pose","navigate_through_poses"]
-    navigate_complete_coverage:
-      plugin: "opennav_coverage_navigator/CoverageNavigator"
+    navigators: ["navigate_to_pose","navigate_through_poses"]
     navigate_to_pose:
       plugin: "nav2_bt_navigator/NavigateToPoseNavigator"
     navigate_through_poses:
       plugin: "nav2_bt_navigator/NavigateThroughPosesNavigator"
-    error_code_names: ["compute_path_error_code", "follow_path_error_code", "compute_coverage_error_code"]
+    error_code_names: ["compute_path_error_code", "follow_path_error_code"]
     plugin_lib_names:
       - nav2_compute_path_to_pose_action_bt_node
       - nav2_compute_path_through_poses_action_bt_node
@@ -82,8 +64,6 @@ bt_navigator:
       - nav2_assisted_teleop_cancel_bt_node
       - nav2_drive_on_heading_cancel_bt_node
       - nav2_is_battery_charging_condition_bt_node
-      - opennav_compute_complete_coverage_action_bt_node
-      - opennav_cancel_complete_coverage_action_bt_node
 
 controller_server:
   ros__parameters:
@@ -174,10 +154,6 @@ global_costmap:
 
 
 robot_state_publisher:
-  ros__parameters:
-    use_sim_time: True
-
-bt_navigator_navigate_complete_coverage_rclcpp_node:
   ros__parameters:
     use_sim_time: True
 

@@ -14,12 +14,9 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/opt/ws,type=bind",
   "containerEnv": {
     "DISPLAY": ":0",
-    "ROS_LOCALHOST_ONLY": "1",
-    "ROS_DOMAIN_ID": "42"
   },
   "runArgs": [
-    "--net=host",
-    "-e", "DISPLAY=${env:DISPLAY}"
+    "--net=host", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"
   ],
   "customizations": {
     "vscode": {
@@ -35,5 +32,6 @@
       ]
     }
   },
-  "postCreateCommand": "sudo apt update && rosdep update && make custom-deps deps && sudo chown -R $(whoami) /opt/ws/"
+  "overrideCommand": false,
+  "postCreateCommand": "bash .devcontainer/scripts/post_create_command.sh"
 }

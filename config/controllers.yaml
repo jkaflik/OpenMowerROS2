@@ -23,7 +23,7 @@ diff_drive_base_controller:
     wheel_radius: 0.083
     wheels_per_side: 1
 
-    use_stamped_vel: false
+    use_stamped_vel: true
 
 # mower_controller:
 #   ros__parameters:
