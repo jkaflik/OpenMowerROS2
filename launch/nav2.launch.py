@@ -16,6 +16,7 @@ def generate_launch_description():
                        'behavior_server',
                        'bt_navigator',
                        'velocity_smoother',
+                       'docking_server',
                        # 'coverage_server'
                        ]
 
@@ -88,6 +89,12 @@ def generate_launch_description():
                 parameters=[configured_params],
                 remappings=remappings +
                            [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
+            ComposableNode(
+                package='opennav_docking',
+                plugin='opennav_docking::DockingServer',
+                name='docking_server',
+                parameters=[configured_params],
+                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')]),
             ComposableNode(
                 package='nav2_lifecycle_manager',
                 plugin='nav2_lifecycle_manager::LifecycleManager',

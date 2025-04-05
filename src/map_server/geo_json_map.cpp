@@ -266,6 +266,9 @@ namespace open_mower_next::map_server
                         : (
                             feature["properties"]["type"] == "operation" ? msg::Area::TYPE_OPERATION : msg::Area::TYPE_EXCLUSION);
 
+        area.area.header.frame_id = node_->get_parameter("world_frame").as_string();
+        area.area.header.stamp = node_->now();
+
         for (const auto& ll : feature["geometry"]["coordinates"][0])
         {
             auto p = parsePoint(ll);
@@ -286,8 +289,8 @@ namespace open_mower_next::map_server
         if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)) !=
             rclcpp::FutureReturnCode::SUCCESS)
         {
-            // fetch result details and throw exception
-
+            const auto error_msg = "Failed to convert LL points to map: " + rclcpp::to_string(rclcpp::FutureReturnCode::TIMEOUT);
+            throw std::runtime_error(error_msg);
         }
 
         auto v = *result.get();
@@ -345,6 +348,9 @@ namespace open_mower_next::map_server
 
         docking_station.pose = calculateTwoPointsPose(origin, orientation);
 
+        docking_station.pose.header.frame_id = node_->get_parameter("world_frame").as_string();
+        docking_station.pose.header.stamp = node_->now();
+
         map.docking_stations.push_back(docking_station);
     }
 
@@ -356,7 +362,7 @@ namespace open_mower_next::map_server
         // send a 0,0 point to the robot localization to get the datum
         auto request = std::make_shared<robot_localization::srv::ToLL_Request>();
         auto result = to_ll_client_->async_send_request(request);
-        if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(10)) !=
+        if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(30)) !=
             rclcpp::FutureReturnCode::SUCCESS)
         {
             throw std::runtime_error("Could not retrieve datum point from robot localization");

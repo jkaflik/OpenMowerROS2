@@ -1,0 +1,31 @@
+# Simple action to dock the robot using the nearest docking station
+
+---
+# Result
+bool success
+uint16 error_code
+uint16 num_retries
+
+# Error codes
+uint16 NONE=0
+uint16 NO_DOCK_AVAILABLE=901
+uint16 DOCK_NOT_VALID=902
+uint16 FAILED_TO_STAGE=903
+uint16 FAILED_TO_DETECT_DOCK=904
+uint16 FAILED_TO_CONTROL=905
+uint16 FAILED_TO_CHARGE=906
+uint16 UNKNOWN=999
+
+---
+# Feedback
+uint16 state
+builtin_interfaces/Duration docking_time
+uint16 num_retries
+
+# State codes
+uint16 NONE=0
+uint16 NAV_TO_STAGING_POSE=1
+uint16 INITIAL_PERCEPTION=2
+uint16 CONTROLLING=3
+uint16 WAIT_FOR_CHARGE=4
+uint16 RETRY=5

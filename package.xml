@@ -55,6 +55,8 @@
 
   <exec_depend>navigation2</exec_depend>
   <exec_depend>robot_localization</exec_depend>
+  <exec_depend>opennav_docking</exec_depend>
+  <exec_depend>opennav_docking_msgs</exec_depend>
 
   <exec_depend>foxglove_msgs</exec_depend>
   <exec_depend>foxglove_bridge</exec_depend>

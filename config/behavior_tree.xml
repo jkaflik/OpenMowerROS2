@@ -23,4 +23,10 @@
             </Sequence>
         </RateController>
     </BehaviorTree>
+    
+    <BehaviorTree ID="DockingBehavior">
+        <Sequence name="DockingSequence">
+            <ApproachDock server_name="docking_server" is_static="false" server_timeout="10"/>
+        </Sequence>
+    </BehaviorTree>
 </root>

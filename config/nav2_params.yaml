@@ -6,11 +6,15 @@ bt_navigator:
     odom_topic: /odometry/filtered/map
     bt_loop_duration: 10
     default_server_timeout: 20
-    navigators: ["navigate_to_pose","navigate_through_poses"]
+    navigators: ["navigate_to_pose","navigate_through_poses","dock"]
     navigate_to_pose:
       plugin: "nav2_bt_navigator/NavigateToPoseNavigator"
     navigate_through_poses:
       plugin: "nav2_bt_navigator/NavigateThroughPosesNavigator"
+    dock:
+      plugin: "nav2_bt_navigator/NavigateToPoseNavigator"
+      bt_xml_filename: "/opt/ws/config/behavior_tree.xml"
+      default_bt_tree_id: "DockingBehavior"
     error_code_names: ["compute_path_error_code", "follow_path_error_code"]
     plugin_lib_names:
       - nav2_compute_path_to_pose_action_bt_node
@@ -64,6 +68,7 @@ bt_navigator:
       - nav2_assisted_teleop_cancel_bt_node
       - nav2_drive_on_heading_cancel_bt_node
       - nav2_is_battery_charging_condition_bt_node
+      - opennav_docking_approach_dock_action_bt_node
 
 controller_server:
   ros__parameters:
@@ -208,3 +213,19 @@ behavior_server:
     max_rotational_vel: 1.0
     min_rotational_vel: 0.4
     rotational_acc_lim: 3.2
+
+docking_server:
+  ros__parameters:
+    use_sim_time: True
+    dock_plugins: ['openmower_dock']
+    use_persistence: False
+    fixed_frame: odom
+    openmower_dock:
+      plugin: 'opennav_docking::SimpleChargingDock'
+      docking_threshold: 0.05
+      staging_x_offset: -0.7
+      approach_velocity: 0.15
+      max_detection_distance: 0.6
+      refine_approach_distance: 0.3
+      num_approach_retries: 3
+      charging_detection_timeout: 5.0

@@ -23,6 +23,9 @@ find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(opennav_docking_msgs REQUIRED)
 
 ###
 # map_server_node
@@ -92,6 +95,61 @@ INSTALL(TARGETS sim_node
 # sim_node
 ##
 
+###
+# docking_action_server
+###
+add_executable(docking_action_server
+        src/docking/node_main.cpp
+        src/docking/docking_action_server.hpp
+        src/docking/docking_action_server.cpp)
+target_compile_features(docking_action_server PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(docking_action_server PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(docking_action_server
+        rclcpp
+        rclcpp_action
+        rclcpp_components
+        geometry_msgs
+        tf2
+        tf2_geometry_msgs
+        opennav_docking_msgs
+)
+
+INSTALL(TARGETS docking_action_server
+        DESTINATION lib/${PROJECT_NAME})
+
+# Also create a component that can be loaded dynamically
+add_library(docking_action_server_component SHARED
+        src/docking/docking_action_server.cpp)
+target_compile_features(docking_action_server_component PUBLIC c_std_99 cxx_std_17)
+target_include_directories(docking_action_server_component PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(docking_action_server_component
+        rclcpp
+        rclcpp_action
+        rclcpp_components
+        geometry_msgs
+        tf2
+        tf2_geometry_msgs
+        opennav_docking_msgs
+)
+rclcpp_components_register_node(docking_action_server_component
+        PLUGIN "open_mower_next::docking::DockingActionServer"
+        EXECUTABLE docking_action_server_node)
+
+INSTALL(TARGETS docking_action_server_component
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+##
+# docking_action_server
+##
+
 rosidl_generate_interfaces(${PROJECT_NAME}
         "src/srv/RemoveArea.srv"
         "src/srv/RemoveDockingStation.srv"
@@ -100,17 +158,21 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "src/msg/Area.msg"
         "src/msg/Map.msg"
         "src/msg/DockingStation.msg"
+        "src/action/Dock.action"
         DEPENDENCIES
         std_msgs
         geometry_msgs
         sensor_msgs
         tf2
         tf2_geometry_msgs
+        builtin_interfaces
 )
 
 ament_export_dependencies(rosidl_default_runtime)
 rosidl_target_interfaces(map_server_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(sim_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(docking_action_server ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(docking_action_server_component ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 if (BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)

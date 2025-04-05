@@ -56,6 +56,18 @@ def generate_launch_description():
                     controller_params_file]
     )
 
+    # Docking action server
+    docking_action_server = Node(
+        package=package_name,
+        executable='docking_action_server',
+        name='docking_action_server',
+        output='screen',
+        parameters=[{'use_sim_time': False}],
+        remappings=[
+            ('map', 'mowing_map'), # map topic
+        ],
+    )
+
     load_joint_state_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'joint_state_broadcaster'],
@@ -79,6 +91,7 @@ def generate_launch_description():
         node_robot_state_publisher,
         twist_mux,
         controller_manager,
+        docking_action_server,
 
         RegisterEventHandler(
             event_handler=OnProcessStart(

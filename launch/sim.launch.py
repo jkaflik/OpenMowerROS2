@@ -109,6 +109,18 @@ def generate_launch_description():
             'include_hidden': 'true',
         }.items(),
     )
+    
+    # Docking action server
+    docking_action_server = Node(
+        package=package_name,
+        executable='docking_action_server',
+        name='docking_action_server',
+        output='screen',
+        parameters=[{'use_sim_time': True}],
+        remappings=[
+            ('map', 'mowing_map'), # map topic
+        ],
+    )
 
     world_path = os.path.join(get_package_share_directory(package_name), 'worlds', 'empty.sdf')
 
@@ -116,6 +128,7 @@ def generate_launch_description():
         bridge,
         node_robot_state_publisher,
         twist_mux,
+        docking_action_server,
         # Launch gazebo environment
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
