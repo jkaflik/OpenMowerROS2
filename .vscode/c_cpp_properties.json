@@ -1,33 +1,22 @@
 {
-  "configurations": [
-    {
-      "browse": {
-        "databaseFilename": "${default}",
-        "limitSymbolsToIncludedHeaders": false
-      },
-      "includePath": [
-        "/home/ws/install/vesc_hw_interface/include/**",
-        "/home/ws/install/vesc_driver/include/**",
-        "/home/ws/install/vesc_msgs/include/**",
-        "/home/ws/install/udp_driver/include/**",
-        "/home/ws/install/serial_driver/include/**",
-        "/home/ws/install/io_context/include/**",
-        "/opt/ros/iron/include/**",
-        "/home/ws/src/openmower/include/**",
-        "/home/ws/src/openmower_hw_comms/include/**",
-        "/home/ws/src/transport_drivers/io_context/include/**",
-        "/home/ws/src/transport_drivers/serial_driver/include/**",
-        "/home/ws/src/transport_drivers/udp_driver/include/**",
-        "/home/ws/src/vesc/vesc_driver/include/**",
-        "/home/ws/src/vesc/vesc_hw_interface/include/**",
-        "/usr/include/**"
-      ],
-      "name": "ROS",
-      "intelliSenseMode": "gcc-arm64",
-      "compilerPath": "/usr/bin/gcc",
-      "cStandard": "gnu11",
-      "cppStandard": "c++14"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/opt/ros/jazzy/include/**",
+                "${workspaceFolder}/install/**",
+                "/usr/include/**",
+                "${workspaceFolder}/src"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-arm64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
 }
