@@ -27,7 +27,7 @@ COPY . $WORKSPACE/
 
 # Build the project
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
-    && make build-libs build
+    && make build-release
 
 # Runtime stage
 FROM ros:jazzy
@@ -74,6 +74,7 @@ RUN mkdir -p $WORKSPACE \
 
 USER $USERNAME
 WORKDIR $WORKSPACE
+ENV WORKSPACE=$WORKSPACE
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["ros2", "launch", "openmower", "openmower.launch.py"]
+CMD ["ros2", "launch", "open_mower_next", "openmower.launch.py"]
