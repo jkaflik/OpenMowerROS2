@@ -49,7 +49,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           outputs: type=image,name=ghcr.io/${{env.REPOSITORY_LC}},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'push-image') }}
-          push: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'push-image') }}_request' }}
+          push: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'push-image') }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
 
