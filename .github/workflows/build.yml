@@ -41,7 +41,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      - uses: depot/setup-action@v1
       - name: Build and push image
         uses: depot/build-push-action@v1
         with:
