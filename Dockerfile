@@ -69,6 +69,7 @@ COPY --from=builder $WORKSPACE/install $WORKSPACE/install
 COPY --from=builder $WORKSPACE/launch $WORKSPACE/launch
 COPY --from=builder $WORKSPACE/config $WORKSPACE/config
 COPY --from=builder $WORKSPACE/build $WORKSPACE/build
+COPY --from=builder $WORKSPACE/description $WORKSPACE/description
 
 RUN mkdir -p $WORKSPACE \
     && chown -R $USERNAME:$USERNAME $WORKSPACE
