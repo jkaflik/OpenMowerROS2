@@ -2,7 +2,7 @@ repositories:
   vesc:
     type: git
     url: https://github.com/sbgisen/vesc.git
-    version: humble-devel
+    version: jazzy-devel
   micro_ros_agent:
     type: git
     url: https://github.com/micro-ROS/micro-ROS-Agent
