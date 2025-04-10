@@ -11,7 +11,6 @@ WORKDIR $WORKSPACE
 # Copy only files needed for dependency installation first
 COPY Makefile $WORKSPACE/
 COPY package.xml $WORKSPACE/
-COPY rosdep.yaml $WORKSPACE/
 
 # Install dependencies
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
