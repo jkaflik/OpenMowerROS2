@@ -59,15 +59,13 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY utils/docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # Copy build artifacts from builder stage
 COPY --from=builder $WORKSPACE/install $WORKSPACE/install
 COPY --from=builder $WORKSPACE/launch $WORKSPACE/launch
 COPY --from=builder $WORKSPACE/config $WORKSPACE/config
 COPY --from=builder $WORKSPACE/build $WORKSPACE/build
 COPY --from=builder $WORKSPACE/description $WORKSPACE/description
+COPY --from=builder /opt/ros/$ROS_DISTRO /opt/ros/$ROS_DISTRO
 
 RUN mkdir -p $WORKSPACE \
     && chown -R $USERNAME:$USERNAME $WORKSPACE
@@ -75,6 +73,9 @@ RUN mkdir -p $WORKSPACE \
 USER $USERNAME
 WORKDIR $WORKSPACE
 ENV WORKSPACE=$WORKSPACE
+
+COPY utils/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["ros2", "launch", "open_mower_next", "openmower.launch.py"]

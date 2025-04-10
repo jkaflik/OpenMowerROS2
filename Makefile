@@ -19,8 +19,8 @@ build:
 	colcon build --symlink-install
 
 build-release:
-	colcon build --base-paths "src/lib/*" --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(shell pwd)/install
-	colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(shell pwd)/install
+	colcon build --base-paths "src/lib/*" --cmake-args -DCMAKE_BUILD_TYPE=Release
+	colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 sim:
 	killall -9 ruby || true
