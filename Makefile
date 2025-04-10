@@ -6,7 +6,6 @@ all: custom-deps deps build
 
 .PHONY: deps build
 
-# turtlebot3_gazebo does not have a build on iron arm64
 deps:
 	rosdep install --from-paths ./ -i -y -r
 

@@ -11,6 +11,8 @@ WORKDIR $WORKSPACE
 # Copy only files needed for dependency installation first
 COPY Makefile $WORKSPACE/
 COPY package.xml $WORKSPACE/
+COPY custom_deps.yaml $WORKSPACE/
+COPY utils/install-custom-deps.sh $WORKSPACE/utils/
 
 # Install dependencies
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
@@ -41,6 +43,10 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 COPY --from=builder $WORKSPACE/package.xml $WORKSPACE/
 
+# Switch to bash to ensure sourceing works
+SHELL ["/bin/bash", "-c"]
+ENV SHELL=/bin/bash
+
 # Install only runtime dependencies
 RUN apt-get update \
     && rosdep update \
@@ -60,14 +66,14 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Copy build artifacts from builder stage
 COPY --from=builder $WORKSPACE/install $WORKSPACE/install
-COPY --from=builder $WORKSPACE/share $WORKSPACE/share
+COPY --from=builder $WORKSPACE/launch $WORKSPACE/launch
+COPY --from=builder $WORKSPACE/config $WORKSPACE/config
 
 RUN mkdir -p $WORKSPACE \
     && chown -R $USERNAME:$USERNAME $WORKSPACE
 
 USER $USERNAME
 WORKDIR $WORKSPACE
-ENV SHELL /bin/bash
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["ros2", "launch", "openmower", "openmower.launch.py"]

@@ -49,6 +49,7 @@
   <exec_depend>teleop_twist_joy</exec_depend>
   <exec_depend>twist_mux</exec_depend>
   <exec_depend>rqt_robot_steering</exec_depend>
+  <exec_depend>unique_identifier_msgs</exec_depend>
 
   <exec_depend>ublox_gps</exec_depend>
   <exec_depend>ntrip_client</exec_depend>

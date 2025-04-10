@@ -52,7 +52,7 @@ Project is tested on YardForce Classic 500B model. It should work on other model
 ### Software
 
 - 64bit Linux (tested on Ubuntu 22.04)
-- [ROS2 Iron](https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html)
+- [ROS2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 
 or 
 
