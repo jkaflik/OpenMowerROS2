@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="inertial_macros.xacro"/>
 
@@ -50,9 +50,7 @@
     </link>
 
     <gazebo>
-        <plugin
-                filename="gz-sim-pose-publisher-system"
-                name="gz::sim::systems::PosePublisher">
+        <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
             <use_pose_vector_msg>true</use_pose_vector_msg>
             <publish_nested_model_pose>true</publish_nested_model_pose>
         </plugin>
@@ -163,9 +161,9 @@
 
     <!-- MOWER LINK -->
 
-    <!-- <joint name="mower_joint" type="continuous">
+    <joint name="mower_joint" type="continuous">
         <parent link="base_link"/>
-        <child link="mower"/>        
+        <child link="mower"/>
         <origin xyz="${robot['mower']['offset'][0]} ${robot['mower']['offset'][1]} ${robot['mower']['offset'][2]}" rpy="${pi/2} 0 0" />
         <axis xyz="0 0 -1"/>
     </joint>
@@ -189,7 +187,7 @@
 
     <gazebo reference="mower">
         <material>Gazebo/Red</material>
-    </gazebo> -->
+    </gazebo>
 
     <!-- LEFT CASTER WHEEL LINK -->
 

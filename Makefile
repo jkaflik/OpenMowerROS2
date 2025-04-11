@@ -39,4 +39,4 @@ rsp:
 	ros2 launch launch/rsp.launch.py
 
 remote-devices:
-	sudo bash .devcontainer/scripts/remote_devices.sh $(REMOTE_HOST) $(REMOTE_USER)
+	bash .devcontainer/scripts/remote_devices.sh $(REMOTE_HOST) $(REMOTE_USER)
