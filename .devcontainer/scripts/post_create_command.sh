@@ -11,5 +11,5 @@ make custom-deps deps
 
 echo "Sourcing ROS workspace..."
 echo "source /opt/ws/install/setup.bash" >> ~/.bashrc
-echo "source /opt/ws/.devcontainer/openmower_config.env" >> ~/.bashrc
+echo "source /opt/ws/.devcontainer/openmower_config.bash" >> ~/.bashrc
 source ~/.bashrc

@@ -44,7 +44,7 @@ def generate_launch_description():
         package="twist_mux",
         executable="twist_mux",
         parameters=[twist_mux_params, {'use_sim_time': False}],
-        remappings=[('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel_unstamped')]
+        remappings=[('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel')]
     )
 
     controller_params_file = os.path.join(share_directory, 'config', 'controllers.yaml')
