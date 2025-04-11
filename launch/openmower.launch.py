@@ -68,11 +68,11 @@ def generate_launch_description():
         output='screen'
     )
 
-    # load_mower_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-    #          'mower_controller'],
-    #     output='screen'
-    # )
+    load_mower_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'mower_controller'],
+        output='screen'
+    )
 
     # Launch them all!
     return LaunchDescription([
@@ -94,12 +94,12 @@ def generate_launch_description():
             )
         ),
 
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_mower_controller],
-        #     )
-        # ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_mower_controller],
+            )
+        ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([share_directory, '/launch/gps.launch.py']),
