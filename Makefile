@@ -1,6 +1,7 @@
 REMOTE_HOST ?= omdev.local
 REMOTE_USER ?= openmower
 ROS_LOG_DIR = log/
+SHELL := /bin/bash
 
 all: custom-deps deps build
 
@@ -23,6 +24,7 @@ build-release:
 	colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 sim:
+	source /opt/ws/.devcontainer/default.env 
 	killall -9 ruby || true
 	ros2 launch launch/sim.launch.py
 
