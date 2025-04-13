@@ -5,6 +5,7 @@
             <max_step_size>0.001</max_step_size>
             <real_time_factor>1.0</real_time_factor>
         </physics>
+
         <plugin filename="libgz-sim-physics-system.so" name="gz::sim::systems::Physics">
         </plugin>
         <plugin filename="libgz-sim-user-commands-system.so" name="gz::sim::systems::UserCommands">
@@ -25,6 +26,15 @@
             <elevation>0</elevation>
             <heading_deg>0</heading_deg>
         </spherical_coordinates>
+
+        <!-- Add sun light with shadows -->
+        <light type="directional" name="sun">
+            <cast_shadows>true</cast_shadows>
+            <pose>0 0 10 0 0 0</pose>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+            <direction>-0.5 0.1 -0.9</direction>
+        </light>
 
         <!-- OpenMower Docking Station -->
         <model name="docking_station">
