@@ -2,7 +2,16 @@ name: Deploy docs
 
 on:
   push:
-    branches: [main, docs/with-deploy-*]
+    branches: [main]
+    paths:
+      - docs/**
+      - .github/workflows/docs.yml
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
     paths:
       - docs/**
       - .github/workflows/docs.yml
@@ -24,9 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Not needed if lastUpdated is not enabled
-      # - uses: pnpm/action-setup@v2 # Uncomment this if you're using pnpm
-      # - uses: oven-sh/setup-bun@v1 # Uncomment this if you're using Bun
+          fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -55,6 +62,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: Deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'docs:deploy'))
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
