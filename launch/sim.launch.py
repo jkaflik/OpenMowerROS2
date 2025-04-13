@@ -47,8 +47,21 @@ def generate_launch_description():
         arguments=['-topic', 'robot_description',
                    '-world', 'map',
                    '-name', 'openmower',
-                   '-z', '10',
+                   '-z', '0.2',
                    '-Y', '120.0'],
+    )
+    
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/gps/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat',
+            '/imu/data_raw@sensor_msgs/msg/Imu[gz.msgs.IMU',
+            '/model/openmower/pose@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/model/docking_station/pose@geometry_msgs/msg/Pose[gz.msgs.Pose',
+        ],
+        output='screen'
     )
 
     load_joint_state_controller = ExecuteProcess(
@@ -69,17 +82,12 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge
-    bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            '/gps/fix@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat',
-            '/imu/data_raw@sensor_msgs/msg/Imu[gz.msgs.IMU',
-            '/model/openmower/pose@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
-        ],
-        output='screen'
+    # Simulation helper node. This node is used to publish power/charging data base on a dock position.
+    sim_node = Node(
+        package='open_mower_next',
+        executable='sim_node',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
     )
 
     localization = IncludeLaunchDescription(
@@ -141,6 +149,7 @@ def generate_launch_description():
             )
         ),
         gz_spawn_entity,
+        sim_node,
         localization,
         nav2,
         foxglove_bridge,

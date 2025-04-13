@@ -8,7 +8,13 @@
             "name": "ROS: Launch",
             "type": "ros",
             "request": "launch",
-            "target": "${workspaceFolder}/src/openmower/launch/run.py",
+            "target": "${workspaceFolder}/launch/run.launch.py",
+        },
+        {
+            "name": "ROS: Sim",
+            "type": "ros",
+            "request": "launch",
+            "target": "${workspaceFolder}/launch/sim.launch.py",
         }
     ]
 }
