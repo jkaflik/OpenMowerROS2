@@ -80,6 +80,13 @@ Map server will automatically load the map from the file specified in the `OM_MA
 OM_MAP_PATH=$HOME/.openmower/map.geojson
 ```
 
+#### Schema Definition
+
+OpenMowerNext extends the standard GeoJSON format with specific properties and conventions. A formal JSONSchema definition is available at [geojson-schema.json](assets/geojson-schema.json) that documents:
+
+- Area features (Polygon type) with navigation, operation, or exclusion types
+- Docking station features (LineString type) with position and orientation information
+
 #### Examples
 
-- [test_map.geojson](../src/map_server/test/test_map.geojson)
+- [test_map.geojson](https://github.com/jkaflik/OpenMowerROS2/src/map_server/test/test_map.geojson)

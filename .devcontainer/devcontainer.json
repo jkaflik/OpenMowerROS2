@@ -24,13 +24,12 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-vscode.cmake-tools",
-        "ms-vscode.cpptools",
-        "ms-vscode.cpptools-themes",
+        "ms-iot.vscode-ros",
+        "ms-vscode.cpptools-extension-pack",
         "donjayamanne.python-extension-pack",
         "eamodio.gitlens",
-        "ms-iot.vscode-ros",
         "ms-vscode.makefile-tools",
+        "fantasy.vp-preview",
         "DotJoshJohnson.xml"
       ]
     }

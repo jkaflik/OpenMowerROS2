@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "/home/ws/src/openmower",
+    "cmake.sourceDirectory": "/opt/ws",
     "ros.distro": "jazzy",
     "python.autoComplete.extraPaths": [
         "/home/ws/install/vesc_msgs/lib/python3.10/site-packages",
@@ -92,5 +92,6 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "python.formatting.provider": "none",
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "vp.docsDir": "${workspaceFolder}/docs"
 }

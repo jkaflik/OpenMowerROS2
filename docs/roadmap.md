@@ -13,9 +13,9 @@ I want to share it with others, so also I want to make it clear what is the curr
 
 ```mermaid
 timeline
-    spring 2024: feature parity with open_mower_ros
-    summer 2024: modularity
-    later 2024: additional sensors
+    spring 2025: feature parity with open_mower_ros
+    summer 2025: modularity
+    later 2025: additional sensors
     later: more fancy stuff
 ```
 

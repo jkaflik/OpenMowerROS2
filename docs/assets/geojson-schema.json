@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openmower.de/schemas/geojson.json",
+  "title": "OpenMower GeoJSON Schema",
+  "description": "Schema for GeoJSON files used by OpenMowerNext for map definitions",
+  "type": "object",
+  "required": ["type", "features"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["FeatureCollection"]
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/AreaFeature" },
+          { "$ref": "#/definitions/DockingStationFeature" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AreaFeature": {
+      "type": "object",
+      "required": ["type", "properties", "geometry"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Feature"]
+        },
+        "properties": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Unique identifier for the area"
+            },
+            "name": {
+              "type": "string",
+              "description": "Human-readable name for the area"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["navigation", "operation", "exclusion"],
+              "description": "Type of area that determines robot behavior"
+            },
+            "fill": {
+              "type": "string",
+              "description": "Color code for the area, typically derived from type"
+            },
+            "style": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "string",
+                  "description": "Color code for rendering"
+                }
+              }
+            }
+          }
+        },
+        "geometry": {
+          "type": "object",
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Polygon"]
+            },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "number"
+                  },
+                  "description": "Longitude and latitude in WGS84 [longitude, latitude]"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "DockingStationFeature": {
+      "type": "object",
+      "required": ["type", "properties", "geometry"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Feature"]
+        },
+        "properties": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Unique identifier for the docking station"
+            },
+            "name": {
+              "type": "string",
+              "description": "Human-readable name for the docking station"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["docking_station"],
+              "description": "Type indicating this is a docking station"
+            }
+          }
+        },
+        "geometry": {
+          "type": "object",
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["LineString"]
+            },
+            "coordinates": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number"
+                },
+                "description": "Longitude and latitude in WGS84 [longitude, latitude]"
+              },
+              "description": "Two points defining the docking station: [0] is the origin position (middle of charging connectors), [1] is a point defining orientation (towards the robot's connectors)"
+            }
+          }
+        }
+      }
+    }
+  }
+}
