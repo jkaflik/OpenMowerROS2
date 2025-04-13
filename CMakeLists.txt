@@ -23,6 +23,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
+find_package(unique_identifier_msgs REQUIRED)
 
 ###
 # map_server_node
@@ -52,6 +53,7 @@ ament_target_dependencies(map_server_node
         robot_localization
         tf2
         tf2_geometry_msgs
+        unique_identifier_msgs
 )
 
 target_link_libraries(map_server_node nlohmann_json::nlohmann_json)
@@ -106,6 +108,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         sensor_msgs
         tf2
         tf2_geometry_msgs
+        unique_identifier_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)

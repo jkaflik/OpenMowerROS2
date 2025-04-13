@@ -1,12 +1,12 @@
 REMOTE_HOST ?= omdev.local
 REMOTE_USER ?= openmower
 ROS_LOG_DIR = log/
+SHELL := /bin/bash
 
 all: custom-deps deps build
 
 .PHONY: deps build
 
-# turtlebot3_gazebo does not have a build on iron arm64
 deps:
 	rosdep install --from-paths ./ -i -y -r
 
@@ -19,7 +19,12 @@ build-libs:
 build:
 	colcon build --symlink-install
 
+build-release:
+	colcon build --base-paths "src/lib/*" --cmake-args -DCMAKE_BUILD_TYPE=Release
+	colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+
 sim:
+	source /opt/ws/.devcontainer/default.env 
 	killall -9 ruby || true
 	ros2 launch launch/sim.launch.py
 
@@ -36,4 +41,4 @@ rsp:
 	ros2 launch launch/rsp.launch.py
 
 remote-devices:
-	sudo bash .devcontainer/scripts/remote_devices.sh $(REMOTE_HOST) $(REMOTE_USER)
+	bash .devcontainer/scripts/remote_devices.sh $(REMOTE_HOST) $(REMOTE_USER)

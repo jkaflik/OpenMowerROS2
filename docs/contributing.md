@@ -3,7 +3,7 @@
 ## Getting Started
 
 To get started with project development, you should have overall sense of [ROS](https://ros.org/).
-If you are not familiar with ROS, you can start with [ROS2 tutorials](https://docs.ros.org/en/iron/Tutorials.html).
+If you are not familiar with ROS, you can start with [ROS2 tutorials](https://docs.ros.org/en/jazzy/Tutorials.html).
 
 ## Setting Up the Development Environment
 

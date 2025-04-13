@@ -12,3 +12,4 @@ cmake-build-debug*/
 
 /.name
 /.idea
+.DS_Store

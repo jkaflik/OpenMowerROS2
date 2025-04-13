@@ -37,6 +37,6 @@ VNC server in `xserver` runs a web server on port `12345` with a VNC client. You
 
 ## Default environment variables loaded in the image
 
-<<< ../.devcontainer/openmower_config.env{bash}
+<<< ../.devcontainer/openmower_config.bash{bash}
 
 For more details about the environment variables, see [Configuration](configuration.md).

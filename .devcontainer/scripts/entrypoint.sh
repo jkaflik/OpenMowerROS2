@@ -12,4 +12,7 @@ if [ -z "$DISPLAY" ]; then
     DISPLAY=:0
 fi
 
-Xvnc -ac -pn -depth 24 $DISPLAY -rfbport=5900 -SecurityTypes=None -desktop=OpenMowerNext
+RESOLUTION=${DESKTOP_RESOLUTION:-1920x1080}
+echo "Using resolution: $RESOLUTION"
+
+Xvnc -ac -pn -depth 24 -geometry $RESOLUTION $DISPLAY -rfbport=5900 -SecurityTypes=None -desktop=OpenMowerNext

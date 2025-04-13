@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   x11-xkb-utils \
   xkb-data \
   dbus-x11 \
-  tigervnc-standalone-server
+  tigervnc-standalone-server \
+  nodejs \
+  npm
 
 COPY scripts/entrypoint.sh /entrypoint.sh
 

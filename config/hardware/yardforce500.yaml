@@ -11,7 +11,7 @@ chassis:
 
 mower:
   # x, y, z offset in m of mower from center of robot
-  offset: [0.18, 0.0, -0.06] #m
+  offset: [0.18, 0.0, -0.05] #m
 
   # mower blades cut radius in m when spinning 
   cut_radius: 0.065 # m

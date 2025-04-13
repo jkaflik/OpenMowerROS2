@@ -28,4 +28,3 @@ Hardware specific packages:
 - [VESC driver interface](https://github.com/sbgisen/vesc/tree/humble-devel) - a ros2_control hardware layer implementation for VESC motor controllers
 - [ublox_f9p](https://github.com/jkaflik/ublox_f9p) - a ROS2 driver for u-blox F9P GNSS receiver with support of UBX protocol
 - [micro-ros-agent](https://github.com/micro-ROS/micro-ROS-Agent) - a micro-ROS agent to connect to micro-ROS nodes. It's used to connect to the [micro-ROS node running on the OpenMower mainboard](omros2-firmware).
-- [realsense2_camera](https://github.com/IntelRealSense/realsense-ros) - ROS2 packages for Intel® RealSense™ D400 series cameras

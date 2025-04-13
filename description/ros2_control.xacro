@@ -43,19 +43,18 @@
                 <param name="joint_name">mower_joint</param>
                 <param name="joint_type">continuous</param>
                 <param name="port">${vesc['serial']['mower']}</param>
-                <param name="command_mode">effort</param>
-                <param name="num_rotor_poles">4</param>
-                <param name="num_hall_sensors">6</param>
-                <param name="gear_ratio">1.0</param>
-                <param name="torque_const">2.0</param>
+                <param name="command_mode">velocity</param>
             </hardware>
 
             <joint name="mower_joint">
                 <command_interface name="position"/>
-                <command_interface name="velocity"/>
+                <command_interface name="velocity">
+                    <param name="min">-1</param>
+                    <param name="max">1</param>
+                </command_interface>
                 <command_interface name="effort">
-                    <param name="min">-10</param>
-                    <param name="max">10</param>
+                    <param name="min">-1</param>
+                    <param name="max">1</param>
                 </command_interface>
                 <state_interface name="position"/>
                 <state_interface name="velocity"/>

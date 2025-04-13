@@ -44,7 +44,7 @@ def generate_launch_description():
         package="twist_mux",
         executable="twist_mux",
         parameters=[twist_mux_params, {'use_sim_time': False}],
-        remappings=[('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel_unstamped')]
+        remappings=[('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel')]
     )
 
     controller_params_file = os.path.join(share_directory, 'config', 'controllers.yaml')
@@ -68,11 +68,11 @@ def generate_launch_description():
         output='screen'
     )
 
-    # load_mower_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-    #          'mower_controller'],
-    #     output='screen'
-    # )
+    load_mower_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'mower_controller'],
+        output='screen'
+    )
 
     # Launch them all!
     return LaunchDescription([
@@ -94,12 +94,12 @@ def generate_launch_description():
             )
         ),
 
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_mower_controller],
-        #     )
-        # ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_mower_controller],
+            )
+        ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([share_directory, '/launch/gps.launch.py']),

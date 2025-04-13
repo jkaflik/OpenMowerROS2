@@ -37,9 +37,7 @@ def generate_launch_description():
         package="twist_mux",
         executable="twist_mux",
         parameters=[twist_mux_params, {'use_sim_time': True}],
-        remappings=[
-            ('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel'),
-        ],
+        remappings=[('/cmd_vel_out', '/diff_drive_base_controller/cmd_vel')],
     )
 
     gz_spawn_entity = Node(
@@ -65,11 +63,11 @@ def generate_launch_description():
         output='screen'
     )
 
-    # load_mower_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-    #          'mower_controller'],
-    #     output='screen'
-    # )
+    load_mower_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'mower_controller'],
+        output='screen'
+    )
 
     # Bridge
     bridge = Node(
@@ -134,6 +132,12 @@ def generate_launch_description():
             event_handler=OnProcessExit(
                 target_action=load_joint_state_controller,
                 on_exit=[load_diff_controller],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_mower_controller],
             )
         ),
         gz_spawn_entity,
