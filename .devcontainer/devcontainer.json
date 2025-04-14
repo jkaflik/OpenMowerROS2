@@ -31,7 +31,8 @@
         "eamodio.gitlens",
         "ms-vscode.makefile-tools",
         "fantasy.vp-preview",
-        "DotJoshJohnson.xml"
+        "DotJoshJohnson.xml",
+        "swallow.geojson-io-for-vscode"
       ]
     }
   },

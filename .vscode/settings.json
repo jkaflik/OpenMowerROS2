@@ -9,6 +9,14 @@
         "/home/ws/install/vesc_msgs/lib/python3.10/site-packages",
         "/opt/ros/jazzy/lib/python3.10/site-packages"
     ],
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "**/*.geojson"
+            ],
+            "url": "./docs/assets/geojson-schema.json"
+        }
+    ],
     "files.associations": {
         "cctype": "cpp",
         "clocale": "cpp",
