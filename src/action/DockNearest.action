@@ -1,0 +1,8 @@
+# goal definition
+---
+# result definition
+bool success
+string message
+---
+# feedback definition
+string status

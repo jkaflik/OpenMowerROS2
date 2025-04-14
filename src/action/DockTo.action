@@ -1,0 +1,9 @@
+# goal definition
+string dock_id
+---
+# result definition
+bool success
+string message
+---
+# feedback definition
+string status
