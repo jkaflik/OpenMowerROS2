@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   dbus-x11 \
   tigervnc-standalone-server \
   nodejs \
-  npm
+  npm \
+  gdb
 
 COPY scripts/entrypoint.sh /entrypoint.sh
 

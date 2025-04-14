@@ -112,8 +112,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 ament_export_dependencies(rosidl_default_runtime)
-rosidl_target_interfaces(map_server_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
-rosidl_target_interfaces(sim_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+target_link_libraries(map_server_node "${cpp_typesupport_target}")
+target_link_libraries(sim_node "${cpp_typesupport_target}")
 
 if (BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)

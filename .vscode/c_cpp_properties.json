@@ -13,6 +13,8 @@
         "/home/ws/install/serial_driver/include/**",
         "/home/ws/install/io_context/include/**",
         "/opt/ros/jazzy/include/**",
+        "/opt/ws/src/**",
+        "/opt/ws/build/**",
         "/home/ws/src/openmower/include/**",
         "/home/ws/src/openmower_hw_comms/include/**",
         "/home/ws/src/transport_drivers/io_context/include/**",
