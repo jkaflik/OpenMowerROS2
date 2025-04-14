@@ -1,13 +1,22 @@
 {
     "cmake.sourceDirectory": "/opt/ws",
     "ros.distro": "jazzy",
+    // Update CMake environment configuration with Python paths
+    "cmake.configureEnvironment": {
+        "CMAKE_PREFIX_PATH": "/opt/ros/jazzy:${env:CMAKE_PREFIX_PATH}",
+        "AMENT_PREFIX_PATH": "/opt/ros/jazzy:${env:AMENT_PREFIX_PATH}",
+        "PATH": "/opt/ros/jazzy/bin:${env:PATH}",
+        "PYTHONPATH": "/opt/ros/jazzy/lib/python3.12/site-packages:${env:PYTHONPATH}",
+        "LD_LIBRARY_PATH": "/opt/ros/jazzy/lib:${env:LD_LIBRARY_PATH}"
+    },
+    "cmake.configureOnOpen": true,
     "python.autoComplete.extraPaths": [
-        "/home/ws/install/vesc_msgs/lib/python3.10/site-packages",
-        "/opt/ros/jazzy/lib/python3.10/site-packages"
+        "/home/ws/install/vesc_msgs/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
     ],
     "python.analysis.extraPaths": [
-        "/home/ws/install/vesc_msgs/lib/python3.10/site-packages",
-        "/opt/ros/jazzy/lib/python3.10/site-packages"
+        "/home/ws/install/vesc_msgs/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
     ],
     "json.schemas": [
         {
