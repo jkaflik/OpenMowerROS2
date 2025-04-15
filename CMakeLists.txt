@@ -20,6 +20,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 find_package(robot_localization REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -29,6 +30,30 @@ find_package(ament_index_cpp REQUIRED)
 find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+        "src/srv/RemoveArea.srv"
+        "src/srv/RemoveDockingStation.srv"
+        "src/srv/SaveArea.srv"
+        "src/srv/SaveDockingStation.srv"
+        "src/msg/Area.msg"
+        "src/msg/Map.msg"
+        "src/msg/DockingStation.msg"
+        "src/action/DockTo.action"
+        "src/action/DockNearest.action"
+        "src/action/RecordDockingStation.action"
+        "src/action/RecordAreaBoundary.action"
+        DEPENDENCIES
+        std_msgs
+        geometry_msgs
+        sensor_msgs
+        tf2
+        tf2_geometry_msgs
+        unique_identifier_msgs
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 
 ###
 # map_server_node
@@ -47,6 +72,8 @@ target_include_directories(map_server_node PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<INSTALL_INTERFACE:include>
 )
+target_link_libraries(map_server_node "${cpp_typesupport_target}")
+
 
 ament_target_dependencies(map_server_node
         std_msgs
@@ -85,6 +112,7 @@ target_include_directories(sim_node PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<INSTALL_INTERFACE:include>
 )
+target_link_libraries(sim_node "${cpp_typesupport_target}")
 
 ament_target_dependencies(sim_node
         rclcpp
@@ -99,29 +127,41 @@ INSTALL(TARGETS sim_node
 # sim_node
 ##
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-        "src/srv/RemoveArea.srv"
-        "src/srv/RemoveDockingStation.srv"
-        "src/srv/SaveArea.srv"
-        "src/srv/SaveDockingStation.srv"
-        "src/msg/Area.msg"
-        "src/msg/Map.msg"
-        "src/msg/DockingStation.msg"
-        "src/action/DockTo.action"
-        "src/action/DockNearest.action"
-        DEPENDENCIES
-        std_msgs
-        geometry_msgs
-        sensor_msgs
-        tf2
-        tf2_geometry_msgs
-        unique_identifier_msgs
+##
+# map_recorder
+##
+add_executable(map_recorder
+  src/map_recorder/main.cpp
+  src/map_recorder/map_recorder_node.cpp
+)
+target_compile_features(map_recorder PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(map_recorder PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(map_recorder "${cpp_typesupport_target}")
+ament_target_dependencies(map_recorder
+  rclcpp
+  rclcpp_action
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  geometry_msgs
+  std_msgs
+  std_srvs
 )
 
-ament_export_dependencies(rosidl_default_runtime)
-rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
-target_link_libraries(map_server_node "${cpp_typesupport_target}")
-target_link_libraries(sim_node "${cpp_typesupport_target}")
+INSTALL(TARGETS map_recorder
+        DESTINATION lib/${PROJECT_NAME})
+
+##
+# map_recorder
+##
+
+# Create a dependency link for our executables on the message generation
+add_dependencies(map_server_node ${PROJECT_NAME})
+add_dependencies(sim_node ${PROJECT_NAME})
+add_dependencies(map_recorder ${PROJECT_NAME})
 
 if (BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)

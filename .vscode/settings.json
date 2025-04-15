@@ -124,7 +124,9 @@
         "stacktrace": "cpp",
         "stdfloat": "cpp",
         "syncstream": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"

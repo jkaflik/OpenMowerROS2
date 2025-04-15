@@ -1,0 +1,15 @@
+# Goal
+string name
+uint8 type # type of the area. 0 = obstacle, 1 = navigation, 2 = operation
+bool auto_recording        # Whether to record points automatically
+float64 distance_threshold # Minimum distance between recorded points in auto mode (defaults to 
+---
+# Result
+bool success               # Whether recording was successful
+string message             # Information message
+Area area                  # The recorded area
+---
+# Feedback
+string status              # Current status of recording
+uint32 point_count         # Number of points recorded so far
+geometry_msgs/PolygonStamped area # area of the zone

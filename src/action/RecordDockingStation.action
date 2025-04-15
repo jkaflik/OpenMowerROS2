@@ -1,0 +1,10 @@
+# Goal
+string name  # Name for the docking station
+---
+# Result
+bool success         # Whether recording was successful
+string message       # Information message
+DockingStation docking_station  # The recorded docking station
+---
+# Feedback
+string status        # Current status of recording
