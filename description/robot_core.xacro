@@ -43,6 +43,10 @@
         <color rgba="1 0 0 1"/>
     </material>
 
+    <material name="green">
+        <color rgba="0 0.8 0 1"/>
+    </material>
+
     <!-- BASE LINK -->
 
     <link name="base_link">
@@ -97,6 +101,38 @@
 
     <gazebo reference="chassis">
         <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <!-- CHARGING PORT LINK -->
+
+    <xacro:property name="charging_port_radius" value="0.01"/>
+    <xacro:property name="charging_port_mass" value="0.01"/>
+
+    <joint name="charging_port_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="charging_port"/>
+        <origin xyz="${chassis_offset_x + chassis_length} ${chassis_offset_y} ${chassis_offset_z + chassis_height/2}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="charging_port">
+        <visual>
+            <geometry>
+                <sphere radius="${charging_port_radius}"/>
+            </geometry>
+            <material name="green"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${charging_port_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_sphere mass="${charging_port_mass}" radius="${charging_port_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_sphere>
+    </link>
+
+    <gazebo reference="charging_port">
+        <material>Gazebo/Green</material>
     </gazebo>
 
     <!-- LEFT WHEEL LINK -->

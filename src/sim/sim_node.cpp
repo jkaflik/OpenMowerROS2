@@ -5,14 +5,13 @@
 
 open_mower_next::sim::SimNode::SimNode(const rclcpp::NodeOptions& options) : Node("sim_node", options)
 {
-  model_tf_subscriber_ = this->create_subscription<tf2_msgs::msg::TFMessage>(
-      "/model/openmower/pose", 10, std::bind(&SimNode::modelTfCallback, this, std::placeholders::_1));
+  // Initialize tf2 buffer and listener
+  tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+  tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
+  // We still need to listen for the docking station pose since it's not part of the tf tree
   docking_station_pose_subscriber_ = this->create_subscription<geometry_msgs::msg::Pose>(
       "/model/docking_station/pose", 10, std::bind(&SimNode::dockingStationPoseCallback, this, std::placeholders::_1));
-
-  map_subscriber_ =
-      this->create_subscription<msg::Map>("/map", 10, std::bind(&SimNode::mapCallback, this, std::placeholders::_1));
 
   charger_present_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/power/charger_present", 10);
   battery_state_publisher_ = this->create_publisher<sensor_msgs::msg::BatteryState>("/power", 10);
@@ -44,59 +43,72 @@ open_mower_next::sim::SimNode::SimNode(const rclcpp::NodeOptions& options) : Nod
 
   battery_timer_ = this->create_timer(std::chrono::seconds(1), [this] { batteryStateSimulationCallback(); });
 
+  // Docking station pose offset parameters
+  // Defaults to an empty.sdf docking_station model
+  docking_station_offset_x_ = this->declare_parameter<double>("docking_station_offset_x", 0.32);
+  docking_station_offset_y_ = this->declare_parameter<double>("docking_station_offset_y", 0.0);
+
+  RCLCPP_INFO(get_logger(), "Docking station pose offset: x=%f, y=%f", docking_station_offset_x_,
+              docking_station_offset_y_);
+
   RCLCPP_INFO(get_logger(), "SimNode created with timer frequency: %d Hz", freq_);
 }
 
-// This function checks if the model pose is in a docking station.
-// Transformations and comparisons are done in 2D. The model pose is considered to be in a docking station if:
-// - The x and y distance to the docking station is less than 5cm
-// - The yaw difference to the docking station is less than 0.25 rad
-// It requires the docking station pose and the model pose to be up to date.
 bool open_mower_next::sim::SimNode::isInDockingStation()
 {
-  if (!model_baselink_pose_)
-  {
-    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "No model baselink pose received yet");
-    return false;
-  }
-
   if (!docking_station_pose_)
   {
     RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "No docking station pose received yet");
     return false;
   }
 
-  // check if poses are up to date
-  if (model_baselink_pose_->header.stamp.sec < get_clock()->now().seconds() - 1)
+  // Try to get the current charging port position
+  geometry_msgs::msg::TransformStamped charging_port_transform;
+  try
   {
-    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "Model baselink pose is outdated");
+    charging_port_transform = tf_buffer_->lookupTransform("map", "charging_port", tf2::TimePointZero);
+  }
+  catch (const tf2::TransformException& ex)
+  {
+    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "Could not get charging port transform: %s", ex.what());
     return false;
   }
 
-  // Calculate relative position and orientation between robot and docking station
-  tf2::Transform robot_transform, dock_transform;
-  tf2::fromMsg(model_baselink_pose_->pose, robot_transform);
+  // Convert transform to pose for comparison with docking station
+  geometry_msgs::msg::Pose charging_port_pose;
+  tf2::Transform tf_charging_port;
+  tf2::fromMsg(charging_port_transform.transform, tf_charging_port);
+  tf2::toMsg(tf_charging_port, charging_port_pose);
+
+  // Calculate relative position and orientation between charging port and docking station
+  tf2::Transform port_transform, dock_transform;
+  tf2::fromMsg(charging_port_pose, port_transform);
   tf2::fromMsg(docking_station_pose_->pose, dock_transform);
 
-  // Get relative transform from robot to dock
-  auto relativeTransform = robot_transform.inverseTimes(dock_transform);
+  // Get relative transform from charging port to dock
+  auto relativeTransform = port_transform.inverseTimes(dock_transform);
   auto translation = relativeTransform.getOrigin();
 
-  // Check if robot is close enough to the dock. It's a simplified 2D check.
-  // Good enough for simulation.
-  bool inDockingStation = std::abs(translation.x()) < 0.15 && std::abs(translation.y()) < 0.15;
+  // Check if charging port is close enough to the dock
+  // Using stricter thresholds since we're checking actual charging port
+  bool inDockingStation = std::abs(translation.x()) < 0.05 && std::abs(translation.y()) < 0.05;
 
   // Log the distance to the docking station
   double distance = std::sqrt(std::pow(translation.x(), 2) + std::pow(translation.y(), 2));
 
+  // Calculate the angle between the charging port and the docking station
+
+  double angle = std::atan2(translation.y(), translation.x());
+
   if (!inDockingStation && distance < 1.0)
   {
-    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 5000, "Distance to docking station: %f", distance);
+    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 5000,
+                         "Distance from charging port to docking station: %f m, angle: %f rad", distance, angle);
   }
 
   if (inDockingStation)
   {
-    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 5000, "Contact with docking station");
+    RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 5000, "Charging port in contact with docking station");
     return true;
   }
 
@@ -183,43 +195,6 @@ void open_mower_next::sim::SimNode::batteryStateSimulationCallback()
   battery_state_publisher_->publish(battery_state_msg_);
 }
 
-void open_mower_next::sim::SimNode::mapCallback(msg::Map::SharedPtr msg)
-{
-  map_ = msg;
-}
-
-void open_mower_next::sim::SimNode::modelTfCallback(const tf2_msgs::msg::TFMessage::SharedPtr msg)
-{
-  geometry_msgs::msg::Transform* mapTransform;
-
-  for (auto transform : msg->transforms)
-  {
-    if (transform.header.frame_id == "map")
-    {
-      mapTransform = &transform.transform;
-      break;
-    }
-  }
-
-  if (!mapTransform)
-  {
-    RCLCPP_ERROR_THROTTLE(get_logger(), *get_clock(), 5000, "No map transform found");
-    return;
-  }
-
-  if (!model_baselink_pose_)
-  {
-    model_baselink_pose_ = std::make_shared<geometry_msgs::msg::PoseStamped>();
-  }
-
-  RCLCPP_INFO_ONCE(get_logger(), "Received model baselink pose message");
-
-  model_baselink_pose_->header.stamp = this->get_clock()->now();
-  tf2::Transform tfTransform;
-  tf2::fromMsg(*mapTransform, tfTransform);
-  tf2::toMsg(tfTransform, model_baselink_pose_->pose);
-}
-
 void open_mower_next::sim::SimNode::dockingStationPoseCallback(geometry_msgs::msg::Pose::SharedPtr msg)
 {
   RCLCPP_INFO_ONCE(get_logger(), "Received docking station pose message");
@@ -230,7 +205,28 @@ void open_mower_next::sim::SimNode::dockingStationPoseCallback(geometry_msgs::ms
   }
 
   docking_station_pose_->header.stamp = this->get_clock()->now();
+
+  // Apply the configured offsets to better represent the charging connector position
   docking_station_pose_->pose = *msg;
 
-  RCLCPP_DEBUG(get_logger(), "Docking station pose: [%f, %f, %f]", msg->position.x, msg->position.y, msg->position.z);
+  // Apply offsets in the docking station's local coordinate frame
+  // First, create a transform from the original pose
+  tf2::Transform dockTransform;
+  tf2::fromMsg(*msg, dockTransform);
+
+  // Create an offset transform in the dock's local frame
+  tf2::Transform offsetTransform;
+  offsetTransform.setOrigin(tf2::Vector3(docking_station_offset_x_, docking_station_offset_y_, 0.0));
+  offsetTransform.setRotation(tf2::Quaternion(0, 0, 0, 1));  // Identity rotation
+
+  // Apply the offset in the dock's coordinate frame
+  tf2::Transform adjustedTransform = dockTransform * offsetTransform;
+
+  // Set the updated pose
+  tf2::toMsg(adjustedTransform, docking_station_pose_->pose);
+
+  RCLCPP_INFO_ONCE(get_logger(), "Original docking station pose: [%f, %f, %f]", msg->position.x, msg->position.y,
+                   msg->position.z);
+  RCLCPP_INFO_ONCE(get_logger(), "Adjusted docking station pose: [%f, %f, %f]", docking_station_pose_->pose.position.x,
+                   docking_station_pose_->pose.position.y, docking_station_pose_->pose.position.z);
 }
