@@ -13,14 +13,19 @@ endif ()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(robot_localization REQUIRED)
 find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(behaviortree_cpp REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
@@ -102,6 +107,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "src/msg/Area.msg"
         "src/msg/Map.msg"
         "src/msg/DockingStation.msg"
+        "src/action/DockTo.action"
+        "src/action/DockNearest.action"
         DEPENDENCIES
         std_msgs
         geometry_msgs

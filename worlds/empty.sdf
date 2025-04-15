@@ -46,6 +46,7 @@
                 <publish_link_pose>true</publish_link_pose>
                 <publish_nested_model_pose>true</publish_nested_model_pose>
                 <update_frequency>1</update_frequency>
+                <!-- Charging contact is positioned at [0.32, 0, 0.06] relative to docking station origin -->
             </plugin>
 
             <!-- Base Plate -->
