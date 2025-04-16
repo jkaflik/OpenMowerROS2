@@ -12,6 +12,13 @@
         "PYTHONIOENCODING": "utf-8"
     },
     "cmake.configureOnOpen": true,
+    "cmake.debugConfig": {
+        "args": [
+            "--ros-args",
+            "-p",
+            "use_sim_time:=true"
+        ]
+    },
     "python.autoComplete.extraPaths": [
         "/home/ws/install/vesc_msgs/lib/python3.12/site-packages",
         "/opt/ros/jazzy/lib/python3.12/site-packages"

@@ -31,6 +31,9 @@ find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/share/cmake/geographiclib/")
+find_package(GeographicLib REQUIRED)
+
 rosidl_generate_interfaces(${PROJECT_NAME}
         "src/srv/RemoveArea.srv"
         "src/srv/RemoveDockingStation.srv"
@@ -88,7 +91,10 @@ ament_target_dependencies(map_server_node
         unique_identifier_msgs
 )
 
-target_link_libraries(map_server_node nlohmann_json::nlohmann_json)
+target_link_libraries(map_server_node
+        nlohmann_json::nlohmann_json
+        ${GeographicLib_LIBRARIES}
+)
 
 INSTALL(TARGETS map_server_node
         DESTINATION lib/${PROJECT_NAME})

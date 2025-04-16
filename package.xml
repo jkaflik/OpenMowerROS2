@@ -27,6 +27,7 @@
   <depend>behaviortree_cpp</depend>
   <depend>ament_index_cpp</depend>
   <depend>visualization_msgs</depend>
+  <depend>geographiclib</depend>
 
   <build_depend>nlohmann_json_schema_validator_vendor</build_depend>
 

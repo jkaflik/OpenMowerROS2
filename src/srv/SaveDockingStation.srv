@@ -1,2 +1,5 @@
 DockingStation docking_station
 ---
+# result definition
+bool success
+string message

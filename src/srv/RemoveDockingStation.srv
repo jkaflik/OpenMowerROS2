@@ -1,2 +1,5 @@
 string id
 ---
+# result definition
+bool success
+string message

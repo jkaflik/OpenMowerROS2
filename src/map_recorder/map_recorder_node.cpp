@@ -57,7 +57,7 @@ rclcpp_action::GoalResponse MapRecorderNode::handleDockingGoal(
     return rclcpp_action::GoalResponse::REJECT;
   }
 
-  if (docking_goal_handle_ || is_recording_area_)
+  if ((docking_goal_handle_ && docking_goal_handle_->is_active()) || is_recording_area_)
   {
     RCLCPP_ERROR(get_logger(), "Another recording is already in progress");
     return rclcpp_action::GoalResponse::REJECT;
@@ -87,6 +87,13 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
 
     feedback->status = "Waiting for charging to be detected...";
     goal_handle->publish_feedback(feedback);
+
+    // TODO:
+    // ros2 action send_goal \
+    //   /drive_on_heading \
+    //   nav2_msgs/action/DriveOnHeading \
+    //   "{target: {x: 2.0}, speed: 0.1, time_allowance: {sec: 30}}"
+    // either we wait for goal execution is done or we get robot in charging position
 
     auto start_time = this->now();
     while (rclcpp::ok() && !is_charging_detected_ && (this->now() - start_time) < rclcpp::Duration(60s))
@@ -167,17 +174,24 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     auto service_response = future.get();
     if (service_response)
     {
-      result->success = true;
-      result->message = "Docking station recorded successfully";
-      result->docking_station = docking_station;
+      result->success = service_response->success;
+      result->message = service_response->message;
 
-      RCLCPP_INFO(get_logger(), "Docking station recording completed successfully");
-      goal_handle->succeed(result);
+      if (service_response->success)
+      {
+        RCLCPP_INFO(get_logger(), "Docking station recording completed successfully");
+        goal_handle->succeed(result);
+      }
+      else
+      {
+        RCLCPP_ERROR(get_logger(), "Failed to save docking station: %s", service_response->message.c_str());
+        goal_handle->abort(result);
+      }
     }
     else
     {
       result->success = false;
-      result->message = "Failed to save docking station";
+      result->message = "Failed to save docking station: service call failed";
       goal_handle->abort(result);
     }
     return;
@@ -383,12 +397,20 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
       auto service_response = future.get();
       if (service_response)
       {
-        result->success = true;
-        result->message = "Area boundary recorded successfully";
+        result->success = service_response->success;
+        result->message = service_response->message;
         result->area = area;
 
-        RCLCPP_INFO(get_logger(), "Area boundary recording completed successfully");
-        goal_handle->succeed(result);
+        if (service_response->success)
+        {
+          RCLCPP_INFO(get_logger(), "Area boundary recording completed successfully");
+          goal_handle->succeed(result);
+        }
+        else
+        {
+          RCLCPP_ERROR(get_logger(), "Failed to save area: %s", service_response->message.c_str());
+          goal_handle->abort(result);
+        }
       }
       else
       {
@@ -526,13 +548,20 @@ geometry_msgs::msg::PoseStamped MapRecorderNode::getRobotPose()
   try
   {
     geometry_msgs::msg::TransformStamped transform_stamped =
-        tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
+        tf_buffer_->lookupTransform("map", "charging_port", tf2::TimePointZero);
+
+    // apply 180-degree rotation to get docking station face in front of robot's charging port
+    tf2::Quaternion q;
+    tf2::fromMsg(transform_stamped.transform.rotation, q);
+    tf2::Quaternion rotation;
+    rotation.setRPY(0, 0, M_PI);  // 180 degrees around Z axis
+    q = q * rotation;
 
     robot_pose.header = transform_stamped.header;
     robot_pose.pose.position.x = transform_stamped.transform.translation.x;
     robot_pose.pose.position.y = transform_stamped.transform.translation.y;
     robot_pose.pose.position.z = transform_stamped.transform.translation.z;
-    robot_pose.pose.orientation = transform_stamped.transform.rotation;
+    robot_pose.pose.orientation = tf2::toMsg(q);
   }
   catch (const tf2::TransformException& ex)
   {

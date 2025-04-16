@@ -1,2 +1,5 @@
 string id # id of the docking station
 ---
+# result definition
+bool success
+string message

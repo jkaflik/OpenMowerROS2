@@ -1,2 +1,5 @@
 Area area
 ---
+# result definition
+bool success
+string message
