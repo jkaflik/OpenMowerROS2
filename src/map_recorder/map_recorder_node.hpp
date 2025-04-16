@@ -16,6 +16,7 @@
 #include "open_mower_next/srv/save_area.hpp"
 #include "open_mower_next/action/record_docking_station.hpp"
 #include "open_mower_next/action/record_area_boundary.hpp"
+#include "nav2_msgs/action/drive_on_heading.hpp"  // Added DriveOnHeading action
 
 namespace open_mower_next::map_recorder
 {
@@ -32,6 +33,15 @@ private:
 
   using RecordAreaBoundaryAction = open_mower_next::action::RecordAreaBoundary;
   using RecordAreaBoundaryGoalHandle = rclcpp_action::ServerGoalHandle<RecordAreaBoundaryAction>;
+
+  // DriveOnHeading action client
+  using DriveOnHeadingAction = nav2_msgs::action::DriveOnHeading;
+  using DriveOnHeadingGoalHandle = rclcpp_action::ClientGoalHandle<DriveOnHeadingAction>;
+  rclcpp_action::Client<DriveOnHeadingAction>::SharedPtr drive_on_heading_client_;
+
+  // Docking parameters
+  double docking_approach_distance_;
+  double docking_approach_speed_;
 
   // Action servers
   rclcpp_action::Server<RecordDockingStationAction>::SharedPtr record_docking_station_server_;

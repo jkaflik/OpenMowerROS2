@@ -20,6 +20,12 @@ MapRecorderNode::MapRecorderNode(const rclcpp::NodeOptions& options)
   , auto_recording_mode_(true)
   , distance_threshold_(0.5)
 {
+  this->declare_parameter("docking_approach_distance", 1.0);
+  this->declare_parameter("docking_approach_speed", 0.1);
+
+  docking_approach_distance_ = this->get_parameter("docking_approach_distance").as_double();
+  docking_approach_speed_ = this->get_parameter("docking_approach_speed").as_double();
+
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -32,6 +38,8 @@ MapRecorderNode::MapRecorderNode(const rclcpp::NodeOptions& options)
       this, "record_area_boundary", std::bind(&MapRecorderNode::handleAreaBoundaryGoal, this, _1, _2),
       std::bind(&MapRecorderNode::handleAreaBoundaryCancel, this, _1),
       std::bind(&MapRecorderNode::handleAreaBoundaryAccepted, this, _1));
+
+  drive_on_heading_client_ = rclcpp_action::create_client<DriveOnHeadingAction>(this, "drive_on_heading");
 
   save_docking_station_client_ = create_client<open_mower_next::srv::SaveDockingStation>("save_docking_station");
   save_area_client_ = create_client<open_mower_next::srv::SaveArea>("save_area");
@@ -82,24 +90,70 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     auto goal = goal_handle->get_goal();
     auto feedback = std::make_shared<RecordDockingStationAction::Feedback>();
     auto result = std::make_shared<RecordDockingStationAction::Result>();
+    std::shared_ptr<DriveOnHeadingGoalHandle> drive_goal_handle;
 
     RCLCPP_INFO(get_logger(), "Recording docking station: %s", goal->name.c_str());
 
-    feedback->status = "Waiting for charging to be detected...";
+    if (!drive_on_heading_client_->wait_for_action_server(std::chrono::seconds(5)))
+    {
+      RCLCPP_ERROR(get_logger(), "DriveOnHeading action server not available after waiting");
+      result->success = false;
+      result->message = "DriveOnHeading action server not available";
+      goal_handle->abort(result);
+      return;
+    }
+
+    feedback->status = "Driving towards docking station...";
     goal_handle->publish_feedback(feedback);
 
-    // TODO:
-    // ros2 action send_goal \
-    //   /drive_on_heading \
-    //   nav2_msgs/action/DriveOnHeading \
-    //   "{target: {x: 2.0}, speed: 0.1, time_allowance: {sec: 30}}"
-    // either we wait for goal execution is done or we get robot in charging position
+    auto drive_goal = DriveOnHeadingAction::Goal();
+    drive_goal.target.x = docking_approach_distance_;
+    drive_goal.speed = docking_approach_speed_;
+
+    // Calculate time allowance based on distance and speed
+    // Add a safety margin by multiplying by 1.5
+    int time_allowance_sec = static_cast<int>(std::ceil((docking_approach_distance_ / docking_approach_speed_) * 1.5));
+    drive_goal.time_allowance.sec = time_allowance_sec;
+    drive_goal.time_allowance.nanosec = 0;
+
+    RCLCPP_INFO(get_logger(), "Sending DriveOnHeading with target.x: %.2f, speed: %.2f, time_allowance: %d seconds",
+                docking_approach_distance_, docking_approach_speed_, time_allowance_sec);
+
+    auto drive_goal_handle_future = drive_on_heading_client_->async_send_goal(drive_goal);
+
+    if (drive_goal_handle_future.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
+    {
+      RCLCPP_ERROR(get_logger(), "Failed to send DriveOnHeading goal");
+      result->success = false;
+      result->message = "Failed to send DriveOnHeading goal";
+      goal_handle->abort(result);
+      return;
+    }
+
+    drive_goal_handle = drive_goal_handle_future.get();
+    if (!drive_goal_handle)
+    {
+      RCLCPP_ERROR(get_logger(), "Goal was rejected by DriveOnHeading server");
+      result->success = false;
+      result->message = "Goal was rejected by DriveOnHeading server";
+      goal_handle->abort(result);
+      return;
+    }
+
+    feedback->status = "Waiting for charging to be detected...";
+    goal_handle->publish_feedback(feedback);
 
     auto start_time = this->now();
     while (rclcpp::ok() && !is_charging_detected_ && (this->now() - start_time) < rclcpp::Duration(60s))
     {
       if (goal_handle->is_canceling())
       {
+        if (drive_goal_handle)
+        {
+          RCLCPP_INFO(get_logger(), "Canceling DriveOnHeading goal due to docking goal cancellation");
+          drive_on_heading_client_->async_cancel_goal(drive_goal_handle);
+        }
+
         result->success = false;
         result->message = "Docking station recording was canceled";
         goal_handle->canceled(result);
@@ -107,6 +161,12 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
       }
 
       std::this_thread::sleep_for(100ms);
+    }
+
+    if (drive_goal_handle)
+    {
+      RCLCPP_INFO(get_logger(), "Canceling DriveOnHeading goal");
+      drive_on_heading_client_->async_cancel_goal(drive_goal_handle);
     }
 
     if (!is_charging_detected_)
@@ -145,7 +205,7 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     }
 
     open_mower_next::msg::DockingStation docking_station;
-    docking_station.id = utils::generateUniqueId();
+    docking_station.id = generateUniqueId();
     docking_station.name = goal->name;
     docking_station.pose.header = robot_pose.header;
     docking_station.pose.pose = robot_pose.pose;
@@ -554,7 +614,7 @@ geometry_msgs::msg::PoseStamped MapRecorderNode::getRobotPose()
     tf2::Quaternion q;
     tf2::fromMsg(transform_stamped.transform.rotation, q);
     tf2::Quaternion rotation;
-    rotation.setRPY(0, 0, M_PI);  // 180 degrees around Z axis
+    rotation.setRPY(0, 0, M_PI);
     q = q * rotation;
 
     robot_pose.header = transform_stamped.header;
@@ -574,7 +634,7 @@ geometry_msgs::msg::PoseStamped MapRecorderNode::getRobotPose()
 
 bool MapRecorderNode::checkPositionCovariance()
 {
-  // TODO: check position
+  // TODO: check robot's pose covariance
   return true;
 }
 

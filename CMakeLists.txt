@@ -153,6 +153,7 @@ ament_target_dependencies(map_recorder
   tf2_ros
   tf2_geometry_msgs
   geometry_msgs
+  nav2_msgs
   std_msgs
   std_srvs
 )
