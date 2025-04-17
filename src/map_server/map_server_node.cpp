@@ -26,6 +26,10 @@ MapServerNode::MapServerNode(const rclcpp::NodeOptions& options) : rclcpp::Node(
   map_visualization_publisher_ = this->create_publisher<visualization_msgs::msg::MarkerArray>(
       visualization_topic_name_, rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
 
+  auto docking_stations_topic_name = declare_parameter("docking_stations.topic_name", "docking_stations_poses");
+  docking_station_poses_publisher_ = this->create_publisher<geometry_msgs::msg::PoseArray>(
+      docking_stations_topic_name, rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
+
   publishMap();
 }
 
@@ -66,6 +70,9 @@ void MapServerNode::publishMap()
 
   RCLCPP_INFO(get_logger(), "Publishing visualization markers");
   map_visualization_publisher_->publish(mapToVisualizationMarkers(current_map_));
+
+  RCLCPP_INFO(get_logger(), "Publishing docking stations as PoseArray");
+  docking_station_poses_publisher_->publish(dockingStationsToPoseArray(current_map_));
 }
 
 void MapServerNode::configureMap()
@@ -428,6 +435,19 @@ visualization_msgs::msg::MarkerArray MapServerNode::mapToVisualizationMarkers(ms
   }
 
   return markers;
+}
+
+geometry_msgs::msg::PoseArray MapServerNode::dockingStationsToPoseArray(msg::Map map)
+{
+  geometry_msgs::msg::PoseArray pose_array;
+  pose_array.header = map.header;
+
+  for (const auto& docking_station : map.docking_stations)
+  {
+    pose_array.poses.push_back(docking_station.pose.pose);
+  }
+
+  return pose_array;
 }
 
 void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_grid,
