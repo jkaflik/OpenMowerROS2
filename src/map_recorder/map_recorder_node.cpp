@@ -5,7 +5,6 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 using namespace std::chrono_literals;
 using std::placeholders::_1;
@@ -46,6 +45,9 @@ MapRecorderNode::MapRecorderNode(const rclcpp::NodeOptions& options)
 
   charging_status_sub_ = create_subscription<std_msgs::msg::Bool>(
       "/power/charger_present", 10, std::bind(&MapRecorderNode::chargingStatusCallback, this, _1));
+
+  boundary_polygon_pub_ =
+      create_publisher<geometry_msgs::msg::PolygonStamped>("/map_recorder/record_boundaries_polygon", 10);
 
   RCLCPP_INFO(get_logger(), "Map Recorder node initialized");
 }
@@ -191,10 +193,10 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     feedback->status = "Position verified. Recording docking station...";
     goal_handle->publish_feedback(feedback);
 
-    geometry_msgs::msg::PoseStamped robot_pose;
+    geometry_msgs::msg::PoseStamped docking_station_pose;
     try
     {
-      robot_pose = getRobotPose();
+      docking_station_pose = getDockingStationPoseWhenCharging();
     }
     catch (const std::exception& e)
     {
@@ -207,8 +209,8 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     open_mower_next::msg::DockingStation docking_station;
     docking_station.id = generateUniqueId();
     docking_station.name = goal->name;
-    docking_station.pose.header = robot_pose.header;
-    docking_station.pose.pose = robot_pose.pose;
+    docking_station.pose.header = docking_station_pose.header;
+    docking_station.pose.pose = docking_station_pose.pose;
 
     auto request = std::make_shared<open_mower_next::srv::SaveDockingStation::Request>();
     request->docking_station = docking_station;
@@ -301,7 +303,12 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
   current_area_name_ = goal->name;
   current_area_type_ = goal->type;
   auto_recording_mode_ = goal->auto_recording;
-  distance_threshold_ = goal->distance_threshold;
+
+  auto distance_threshold = distance_threshold_;
+  if (goal->distance_threshold > 0)
+  {
+    distance_threshold = goal->distance_threshold;
+  }
 
   set_recording_mode_service_ = create_service<std_srvs::srv::SetBool>(
       "set_recording_mode", std::bind(&MapRecorderNode::handleSetRecordingMode, this, _1, _2));
@@ -322,7 +329,7 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
 
     try
     {
-      last_recorded_position_ = getRobotPose();
+      last_recorded_position_ = getMowerPose();
 
       current_boundary_points_.push_back(last_recorded_position_.pose.position);
 
@@ -360,7 +367,7 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
 
         if (auto_recording_mode_)
         {
-          geometry_msgs::msg::PoseStamped current_pose = getRobotPose();
+          geometry_msgs::msg::PoseStamped current_pose = getMowerPose();
           double dist = utils::poseDistance(current_pose, last_recorded_position_);
 
           if (dist > distance_threshold_)
@@ -385,6 +392,8 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
             feedback->point_count = current_boundary_points_.size();
             feedback->area = updated_poly;
             goal_handle->publish_feedback(feedback);
+
+            boundary_polygon_pub_->publish(updated_poly);
 
             RCLCPP_INFO(get_logger(), "Added boundary point #%zu automatically", current_boundary_points_.size());
           }
@@ -532,7 +541,7 @@ void MapRecorderNode::handleAddBoundaryPoint(const std::shared_ptr<std_srvs::srv
 
   try
   {
-    geometry_msgs::msg::PoseStamped current_pose = getRobotPose();
+    geometry_msgs::msg::PoseStamped current_pose = getMowerPose();
     current_boundary_points_.push_back(current_pose.pose.position);
     last_recorded_position_ = current_pose;
 
@@ -544,8 +553,6 @@ void MapRecorderNode::handleAddBoundaryPoint(const std::shared_ptr<std_srvs::srv
     if (area_boundary_goal_handle_)
     {
       auto feedback = std::make_shared<RecordAreaBoundaryAction::Feedback>();
-      feedback->status = "Added point manually";
-      feedback->point_count = current_boundary_points_.size();
 
       geometry_msgs::msg::PolygonStamped updated_poly;
       updated_poly.header.frame_id = "map";
@@ -561,7 +568,11 @@ void MapRecorderNode::handleAddBoundaryPoint(const std::shared_ptr<std_srvs::srv
       }
 
       feedback->area = updated_poly;
+      feedback->status = "Added point manually";
+      feedback->point_count = current_boundary_points_.size();
       area_boundary_goal_handle_->publish_feedback(feedback);
+
+      boundary_polygon_pub_->publish(updated_poly);
     }
   }
   catch (const std::exception& e)
@@ -600,36 +611,6 @@ void MapRecorderNode::handleFinishAreaRecording(const std::shared_ptr<std_srvs::
 void MapRecorderNode::chargingStatusCallback(const std_msgs::msg::Bool::SharedPtr msg)
 {
   is_charging_detected_ = msg->data;
-}
-
-geometry_msgs::msg::PoseStamped MapRecorderNode::getRobotPose()
-{
-  geometry_msgs::msg::PoseStamped robot_pose;
-  try
-  {
-    geometry_msgs::msg::TransformStamped transform_stamped =
-        tf_buffer_->lookupTransform("map", "charging_port", tf2::TimePointZero);
-
-    // apply 180-degree rotation to get docking station face in front of robot's charging port
-    tf2::Quaternion q;
-    tf2::fromMsg(transform_stamped.transform.rotation, q);
-    tf2::Quaternion rotation;
-    rotation.setRPY(0, 0, M_PI);
-    q = q * rotation;
-
-    robot_pose.header = transform_stamped.header;
-    robot_pose.pose.position.x = transform_stamped.transform.translation.x;
-    robot_pose.pose.position.y = transform_stamped.transform.translation.y;
-    robot_pose.pose.position.z = transform_stamped.transform.translation.z;
-    robot_pose.pose.orientation = tf2::toMsg(q);
-  }
-  catch (const tf2::TransformException& ex)
-  {
-    RCLCPP_ERROR(get_logger(), "Could not transform from base_link to map: %s", ex.what());
-    throw;
-  }
-
-  return robot_pose;
 }
 
 bool MapRecorderNode::checkPositionCovariance()
