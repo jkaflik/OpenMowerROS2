@@ -5,13 +5,10 @@
 ROS workspace is a directory where you can build and run ROS packages. It is a recommended way to organize your ROS projects.
 It's no different for OpenMowerNext. The root of the repository is a ROS workspace.
 
-## Main packages
+## Nodes
 
-### Map management
-
-The map management is a ROS package responsible for managing map. It is a drop-in replacement for [nav2 map server](https://navigation.ros.org/configuration/packages/configuring-map-server.html).
-
-More information can be found in [map management](map-management.md) section.
+- [`map_server`](map-server) - a ROS node responsible for managing map and providing map-related services to navigation stack
+- [`map_recorder`](map-recorder) - a ROS node responsible for recording map
 
 ## External packages
 

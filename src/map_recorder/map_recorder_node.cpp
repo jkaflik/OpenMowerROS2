@@ -17,13 +17,14 @@ MapRecorderNode::MapRecorderNode(const rclcpp::NodeOptions& options)
   , is_recording_area_(false)
   , is_charging_detected_(false)
   , auto_recording_mode_(true)
-  , distance_threshold_(0.5)
+  , distance_threshold_(0.05)
 {
   this->declare_parameter("docking_approach_distance", 1.0);
   this->declare_parameter("docking_approach_speed", 0.1);
 
   docking_approach_distance_ = this->get_parameter("docking_approach_distance").as_double();
   docking_approach_speed_ = this->get_parameter("docking_approach_speed").as_double();
+  distance_threshold_ = this->declare_parameter("distance_threshold", 0.05);
 
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
@@ -96,17 +97,18 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
 
     RCLCPP_INFO(get_logger(), "Recording docking station: %s", goal->name.c_str());
 
+    feedback->status = RecordDockingStationAction::Feedback::STATUS_DRIVING;
+    feedback->message = "Driving towards docking station...";
+    goal_handle->publish_feedback(feedback);
+
     if (!drive_on_heading_client_->wait_for_action_server(std::chrono::seconds(5)))
     {
       RCLCPP_ERROR(get_logger(), "DriveOnHeading action server not available after waiting");
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_SERVICE_UNAVAILABLE;
       result->message = "DriveOnHeading action server not available";
       goal_handle->abort(result);
       return;
     }
-
-    feedback->status = "Driving towards docking station...";
-    goal_handle->publish_feedback(feedback);
 
     auto drive_goal = DriveOnHeadingAction::Goal();
     drive_goal.target.x = docking_approach_distance_;
@@ -126,7 +128,7 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     if (drive_goal_handle_future.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
     {
       RCLCPP_ERROR(get_logger(), "Failed to send DriveOnHeading goal");
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_DRIVE_FAILURE;
       result->message = "Failed to send DriveOnHeading goal";
       goal_handle->abort(result);
       return;
@@ -136,13 +138,14 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     if (!drive_goal_handle)
     {
       RCLCPP_ERROR(get_logger(), "Goal was rejected by DriveOnHeading server");
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_DRIVE_FAILURE;
       result->message = "Goal was rejected by DriveOnHeading server";
       goal_handle->abort(result);
       return;
     }
 
-    feedback->status = "Waiting for charging to be detected...";
+    feedback->status = RecordDockingStationAction::Feedback::STATUS_WAITING_FOR_CHARGING;
+    feedback->message = "Waiting for charging to be detected...";
     goal_handle->publish_feedback(feedback);
 
     auto start_time = this->now();
@@ -156,7 +159,7 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
           drive_on_heading_client_->async_cancel_goal(drive_goal_handle);
         }
 
-        result->success = false;
+        result->code = RecordDockingStationAction::Result::CODE_CANCELED;
         result->message = "Docking station recording was canceled";
         goal_handle->canceled(result);
         return;
@@ -173,24 +176,26 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
 
     if (!is_charging_detected_)
     {
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_NO_CHARGING_DETECTED;
       result->message = "Timeout waiting for charging to be detected";
       goal_handle->abort(result);
       return;
     }
 
-    feedback->status = "Charging detected! Verifying position accuracy...";
+    feedback->status = RecordDockingStationAction::Feedback::STATUS_RECORDING;
+    feedback->message = "Charging detected! Verifying position accuracy...";
     goal_handle->publish_feedback(feedback);
 
     if (!checkPositionCovariance())
     {
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_POOR_LOCALIZATION;
       result->message = "Position covariance exceeds threshold (2cm)";
       goal_handle->abort(result);
       return;
     }
 
-    feedback->status = "Position verified. Recording docking station...";
+    feedback->status = RecordDockingStationAction::Feedback::STATUS_SAVING;
+    feedback->message = "Position verified. Recording docking station...";
     goal_handle->publish_feedback(feedback);
 
     geometry_msgs::msg::PoseStamped docking_station_pose;
@@ -200,7 +205,7 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     }
     catch (const std::exception& e)
     {
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_UNKNOWN_ERROR;
       result->message = "Failed to get robot pose: " + std::string(e.what());
       goal_handle->abort(result);
       return;
@@ -217,7 +222,7 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
 
     if (!save_docking_station_client_->wait_for_service(10s))
     {
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_SERVICE_UNAVAILABLE;
       result->message = "Save docking station service not available";
       goal_handle->abort(result);
       return;
@@ -227,7 +232,7 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
 
     if (future.wait_for(5s) != std::future_status::ready)
     {
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_SERVICE_FAILED;
       result->message = "Save docking station service timed out";
       goal_handle->abort(result);
       return;
@@ -236,23 +241,26 @@ void MapRecorderNode::handleDockingAccepted(const std::shared_ptr<RecordDockingS
     auto service_response = future.get();
     if (service_response)
     {
-      result->success = service_response->success;
-      result->message = service_response->message;
-
-      if (service_response->success)
+      if (service_response->code == open_mower_next::srv::SaveDockingStation::Response::CODE_SUCCESS)
       {
+        result->code = RecordDockingStationAction::Result::CODE_SUCCESS;
+        result->message = service_response->message;
+        result->docking_station = docking_station;
+
         RCLCPP_INFO(get_logger(), "Docking station recording completed successfully");
         goal_handle->succeed(result);
       }
       else
       {
+        result->code = RecordDockingStationAction::Result::CODE_SERVICE_FAILED;
+        result->message = service_response->message;
         RCLCPP_ERROR(get_logger(), "Failed to save docking station: %s", service_response->message.c_str());
         goal_handle->abort(result);
       }
     }
     else
     {
-      result->success = false;
+      result->code = RecordDockingStationAction::Result::CODE_SERVICE_FAILED;
       result->message = "Failed to save docking station: service call failed";
       goal_handle->abort(result);
     }
@@ -304,10 +312,9 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
   current_area_type_ = goal->type;
   auto_recording_mode_ = goal->auto_recording;
 
-  auto distance_threshold = distance_threshold_;
   if (goal->distance_threshold > 0)
   {
-    distance_threshold = goal->distance_threshold;
+    distance_threshold_ = goal->distance_threshold;
   }
 
   set_recording_mode_service_ = create_service<std_srvs::srv::SetBool>(
@@ -343,7 +350,8 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
       pt.z = last_recorded_position_.pose.position.z;
       area_poly.polygon.points.push_back(pt);
 
-      feedback->status = "Recording started. Added first boundary point.";
+      feedback->status = RecordAreaBoundaryAction::Feedback::STATUS_RECORDING;
+      feedback->message = "Recording started. Added first boundary point.";
       feedback->point_count = 1;
       feedback->area = area_poly;
       goal_handle->publish_feedback(feedback);
@@ -352,7 +360,7 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
       {
         if (goal_handle->is_canceling())
         {
-          result->success = false;
+          result->code = RecordAreaBoundaryAction::Result::CODE_CANCELED;
           result->message = "Area boundary recording was canceled";
           goal_handle->canceled(result);
           is_recording_area_ = false;
@@ -388,7 +396,8 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
               updated_poly.polygon.points.push_back(p);
             }
 
-            feedback->status = "Added point automatically";
+            feedback->status = RecordAreaBoundaryAction::Feedback::STATUS_RECORDING;
+            feedback->message = "Added point automatically";
             feedback->point_count = current_boundary_points_.size();
             feedback->area = updated_poly;
             goal_handle->publish_feedback(feedback);
@@ -409,19 +418,27 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
 
       if (current_boundary_points_.size() < 3)
       {
-        result->success = false;
+        result->code = RecordAreaBoundaryAction::Result::CODE_TOO_FEW_POINTS;
         result->message = "Not enough points for a valid area boundary (minimum 3)";
         goal_handle->abort(result);
         return;
       }
 
+      feedback->status = RecordAreaBoundaryAction::Feedback::STATUS_PROCESSING;
+      feedback->message = "Processing recorded points...";
+      goal_handle->publish_feedback(feedback);
+
       if (!utils::isValidPolygon(current_boundary_points_))
       {
-        result->success = false;
+        result->code = RecordAreaBoundaryAction::Result::CODE_INVALID_POLYGON;
         result->message = "Invalid polygon formation";
         goal_handle->abort(result);
         return;
       }
+
+      feedback->status = RecordAreaBoundaryAction::Feedback::STATUS_SAVING;
+      feedback->message = "Saving area...";
+      goal_handle->publish_feedback(feedback);
 
       open_mower_next::msg::Area area;
       area.id = utils::generateUniqueId();
@@ -447,7 +464,7 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
 
       if (!save_area_client_->wait_for_service(10s))
       {
-        result->success = false;
+        result->code = RecordAreaBoundaryAction::Result::CODE_SERVICE_UNAVAILABLE;
         result->message = "Save area service not available";
         goal_handle->abort(result);
         return;
@@ -457,7 +474,7 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
 
       if (future.wait_for(5s) != std::future_status::ready)
       {
-        result->success = false;
+        result->code = RecordAreaBoundaryAction::Result::CODE_SERVICE_FAILED;
         result->message = "Save area service timed out";
         goal_handle->abort(result);
         return;
@@ -466,31 +483,33 @@ void MapRecorderNode::handleAreaBoundaryAccepted(const std::shared_ptr<RecordAre
       auto service_response = future.get();
       if (service_response)
       {
-        result->success = service_response->success;
-        result->message = service_response->message;
-        result->area = area;
-
-        if (service_response->success)
+        if (service_response->code == open_mower_next::srv::SaveArea::Response::CODE_SUCCESS)
         {
+          result->code = RecordAreaBoundaryAction::Result::CODE_SUCCESS;
+          result->message = service_response->message;
+          result->area = area;
+
           RCLCPP_INFO(get_logger(), "Area boundary recording completed successfully");
           goal_handle->succeed(result);
         }
         else
         {
+          result->code = RecordAreaBoundaryAction::Result::CODE_SERVICE_FAILED;
+          result->message = service_response->message;
           RCLCPP_ERROR(get_logger(), "Failed to save area: %s", service_response->message.c_str());
           goal_handle->abort(result);
         }
       }
       else
       {
-        result->success = false;
+        result->code = RecordAreaBoundaryAction::Result::CODE_SERVICE_FAILED;
         result->message = "Failed to save area, service call failed";
         goal_handle->abort(result);
       }
     }
     catch (const std::exception& e)
     {
-      result->success = false;
+      result->code = RecordAreaBoundaryAction::Result::CODE_UNKNOWN_ERROR;
       result->message = std::string("Error during recording: ") + e.what();
       goal_handle->abort(result);
       is_recording_area_ = false;
@@ -568,7 +587,7 @@ void MapRecorderNode::handleAddBoundaryPoint(const std::shared_ptr<std_srvs::srv
       }
 
       feedback->area = updated_poly;
-      feedback->status = "Added point manually";
+      feedback->message = "Added point manually";
       feedback->point_count = current_boundary_points_.size();
       area_boundary_goal_handle_->publish_feedback(feedback);
 

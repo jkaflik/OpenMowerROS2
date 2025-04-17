@@ -29,8 +29,8 @@ This section is not complete yet. It will be updated as the project progresses.
   - :white_check_mark: Odometry
   - :white_check_mark: IMU
   - :white_check_mark: GPS
-- :construction: Simulation using Gazebo
-- :construction: [Map management](https://github.com/jkaflik/OpenMowerNext/issues/19)
+- :white_check_mark: Simulation using Gazebo
+- :white_check_mark: Map management
 - :pencil2: [Mower logic](https://github.com/jkaflik/OpenMowerNext/issues/9)
 - :pencil2: [Configuration](configuration.md)
 - :pencil2: User interface

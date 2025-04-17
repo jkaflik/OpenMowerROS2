@@ -129,7 +129,7 @@ void MapServerNode::saveAreaHandler(srv::SaveArea::Request::SharedPtr request,
 
         saveAndPublishMap();
 
-        response->success = true;
+        response->code = srv::SaveArea::Response::CODE_SUCCESS;
         response->message = "Area updated successfully";
         return;
       }
@@ -140,13 +140,13 @@ void MapServerNode::saveAreaHandler(srv::SaveArea::Request::SharedPtr request,
 
     saveAndPublishMap();
 
-    response->success = true;
+    response->code = srv::SaveArea::Response::CODE_SUCCESS;
     response->message = "Area added successfully";
   }
   catch (const std::exception& e)
   {
     RCLCPP_ERROR(get_logger(), "Failed to save area: %s", e.what());
-    response->success = false;
+    response->code = srv::SaveArea::Response::CODE_SAVE_FAILED;
     response->message = std::string("Failed to save area: ") + e.what();
   }
 }
@@ -165,20 +165,20 @@ void MapServerNode::removeAreaHandler(srv::RemoveArea::Request::SharedPtr reques
         current_map_.areas.erase(it);
         saveAndPublishMap();
 
-        response->success = true;
+        response->code = srv::RemoveArea::Response::CODE_SUCCESS;
         response->message = "Area removed successfully";
         return;
       }
     }
 
     RCLCPP_WARN(get_logger(), "Area %s not found", request->id.c_str());
-    response->success = false;
+    response->code = srv::RemoveArea::Response::CODE_NOT_FOUND;
     response->message = "Area not found: " + request->id;
   }
   catch (const std::exception& e)
   {
     RCLCPP_ERROR(get_logger(), "Failed to remove area: %s", e.what());
-    response->success = false;
+    response->code = srv::RemoveArea::Response::CODE_UNKNOWN_ERROR;
     response->message = std::string("Failed to remove area: ") + e.what();
   }
 }
@@ -199,7 +199,7 @@ void MapServerNode::saveDockingStationHandler(srv::SaveDockingStation::Request::
 
         saveAndPublishMap();
 
-        response->success = true;
+        response->code = srv::SaveDockingStation::Response::CODE_SUCCESS;
         response->message = "Docking station updated successfully";
         return;
       }
@@ -210,13 +210,13 @@ void MapServerNode::saveDockingStationHandler(srv::SaveDockingStation::Request::
 
     saveAndPublishMap();
 
-    response->success = true;
+    response->code = srv::SaveDockingStation::Response::CODE_SUCCESS;
     response->message = "Docking station added successfully";
   }
   catch (const std::exception& e)
   {
     RCLCPP_ERROR(get_logger(), "Failed to save docking station: %s", e.what());
-    response->success = false;
+    response->code = srv::SaveDockingStation::Response::CODE_SAVE_FAILED;
     response->message = std::string("Failed to save docking station: ") + e.what();
   }
 }
@@ -235,20 +235,20 @@ void MapServerNode::removeDockingStationHandler(srv::RemoveDockingStation::Reque
         current_map_.docking_stations.erase(it);
         saveAndPublishMap();
 
-        response->success = true;
+        response->code = srv::RemoveDockingStation::Response::CODE_SUCCESS;
         response->message = "Docking station removed successfully";
         return;
       }
     }
 
     RCLCPP_WARN(get_logger(), "Docking station %s not found", request->id.c_str());
-    response->success = false;
+    response->code = srv::RemoveDockingStation::Response::CODE_NOT_FOUND;
     response->message = "Docking station not found: " + request->id;
   }
   catch (const std::exception& e)
   {
     RCLCPP_ERROR(get_logger(), "Failed to remove docking station: %s", e.what());
-    response->success = false;
+    response->code = srv::RemoveDockingStation::Response::CODE_UNKNOWN_ERROR;
     response->message = std::string("Failed to remove docking station: ") + e.what();
   }
 }

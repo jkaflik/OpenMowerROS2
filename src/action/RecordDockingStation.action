@@ -2,9 +2,26 @@
 string name  # Name for the docking station
 ---
 # Result
-bool success         # Whether recording was successful
-string message       # Information message
+uint16 CODE_SUCCESS = 0
+uint16 CODE_NO_CHARGING_DETECTED = 1
+uint16 CODE_POOR_LOCALIZATION = 2
+uint16 CODE_SERVICE_UNAVAILABLE = 3
+uint16 CODE_SERVICE_FAILED = 4
+uint16 CODE_CANCELED = 5
+uint16 CODE_DRIVE_FAILURE = 6
+uint16 CODE_UNKNOWN_ERROR = 99
+
+uint16 code                # 0 is success, otherwise is error code
+string message             # Information message
 DockingStation docking_station  # The recorded docking station
 ---
 # Feedback
-string status        # Current status of recording
+uint16 STATUS_NONE = 0
+uint16 STATUS_DRIVING = 1
+uint16 STATUS_WAITING_FOR_CHARGING = 2
+uint16 STATUS_RECORDING = 3
+uint16 STATUS_SAVING = 4
+uint16 STATUS_ERROR = 99
+
+uint16 status              # Current status of recording
+string message             # Information message
