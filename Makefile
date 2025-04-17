@@ -24,7 +24,7 @@ build-release:
 	colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 sim:
-	source /opt/ws/.devcontainer/default.env 
+	source .devcontainer/default.env 
 	killall -9 ruby || true
 	ros2 launch launch/sim.launch.py
 

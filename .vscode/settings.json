@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "/opt/ws",
+    "cmake.sourceDirectory": "${workspaceFolder}",
     "ros.distro": "jazzy",
     // Replace CMake environment configuration with a better approach
     "cmake.buildDirectory": "${workspaceFolder}/build",
@@ -20,11 +20,11 @@
         ]
     },
     "python.autoComplete.extraPaths": [
-        "/home/ws/install/vesc_msgs/lib/python3.12/site-packages",
+        "${workspaceFolder}/install/vesc_msgs/lib/python3.12/site-packages",
         "/opt/ros/jazzy/lib/python3.12/site-packages"
     ],
     "python.analysis.extraPaths": [
-        "/home/ws/install/vesc_msgs/lib/python3.12/site-packages",
+        "${workspaceFolder}/install/vesc_msgs/lib/python3.12/site-packages",
         "/opt/ros/jazzy/lib/python3.12/site-packages"
     ],
     "json.schemas": [

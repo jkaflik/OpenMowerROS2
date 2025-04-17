@@ -1,36 +1,36 @@
 {
-    "configurations": [
-        {
-            "browse": {
-                "databaseFilename": "${default}",
-                "limitSymbolsToIncludedHeaders": false
-            },
-            "includePath": [
-                "/home/ws/install/vesc_hw_interface/include/**",
-                "/home/ws/install/vesc_driver/include/**",
-                "/home/ws/install/vesc_msgs/include/**",
-                "/home/ws/install/udp_driver/include/**",
-                "/home/ws/install/serial_driver/include/**",
-                "/home/ws/install/io_context/include/**",
-                "/opt/ros/jazzy/include/**",
-                "/opt/ws/src/**",
-                "/opt/ws/build/**",
-                "/home/ws/src/openmower/include/**",
-                "/home/ws/src/openmower_hw_comms/include/**",
-                "/home/ws/src/transport_drivers/io_context/include/**",
-                "/home/ws/src/transport_drivers/serial_driver/include/**",
-                "/home/ws/src/transport_drivers/udp_driver/include/**",
-                "/home/ws/src/vesc/vesc_driver/include/**",
-                "/home/ws/src/vesc/vesc_hw_interface/include/**",
-                "/usr/include/**"
-            ],
-            "name": "ROS",
-            "intelliSenseMode": "gcc-arm64",
-            "compilerPath": "/usr/bin/g++",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "configurationProvider": "ms-vscode.cmake-tools"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "${workspaceFolder}/install/vesc_hw_interface/include/**",
+        "${workspaceFolder}/install/vesc_driver/include/**",
+        "${workspaceFolder}/install/vesc_msgs/include/**",
+        "${workspaceFolder}/install/udp_driver/include/**",
+        "${workspaceFolder}/install/serial_driver/include/**",
+        "${workspaceFolder}/install/io_context/include/**",
+        "/opt/ros/jazzy/include/**",
+        "${workspaceFolder}/src/**",
+        "${workspaceFolder}/build/**",
+        "${workspaceFolder}/src/openmower/include/**",
+        "${workspaceFolder}/src/openmower_hw_comms/include/**",
+        "${workspaceFolder}/src/transport_drivers/io_context/include/**",
+        "${workspaceFolder}/src/transport_drivers/serial_driver/include/**",
+        "${workspaceFolder}/src/transport_drivers/udp_driver/include/**",
+        "${workspaceFolder}/src/vesc/vesc_driver/include/**",
+        "${workspaceFolder}/src/vesc/vesc_hw_interface/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-arm64",
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    }
+  ],
+  "version": 4
 }
