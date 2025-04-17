@@ -33,7 +33,7 @@ Accelerometer and gyroscope is required. Magnetometer is not fused.
 ### GPU
 
 It's expected GPS is RTK capable. Otherwise, localization will be inaccurate.
-More on this in [GPS](gps.md) section.
+More on this in [GPS](../gps.md) section.
 
 ## Configuration
 

@@ -47,7 +47,7 @@ Project is tested on YardForce Classic 500B model. It should work on other model
 ### Hardware
 
 - [Setup as for OpenMower](https://openmower.de/docs/robot-assembly/prepare-the-parts/)
-  - [OpenMower v0.13.x mainboard](https://openmower.de/docs/robot-assembly/prepare-the-parts/prepare-mainboard/) with [omros2-firmware](https://github.com/jkaflik/omros2-firmware) flashed. Learn more about the custom firmware in [omros2-firmware](omros2-firmware).
+  - [OpenMower v0.13.x mainboard](https://openmower.de/docs/robot-assembly/prepare-the-parts/prepare-mainboard/) with [omros2-firmware](https://github.com/jkaflik/omros2-firmware) flashed. Learn more about the custom firmware in [omros2-firmware](architecture/omros2-firmware).
 
 ### Software
 
