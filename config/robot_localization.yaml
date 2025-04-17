@@ -174,3 +174,4 @@ navsat_transform_node:
     publish_filtered_gps: true
     wait_for_datum: true
     use_odometry_yaw: false
+    use_local_cartesian: true

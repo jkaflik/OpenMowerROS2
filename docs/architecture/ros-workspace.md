@@ -5,13 +5,10 @@
 ROS workspace is a directory where you can build and run ROS packages. It is a recommended way to organize your ROS projects.
 It's no different for OpenMowerNext. The root of the repository is a ROS workspace.
 
-## Main packages
+## Nodes
 
-### Map management
-
-The map management is a ROS package responsible for managing map. It is a drop-in replacement for [nav2 map server](https://navigation.ros.org/configuration/packages/configuring-map-server.html).
-
-More information can be found in [map management](map-management.md) section.
+- [`map_server`](map-server) - a ROS node responsible for managing map and providing map-related services to navigation stack
+- [`map_recorder`](map-recorder) - a ROS node responsible for recording map
 
 ## External packages
 
@@ -21,7 +18,7 @@ There are few biggest chunks to mention:
 - [nav2](https://navigation.ros.org/) - navigation stack
 - [robot_localization](http://docs.ros.org/en/noetic/api/robot_localization/html/index.html) - fuse sensors data to get accurate pose estimation
 - [NTRIP client](https://github.com/LORD-MicroStrain/ntrip_client) - a ROS node to connect to NTRIP caster and get RTK corrections
-- [Foxglove bridge](https://foxglove.dev/docs/studio/connection/using-foxglove-bridge) - a ROS node exposing websocket connection to Foxglove Studio. See instructions [here](visualisation). It can be used for custom Web UIs as well.
+- [Foxglove bridge](https://foxglove.dev/docs/studio/connection/using-foxglove-bridge) - a ROS node exposing websocket connection to Foxglove Studio. See instructions [here](../visualisation). It can be used for custom Web UIs as well.
 
 Hardware specific packages:
 

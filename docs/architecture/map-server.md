@@ -1,20 +1,29 @@
 ---
-title: Map management
+title: Map server
 ---
 # {{ $frontmatter.title }}
 
 ## Overview
 
-The map management is a ROS package responsible for managing map. It is a drop-in replacement for [nav2 map server](https://navigation.ros.org/configuration/packages/configuring-map-server.html).
+Map server is a ROS node responsible for managing map and providing map-related services to navigation stack.
+
+Such as:
+- map persistence as a GeoJSON file
+- adding and removing areas or docking stations
+- publishing map
+- publishing costmap grid for navigation stack
+- publishing helper topics for visualization
 
 Map provides a static 2D environment representation used for robot navigation.
 The main concept is to have a map that consists of a set of areas. Map is created by combining multiple areas together. Obstacle areas are decoupled from navigation areas and can be added or removed at any time.
 
 The second concept is a pose of docking station. It consists of a position and orientation. Position is a middle of the charging connectors. Orientation heading towards the robot's connectors.
 
+It is a drop-in replacement for [nav2 map server](https://navigation.ros.org/configuration/packages/configuring-map-server.html).
+
 ### ROS message definition
 
-<<< ../src/msg/Map.msg
+<<< ../../src/msg/Map.msg
 
 ## Area
 
@@ -31,7 +40,7 @@ Area name is used to identify the area. It's not required to be unique, but it's
 
 ### ROS message definition
 
-<<< ../src/msg/Area.msg
+<<< ../../src/msg/Area.msg
 
 
 ## Docking station
@@ -43,7 +52,7 @@ Pose is a position and orientation of the docking station. Position is a middle 
 
 ### ROS message definition
 
-<<< ../src/msg/DockingStation.msg
+<<< ../../src/msg/DockingStation.msg
 
 ## Map management API
 
@@ -54,19 +63,19 @@ All operations are performed using ROS services. After each operation, the map i
 
 #### Save area `/save_area`
 
-<<< ../src/srv/SaveArea.srv
+<<< ../../src/srv/SaveArea.srv
 
 #### Remove area `/remove_area`
 
-<<< ../src/srv/RemoveArea.srv
+<<< ../../src/srv/RemoveArea.srv
 
 #### Save docking station `/save_docking_station`
 
-<<< ../src/srv/SaveDockingStation.srv
+<<< ../../src/srv/SaveDockingStation.srv
 
 #### Remove docking station `/remove_docking_station`
 
-<<< ../src/srv/RemoveDockingStation.srv
+<<< ../../src/srv/RemoveDockingStation.srv
 
 ## Supported map types
 

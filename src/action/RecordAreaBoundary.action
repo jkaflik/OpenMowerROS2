@@ -1,0 +1,31 @@
+# Goal
+string name
+uint8 type # type of the area. 0 = obstacle, 1 = navigation, 2 = operation
+bool auto_recording        # Whether to record points automatically
+float64 distance_threshold # Minimum distance between recorded points in auto mode (defaults to 5cm)
+---
+# Result
+uint16 CODE_SUCCESS = 0
+uint16 CODE_INVALID_POLYGON = 1
+uint16 CODE_TOO_FEW_POINTS = 2  
+uint16 CODE_SERVICE_UNAVAILABLE = 3
+uint16 CODE_SERVICE_FAILED = 4
+uint16 CODE_CANCELED = 5
+uint16 CODE_UNKNOWN_ERROR = 99
+
+uint16 code                # 0 is success, otherwise is error code
+string message             # Information message
+Area area                  # The recorded area
+---
+# Feedback
+
+uint16 STATUS_NONE = 0
+uint16 STATUS_RECORDING = 1
+uint16 STATUS_PROCESSING = 2
+uint16 STATUS_SAVING = 3
+uint16 STATUS_ERROR = 99
+
+uint16 status              # Current status of recording
+string message             # Information message
+uint32 point_count         # Number of points recorded so far
+geometry_msgs/PolygonStamped area # area of the zone

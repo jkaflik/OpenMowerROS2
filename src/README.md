@@ -1,5 +1,7 @@
 # `/src` structure
 
+All nodes are expected to be implemented in C++ and are organized into subdirectories based on their functionality. The directory structure is designed to facilitate easy navigation and understanding of the project.
+
 ## Directory Structure
 
 - `action/` - Action type definitions (e.g., Dock.action)
@@ -19,7 +21,11 @@ When adding new code to this project:
 3. Place new ROS action definitions in the `action/` directory
 4. Nodes and components should be placed in the appropriate subdirectory under `src/` based on their functionality
    - For example, if you are adding a new node for docking action server, place it in `src/docking_action_server`
+   - Do not organize `.cpp` and `.hpp` files into separate directories. Keep header and source files together in the same directory.
 5. Organize code by functionality in appropriately named subdirectories
+6. Use shared `/CMakeLists.txt`, add your node as a target in the `CMakeLists.txt` file.
+7. Use shared `/package.xml`, add your node as a dependency in the `package.xml` file. 
+8. Follow the existing code style and conventions used in the project
 
 ## Building
 

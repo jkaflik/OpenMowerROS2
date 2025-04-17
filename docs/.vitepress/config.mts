@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitepress'
 import { withMermaid } from "vitepress-plugin-mermaid";
+import rosidl from "./ros-idl";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
@@ -10,6 +10,11 @@ export default withMermaid({
     // ignore all localhost links
     /^https?:\/\/localhost/,
   ],
+  markdown: {
+    shikiSetup: (shiki) => {
+      shiki.loadLanguage(rosidl);
+    },
+  },
   themeConfig: {
     search: {
       provider: 'local',
@@ -29,12 +34,13 @@ export default withMermaid({
         ],
       },
       {
-        text: 'Components explained',
+        text: 'Architecture',
         items: [
-          { text: 'ROS workspace', link: '/ros-workspace' },
-          { text: 'Mainboard firmware', link: '/omros2-firmware' },
-          { text: 'Robot localization', link: '/localization' },
-          { text: 'Map management', link: '/map-management' },
+          { text: 'ROS workspace', link: '/architecture/ros-workspace' },
+          { text: 'Mainboard firmware', link: '/architecture/omros2-firmware' },
+          { text: 'Robot localization', link: '/architecture/localization' },
+          { text: 'Map server', link: '/architecture/map-server' },
+          { text: 'Map recorder', link: '/architecture/map-recorder' },
         ]
       },
       {

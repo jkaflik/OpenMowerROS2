@@ -17,6 +17,7 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
   <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>nav2_msgs</depend>
@@ -26,6 +27,7 @@
   <depend>behaviortree_cpp</depend>
   <depend>ament_index_cpp</depend>
   <depend>visualization_msgs</depend>
+  <depend>geographiclib</depend>
 
   <build_depend>nlohmann_json_schema_validator_vendor</build_depend>
 
