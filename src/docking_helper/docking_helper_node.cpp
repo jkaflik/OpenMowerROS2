@@ -134,6 +134,31 @@ void open_mower_next::docking_helper::DockingHelperNode::findNearestDockingStati
   }
 }
 
+std::shared_ptr<geometry_msgs::msg::PoseStamped> open_mower_next::docking_helper::DockingHelperNode::dockingStationPose(
+    const std::shared_ptr<open_mower_next::msg::DockingStation>& station)
+{
+  if (!station)
+  {
+    RCLCPP_ERROR(get_logger(), "Cannot transform null docking station");
+    return nullptr;
+  }
+
+  auto pose_stamped = std::make_shared<geometry_msgs::msg::PoseStamped>();
+  pose_stamped->header = station->pose.header;
+  pose_stamped->pose = station->pose.pose;
+
+  tf2::Quaternion q_orig, q_rot, q_new;
+  tf2::fromMsg(pose_stamped->pose.orientation, q_orig);
+
+  q_rot.setRPY(0.0, 0.0, M_PI);  // Rotate 180 degrees around Z
+  q_new = q_orig * q_rot;        // Apply rotation
+  q_new.normalize();
+
+  pose_stamped->pose.orientation = tf2::toMsg(q_new);
+
+  return pose_stamped;
+}
+
 rclcpp_action::GoalResponse open_mower_next::docking_helper::DockingHelperNode::handleDockRobotNearestGoal(
     const rclcpp_action::GoalUUID& uuid, std::shared_ptr<const DockRobotNearestAction::Goal> goal)
 {
@@ -197,7 +222,7 @@ void open_mower_next::docking_helper::DockingHelperNode::handleDockRobotNearestA
     nav2_goal.use_dock_id = false;
     nav2_goal.navigate_to_staging_pose = true;
     nav2_goal.dock_pose.header = nearest_station->pose.header;
-    nav2_goal.dock_pose.pose = nearest_station->pose.pose;
+    nav2_goal.dock_pose.pose = dockingStationPose(nearest_station)->pose;
 
     if (!dock_client_->wait_for_action_server(std::chrono::seconds(5)))
     {
@@ -400,7 +425,7 @@ void open_mower_next::docking_helper::DockingHelperNode::handleDockRobotToAccept
     nav2_goal.use_dock_id = false;
     nav2_goal.navigate_to_staging_pose = true;
     nav2_goal.dock_pose.header = docking_station->pose.header;
-    nav2_goal.dock_pose.pose = docking_station->pose.pose;
+    nav2_goal.dock_pose.pose = dockingStationPose(docking_station)->pose;
 
     if (!dock_client_->wait_for_action_server(std::chrono::seconds(5)))
     {
