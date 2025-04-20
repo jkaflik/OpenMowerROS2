@@ -23,7 +23,6 @@ def generate_launch_description():
     remappings = [
         ('/tf', 'tf'),
         ('/tf_static', 'tf_static'),
-        ('battery_state', 'power'),
     ]
 
     use_sim_time = LaunchConfiguration('use_sim_time')
