@@ -77,5 +77,6 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+    <opennav_docking plugin="${prefix}/src/docking_helper/plugins.xml" />
   </export>
 </package>

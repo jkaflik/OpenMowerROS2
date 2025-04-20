@@ -41,7 +41,7 @@ private:
       std::shared_ptr<open_mower_next::srv::FindNearestDockingStation::Response> response);
 
   std::shared_ptr<geometry_msgs::msg::PoseStamped>
-  dockingStationPose(const std::shared_ptr<open_mower_next::msg::DockingStation>& station);
+  dockPose(const std::shared_ptr<open_mower_next::msg::DockingStation>& station);
 
   rclcpp::Service<open_mower_next::srv::FindNearestDockingStation>::SharedPtr find_nearest_docking_station_service_;
 

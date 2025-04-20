@@ -179,17 +179,8 @@ docking_server:
 
     dock_plugins: ['openmower']
     openmower:
-      plugin: 'opennav_docking::SimpleChargingDock'
-      docking_threshold: 0.05
+      plugin: 'open_mower_next::docking_helper::ChargerPresenceChargingDock'
       staging_x_offset: -1.0
-      
-      use_external_detection_pose: false
-      use_stall_detection: false
-
-      use_battery_status: true
-      charging_threshold: 0.2
-
-      filter_coef: 0.1
 
     controller:
       k_phi: 3.0

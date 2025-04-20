@@ -134,7 +134,7 @@ void open_mower_next::docking_helper::DockingHelperNode::findNearestDockingStati
   }
 }
 
-std::shared_ptr<geometry_msgs::msg::PoseStamped> open_mower_next::docking_helper::DockingHelperNode::dockingStationPose(
+std::shared_ptr<geometry_msgs::msg::PoseStamped> open_mower_next::docking_helper::DockingHelperNode::dockPose(
     const std::shared_ptr<open_mower_next::msg::DockingStation>& station)
 {
   if (!station)
@@ -147,14 +147,31 @@ std::shared_ptr<geometry_msgs::msg::PoseStamped> open_mower_next::docking_helper
   pose_stamped->header = station->pose.header;
   pose_stamped->pose = station->pose.pose;
 
+  geometry_msgs::msg::TransformStamped transform_stamped =
+      tf_buffer_->lookupTransform("base_link", "charging_port", tf2::TimePointZero);
+
+  double offset_distance =
+      std::sqrt(transform_stamped.transform.translation.x * transform_stamped.transform.translation.x +
+                transform_stamped.transform.translation.y * transform_stamped.transform.translation.y);
+
+  RCLCPP_INFO(get_logger(), "Calculated offset distance from base_link to charging_port: %f", offset_distance);
+
   tf2::Quaternion q_orig, q_rot, q_new;
   tf2::fromMsg(pose_stamped->pose.orientation, q_orig);
-
   q_rot.setRPY(0.0, 0.0, M_PI);  // Rotate 180 degrees around Z
-  q_new = q_orig * q_rot;        // Apply rotation
+  q_new = q_orig * q_rot;
   q_new.normalize();
 
   pose_stamped->pose.orientation = tf2::toMsg(q_new);
+
+  tf2::Vector3 offset(offset_distance, 0.0, 0.0);
+  tf2::Transform transform;
+  transform.setRotation(q_new);
+  tf2::Vector3 translated_offset = transform * offset;
+
+  pose_stamped->pose.position.x -= translated_offset.x();
+  pose_stamped->pose.position.y -= translated_offset.y();
+  pose_stamped->pose.position.z -= translated_offset.z();
 
   return pose_stamped;
 }
@@ -222,7 +239,7 @@ void open_mower_next::docking_helper::DockingHelperNode::handleDockRobotNearestA
     nav2_goal.use_dock_id = false;
     nav2_goal.navigate_to_staging_pose = true;
     nav2_goal.dock_pose.header = nearest_station->pose.header;
-    nav2_goal.dock_pose.pose = dockingStationPose(nearest_station)->pose;
+    nav2_goal.dock_pose.pose = dockPose(nearest_station)->pose;
 
     if (!dock_client_->wait_for_action_server(std::chrono::seconds(5)))
     {
@@ -425,7 +442,7 @@ void open_mower_next::docking_helper::DockingHelperNode::handleDockRobotToAccept
     nav2_goal.use_dock_id = false;
     nav2_goal.navigate_to_staging_pose = true;
     nav2_goal.dock_pose.header = docking_station->pose.header;
-    nav2_goal.dock_pose.pose = dockingStationPose(docking_station)->pose;
+    nav2_goal.dock_pose.pose = dockPose(docking_station)->pose;
 
     if (!dock_client_->wait_for_action_server(std::chrono::seconds(5)))
     {

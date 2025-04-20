@@ -30,6 +30,8 @@ find_package(ament_index_cpp REQUIRED)
 find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(opennav_docking REQUIRED)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/share/cmake/geographiclib/")
 find_package(GeographicLib REQUIRED)
@@ -157,10 +159,37 @@ ament_target_dependencies(docking_helper
         tf2_geometry_msgs
         nav2_msgs
         geometry_msgs
+        std_msgs
 )
 
 INSTALL(TARGETS docking_helper
         DESTINATION lib/${PROJECT_NAME})
+
+add_library(charger_presence_charging_dock SHARED
+        src/docking_helper/charger_presence_charging_dock.cpp)
+target_compile_features(charger_presence_charging_dock PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(charger_presence_charging_dock PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(charger_presence_charging_dock
+  pluginlib
+  opennav_docking_core
+  std_msgs
+  rclcpp_lifecycle
+  tf2_ros
+)
+
+INSTALL(TARGETS charger_presence_charging_dock
+        DESTINATION lib/${PROJECT_NAME})
+
+INSTALL(FILES src/docking_helper/charger_presence_charging_dock.hpp
+        DESTINATION include/${PROJECT_NAME}/docking_helper)
+
+set_target_properties(charger_presence_charging_dock PROPERTIES LINKER_LANGUAGE CXX)
+pluginlib_export_plugin_description_file(opennav_docking_core src/docking_helper/plugins.xml)
+
 
 ##
 # docking_helper
