@@ -31,12 +31,6 @@ open_mower_next::docking_helper::DockingHelperNode::DockingHelperNode(const rclc
       this, "dock_robot_to", std::bind(&DockingHelperNode::handleDockRobotToGoal, this, _1, _2),
       std::bind(&DockingHelperNode::handleDockRobotToCancel, this, _1),
       std::bind(&DockingHelperNode::handleDockRobotToAccepted, this, _1));
-
-  while (!dock_client_->wait_for_action_server(std::chrono::seconds(1)))
-  {
-    RCLCPP_INFO(get_logger(), "Waiting for dock action server...");
-  }
-  RCLCPP_INFO(get_logger(), "Dock action server is available");
 }
 
 open_mower_next::docking_helper::DockingHelperNode::~DockingHelperNode()
