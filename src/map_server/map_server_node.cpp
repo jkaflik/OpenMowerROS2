@@ -65,6 +65,12 @@ void MapServerNode::publishMap()
   RCLCPP_INFO(get_logger(), "Publishing map");
   map_publisher_->publish(current_map_);
 
+  if (current_map_.areas.empty())
+  {
+    RCLCPP_WARN(get_logger(), "No areas found in the map. Occupancy grid will not be published.");
+    return;
+  }
+
   RCLCPP_INFO(get_logger(), "Publishing occupancy grid");
   occupancy_grid_publisher_->publish(mapToOccupancyGrid(current_map_));
 
