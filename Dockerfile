@@ -67,6 +67,10 @@ COPY --from=builder $WORKSPACE/build $WORKSPACE/build
 COPY --from=builder $WORKSPACE/description $WORKSPACE/description
 COPY --from=builder /opt/ros/$ROS_DISTRO /opt/ros/$ROS_DISTRO
 
+# Copy XML plugins definition
+# TODO: this should be worked out better
+COPY --from=builder $WORKSPACE/src/docking_helper/plugins.xml $WORKSPACE/src/docking_helper/plugins.xml
+
 RUN mkdir -p $WORKSPACE \
     && chown -R $USERNAME:$USERNAME $WORKSPACE
 
