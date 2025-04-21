@@ -305,54 +305,47 @@ void open_mower_next::docking_helper::DockingHelperNode::executeDockingAction(
 
   dock_client_->async_send_goal(nav2_goal, send_goal_options);
 
-  std::thread feedback_thread([&]() {
-    std::string status_messages[] = { "No activity",         "Navigating to staging pose", "Initial perception of dock",
-                                      "Controlling to dock", "Waiting for charge",         "Retrying docking" };
+  std::string status_messages[] = { "No activity",         "Navigating to staging pose", "Initial perception of dock",
+                                    "Controlling to dock", "Waiting for charge",         "Retrying docking" };
 
-    uint16_t last_status = 99;  // Invalid value to ensure first update is sent
-    uint16_t last_retries = 0;
+  uint16_t last_status = 99;  // Invalid value to ensure first update is sent
+  uint16_t last_retries = 0;
 
-    while (docking_active && rclcpp::ok())
+  while (docking_active && rclcpp::ok())
+  {
+    auto current_time = this->now();
+    auto elapsed = current_time - start_time;
+    feedback->docking_time.sec = elapsed.seconds();
+    feedback->docking_time.nanosec = elapsed.nanoseconds() % 1000000000;
+
+    uint16_t status = *current_status;
+    uint16_t retries = *current_retries;
+
+    if (status != last_status || retries != last_retries)
     {
-      auto current_time = this->now();
-      auto elapsed = current_time - start_time;
-      feedback->docking_time.sec = elapsed.seconds();
-      feedback->docking_time.nanosec = elapsed.nanoseconds() % 1000000000;
+      feedback->status = status;
+      feedback->num_retries = retries;
 
-      uint16_t status = *current_status;
-      uint16_t retries = *current_retries;
-
-      if (status != last_status || retries != last_retries)
+      if (status < sizeof(status_messages) / sizeof(status_messages[0]))
       {
-        feedback->status = status;
-        feedback->num_retries = retries;
-
-        if (status < sizeof(status_messages) / sizeof(status_messages[0]))
+        feedback->message = status_messages[status];
+        if (retries > 0)
         {
-          feedback->message = status_messages[status];
-          if (retries > 0)
-          {
-            feedback->message += " (retry " + std::to_string(retries) + ")";
-          }
+          feedback->message += " (retry " + std::to_string(retries) + ")";
         }
-        else
-        {
-          feedback->message = "Unknown status: " + std::to_string(status);
-        }
-
-        last_status = status;
-        last_retries = retries;
-
-        goal_handle->publish_feedback(feedback);
+      }
+      else
+      {
+        feedback->message = "Unknown status: " + std::to_string(status);
       }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-  });
+      last_status = status;
+      last_retries = retries;
 
-  if (feedback_thread.joinable())
-  {
-    feedback_thread.join();
+      goal_handle->publish_feedback(feedback);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 

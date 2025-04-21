@@ -25,6 +25,7 @@ void ChargerPresenceChargingDock::configure(const rclcpp_lifecycle::LifecycleNod
   node_->declare_parameter(name + ".staging_yaw_offset", 0.0);
 
   staging_x_offset_ = node_->get_parameter(name + ".staging_x_offset").as_double();
+  staging_yaw_offset_ = node_->get_parameter(name + ".staging_yaw_offset").as_double();
 
   is_charging_sub_ = node_->create_subscription<std_msgs::msg::Bool>(
       "/power/charger_present", 10, [this](const std_msgs::msg::Bool::SharedPtr msg) { is_charging_ = msg->data; });
