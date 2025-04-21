@@ -28,6 +28,7 @@
   <depend>ament_index_cpp</depend>
   <depend>visualization_msgs</depend>
   <depend>geographiclib</depend>
+  <depend>opennav_docking</depend>
 
   <build_depend>nlohmann_json_schema_validator_vendor</build_depend>
 
@@ -76,5 +77,6 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+    <opennav_docking plugin="${prefix}/src/docking_helper/plugins.xml" />
   </export>
 </package>

@@ -1,0 +1,7 @@
+<class_libraries>
+    <library path="charger_presence_charging_dock">
+        <class type="open_mower_next::docking_helper::ChargerPresenceChargingDock" base_class_type="opennav_docking_core::ChargingDock">
+            <description>SimpleChargingDock that uses boolean topic to determine if dock charging capability is available.</description>
+        </class>
+    </library>
+</class_libraries>

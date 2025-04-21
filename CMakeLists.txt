@@ -30,6 +30,8 @@ find_package(ament_index_cpp REQUIRED)
 find_package(foxglove_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(opennav_docking REQUIRED)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/share/cmake/geographiclib/")
 find_package(GeographicLib REQUIRED)
@@ -39,11 +41,12 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "src/srv/RemoveDockingStation.srv"
         "src/srv/SaveArea.srv"
         "src/srv/SaveDockingStation.srv"
+        "src/srv/FindNearestDockingStation.srv"
         "src/msg/Area.msg"
         "src/msg/Map.msg"
         "src/msg/DockingStation.msg"
-        "src/action/DockTo.action"
-        "src/action/DockNearest.action"
+        "src/action/DockRobotTo.action"
+        "src/action/DockRobotNearest.action"
         "src/action/RecordDockingStation.action"
         "src/action/RecordAreaBoundary.action"
         DEPENDENCIES
@@ -108,11 +111,7 @@ INSTALL(TARGETS map_server_node
 ###
 add_executable(sim_node
         src/sim/node_main.cpp
-        src/sim/sim_node.hpp
-        src/sim/sim_node.cpp
-        src/sim/sim_node.cpp
-        src/sim/sim_node.hpp
-        src/sim/node_main.cpp)
+        src/sim/sim_node.cpp)
 target_compile_features(sim_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(sim_node PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
@@ -131,6 +130,64 @@ INSTALL(TARGETS sim_node
 
 ##
 # sim_node
+##
+##
+
+###
+# docking_helper
+###
+add_executable(docking_helper
+        src/docking_helper/main.cpp
+        src/docking_helper/docking_helper_node.cpp)
+target_compile_features(docking_helper PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(docking_helper PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(docking_helper "${cpp_typesupport_target}")
+
+ament_target_dependencies(docking_helper
+        rclcpp
+        rclcpp_action
+        tf2
+        tf2_ros
+        tf2_geometry_msgs
+        nav2_msgs
+        geometry_msgs
+        std_msgs
+)
+
+INSTALL(TARGETS docking_helper
+        DESTINATION lib/${PROJECT_NAME})
+
+add_library(charger_presence_charging_dock SHARED
+        src/docking_helper/charger_presence_charging_dock.cpp)
+target_compile_features(charger_presence_charging_dock PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(charger_presence_charging_dock PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(charger_presence_charging_dock
+  pluginlib
+  opennav_docking_core
+  std_msgs
+  rclcpp_lifecycle
+  tf2_ros
+)
+
+INSTALL(TARGETS charger_presence_charging_dock
+        DESTINATION lib/${PROJECT_NAME})
+
+INSTALL(FILES src/docking_helper/charger_presence_charging_dock.hpp
+        DESTINATION include/${PROJECT_NAME}/docking_helper)
+
+set_target_properties(charger_presence_charging_dock PROPERTIES LINKER_LANGUAGE CXX)
+pluginlib_export_plugin_description_file(opennav_docking_core src/docking_helper/plugins.xml)
+
+
+##
+# docking_helper
 ##
 
 ##
@@ -168,6 +225,7 @@ INSTALL(TARGETS map_recorder
 # Create a dependency link for our executables on the message generation
 add_dependencies(map_server_node ${PROJECT_NAME})
 add_dependencies(sim_node ${PROJECT_NAME})
+add_dependencies(docking_helper ${PROJECT_NAME})
 add_dependencies(map_recorder ${PROJECT_NAME})
 
 if (BUILD_TESTING)

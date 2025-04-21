@@ -65,6 +65,12 @@ void MapServerNode::publishMap()
   RCLCPP_INFO(get_logger(), "Publishing map");
   map_publisher_->publish(current_map_);
 
+  if (current_map_.areas.empty())
+  {
+    RCLCPP_WARN(get_logger(), "No areas found in the map. Occupancy grid will not be published.");
+    return;
+  }
+
   RCLCPP_INFO(get_logger(), "Publishing occupancy grid");
   occupancy_grid_publisher_->publish(mapToOccupancyGrid(current_map_));
 
@@ -324,7 +330,18 @@ nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
   {
     uint8_t value = area.type == msg::Area::TYPE_EXCLUSION ? 1 : 0.2;
 
-    fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
+    try
+    {
+      fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
+    }
+    catch (const std::out_of_range& e)
+    {
+      RCLCPP_ERROR(get_logger(), "Error filling grid with polygon: %s", e.what());
+      RCLCPP_ERROR(get_logger(), "Area ID: %s", area.id.c_str());
+      RCLCPP_ERROR(get_logger(), "Area type: %d", area.type);
+      RCLCPP_ERROR(get_logger(), "Area polygon points: %zu", area.area.polygon.points.size());
+      return occupancy_grid;
+    }
   }
 
   RCLCPP_INFO(get_logger(), "Occupancy grid size: %.2fm x %.2fm (%.2fm resolution)",
@@ -464,9 +481,8 @@ void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_
 
     if (index >= occupancy_grid.data.size())
     {
-      RCLCPP_ERROR(this->get_logger(), "Index out of bounds: %d Grid size: %lu", index, occupancy_grid.data.size());
-
-      continue;
+      throw std::out_of_range("Index out of bounds. " + std::to_string(index) +
+                              " Grid size: " + std::to_string(occupancy_grid.data.size()));
     }
 
     if (occupancy_grid.data[index] > value)

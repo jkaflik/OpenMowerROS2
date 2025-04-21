@@ -20,8 +20,10 @@ def generate_launch_description():
                        'smoother_server',
                        ]
 
-    remappings = [('/tf', 'tf'),
-                  ('/tf_static', 'tf_static')]
+    remappings = [
+        ('/tf', 'tf'),
+        ('/tf_static', 'tf_static'),
+    ]
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     autostart = LaunchConfiguration('autostart')

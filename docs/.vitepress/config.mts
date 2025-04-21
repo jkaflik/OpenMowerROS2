@@ -41,6 +41,8 @@ export default withMermaid({
           { text: 'Robot localization', link: '/architecture/localization' },
           { text: 'Map server', link: '/architecture/map-server' },
           { text: 'Map recorder', link: '/architecture/map-recorder' },
+          { text: 'Docking helper', link: '/architecture/docking-helper' },
+          { text: 'Sim node', link: '/architecture/sim-node' },
         ]
       },
       {
