@@ -341,10 +341,8 @@ nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
   occupancy_grid.info.height = height;
   occupancy_grid.info.map_load_time = this->now();
 
-  // Initialize with unknown (-1) values
   occupancy_grid.data = std::vector<int8_t>(occupancy_grid.info.width * occupancy_grid.info.height, -1);
 
-  // Sort areas to ensure exclusion zones overwrite other zones
   auto orderedAreas = areasWithExclusionsLast(map.areas);
 
   for (const auto& area : orderedAreas)
@@ -353,19 +351,7 @@ nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
 
     try
     {
-      // For very large polygons, split them to avoid performance issues
-      if (polygonArea(area.area.polygon) > 1000)
-      {  // threshold in square meters
-        auto subPolygons = splitPolygonIntoParts(area.area.polygon, 500);
-        for (const auto& subPolygon : subPolygons)
-        {
-          fillGridWithPolygon(occupancy_grid, subPolygon, value);
-        }
-      }
-      else
-      {
-        fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
-      }
+      fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
     }
     catch (const std::out_of_range& e)
     {
@@ -516,7 +502,6 @@ void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_
     int grid_x = static_cast<int>((point.x - origin_x) / resolution);
     int grid_y = static_cast<int>((point.y - origin_y) / resolution);
 
-    // Skip if outside grid bounds
     if (grid_x < 0 || grid_x >= width || grid_y < 0 || grid_y >= height)
     {
       continue;
@@ -526,12 +511,7 @@ void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_
 
     if (index >= 0 && index < static_cast<int>(occupancy_grid.data.size()))
     {
-      // For exclusion areas (value 100), always overwrite
-      // For non-exclusion areas (value 0), only write if the cell is unknown (-1) or less restrictive
-      if (value == 100 || (occupancy_grid.data[index] < value && occupancy_grid.data[index] != 100))
-      {
-        occupancy_grid.data[index] = value;
-      }
+      occupancy_grid.data[index] = value;
     }
   }
 }

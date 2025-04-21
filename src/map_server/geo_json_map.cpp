@@ -165,16 +165,27 @@ msg::Map GeoJSONMap::load()
     throw std::runtime_error("Could not open GeoJSON file: " + path_);
   }
 
+  msg::Map map;
+  map.header.stamp = node_->now();
+  map.header.frame_id = node_->get_parameter("world_frame").as_string();
+
+  f.seekg(0, std::ios::end);
+  if (f.tellg() == 0)
+  {
+    // file is empty, let's return an empty map
+    RCLCPP_WARN(node_->get_logger(), "GeoJSON file is empty");
+    f.close();
+    return map;
+  }
+
+  f.seekg(0, std::ios::beg);
+
   json data = json::parse(f);
 
   if (data["type"] != "FeatureCollection")
   {
     throw std::runtime_error("GeoJSON file is not a FeatureCollection type");
   }
-
-  msg::Map map;
-  map.header.stamp = node_->now();  // or use the modification time of the file?
-  map.header.frame_id = node_->get_parameter("world_frame").as_string();
 
   for (const auto& feature : data["features"])
   {
@@ -201,6 +212,8 @@ msg::Map GeoJSONMap::load()
   }
 
   eventuallyPublishFoxgloveGeoJSON(data);
+
+  f.close();
 
   return map;
 }
