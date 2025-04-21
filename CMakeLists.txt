@@ -111,11 +111,7 @@ INSTALL(TARGETS map_server_node
 ###
 add_executable(sim_node
         src/sim/node_main.cpp
-        src/sim/sim_node.hpp
-        src/sim/sim_node.cpp
-        src/sim/sim_node.cpp
-        src/sim/sim_node.hpp
-        src/sim/node_main.cpp)
+        src/sim/sim_node.cpp)
 target_compile_features(sim_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(sim_node PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
@@ -142,8 +138,7 @@ INSTALL(TARGETS sim_node
 ###
 add_executable(docking_helper
         src/docking_helper/main.cpp
-        src/docking_helper/docking_helper_node.cpp
-        src/docking_helper/docking_helper_node.hpp)
+        src/docking_helper/docking_helper_node.cpp)
 target_compile_features(docking_helper PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(docking_helper PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
