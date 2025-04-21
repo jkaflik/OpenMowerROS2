@@ -33,7 +33,8 @@ private:
 
   void mapCallback(const open_mower_next::msg::Map::SharedPtr msg);
   std::shared_ptr<rclcpp::Subscription<open_mower_next::msg::Map>> map_sub_;
-  std::vector<open_mower_next::msg::DockingStation> docking_stations_;
+  std::mutex docking_stations_mutex_;
+  std::vector<open_mower_next::msg::DockingStation> docking_stations_;  // guarded by docking_stations_mutex_
 
   std::shared_ptr<open_mower_next::msg::DockingStation> findNearestDockingStation();
   void findNearestDockingStationService(
@@ -62,6 +63,10 @@ private:
   void handleDockRobotToAccepted(const std::shared_ptr<DockRobotToGoalHandle> goal_handle);
 
   std::shared_ptr<open_mower_next::msg::DockingStation> findDockingStationById(const std::string& id);
+
+  template <typename ActionT, typename GoalHandleT>
+  void executeDockingAction(const std::shared_ptr<GoalHandleT>& goal_handle,
+                            const std::shared_ptr<open_mower_next::msg::DockingStation>& docking_station);
 };
 
 }  // namespace open_mower_next::docking_helper
