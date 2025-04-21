@@ -69,11 +69,15 @@ public:
               continue;
 
             int index = ny * width + nx;
-            if (index < 0 || index >= static_cast<int>(image.size()) || image[index] == -1)
+            if (index < 0 || index >= static_cast<int>(image.size()))
               continue;
 
+            // Treat unknown (-1) values as 100 (occupied)
+            // so navigable corners are smoothed.
+            int pixelValue = (image[index] == -1) ? 100 : image[index];
+
             float kernelValue = kernel_[(j + half_kernel_size_) * kernel_size_ + (i + half_kernel_size_)];
-            newValue += image[index] * kernelValue;
+            newValue += pixelValue * kernelValue;
             weightSum += kernelValue;
           }
         }

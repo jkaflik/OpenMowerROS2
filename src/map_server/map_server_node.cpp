@@ -509,10 +509,17 @@ void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_
 
     auto index = grid_x + grid_y * width;
 
-    if (index >= 0 && index < static_cast<int>(occupancy_grid.data.size()))
+    if (index < 0 || index >= static_cast<int>(occupancy_grid.data.size()))
     {
-      occupancy_grid.data[index] = value;
+      continue;
     }
+
+    if (occupancy_grid.data[index] > value)
+    {
+      continue;
+    }
+
+    occupancy_grid.data[index] = value;
   }
 }
 }  // namespace open_mower_next::map_server
