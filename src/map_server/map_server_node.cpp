@@ -65,12 +65,7 @@ void MapServerNode::publishMap()
   RCLCPP_INFO(get_logger(), "Publishing map");
   map_publisher_->publish(current_map_);
 
-  if (current_map_.areas.empty())
-  {
-    RCLCPP_WARN(get_logger(), "No areas found in the map. Occupancy grid will not be published.");
-    return;
-  }
-
+  // Always publish occupancy grid, even if there are no areas
   RCLCPP_INFO(get_logger(), "Publishing occupancy grid");
   occupancy_grid_publisher_->publish(mapToOccupancyGrid(current_map_));
 
@@ -290,23 +285,38 @@ std::vector<msg::Area> MapServerNode::areasWithExclusionsLast(std::vector<msg::A
 
 nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
 {
-  float minX, minY, maxX, maxY;
+  float minX = std::numeric_limits<float>::max();
+  float minY = std::numeric_limits<float>::max();
+  float maxX = std::numeric_limits<float>::lowest();
+  float maxY = std::numeric_limits<float>::lowest();
 
-  for (const auto& area : map.areas)
+  // Add a fallback if no areas
+  if (map.areas.empty())
   {
-    for (const auto& point : area.area.polygon.points)
-    {
-      minX = std::min(minX, point.x);
-      minY = std::min(minY, point.y);
-      maxX = std::max(maxX, point.x);
-      maxY = std::max(maxY, point.y);
-    }
+    RCLCPP_WARN(get_logger(), "No areas found in the map. Creating default empty grid.");
+    minX = -10.0;
+    minY = -10.0;
+    maxX = 10.0;
+    maxY = 10.0;
   }
-
-  maxX += 1;
-  maxY += 1;
-  minX -= 1;
-  minY -= 1;
+  else
+  {
+    for (const auto& area : map.areas)
+    {
+      for (const auto& point : area.area.polygon.points)
+      {
+        minX = std::min(minX, static_cast<float>(point.x));
+        minY = std::min(minY, static_cast<float>(point.y));
+        maxX = std::max(maxX, static_cast<float>(point.x));
+        maxY = std::max(maxY, static_cast<float>(point.y));
+      }
+    }
+    // Add padding
+    maxX += 1.0f;
+    maxY += 1.0f;
+    minX -= 1.0f;
+    minY -= 1.0f;
+  }
 
   nav_msgs::msg::OccupancyGrid occupancy_grid;
   occupancy_grid.header = map.header;
@@ -315,24 +325,47 @@ nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
   occupancy_grid.info.origin.position.x = minX;
   occupancy_grid.info.origin.position.y = minY;
 
-  // cell size is in meters
-  occupancy_grid.info.resolution = 0.1;
+  // cell size in meters - get from parameter
+  occupancy_grid.info.resolution = declare_parameter("grid.resolution", 0.1);
 
-  // occupancy grid width/height is in cells, not meters
-  occupancy_grid.info.width = (maxX - minX) / occupancy_grid.info.resolution;
-  occupancy_grid.info.height = (maxY - minY) / occupancy_grid.info.resolution;
+  // Limit the max size of the grid to avoid memory issues with large areas
+  const int MAX_GRID_SIZE = declare_parameter("grid.max_size", 2000);
+  int width = std::min(MAX_GRID_SIZE, static_cast<int>((maxX - minX) / occupancy_grid.info.resolution));
+  int height = std::min(MAX_GRID_SIZE, static_cast<int>((maxY - minY) / occupancy_grid.info.resolution));
 
+  // Ensure minimum grid size
+  width = std::max(width, 10);
+  height = std::max(height, 10);
+
+  occupancy_grid.info.width = width;
+  occupancy_grid.info.height = height;
   occupancy_grid.info.map_load_time = this->now();
 
+  // Initialize with unknown (-1) values
   occupancy_grid.data = std::vector<int8_t>(occupancy_grid.info.width * occupancy_grid.info.height, -1);
 
-  for (const auto& area : map.areas)
+  // Sort areas to ensure exclusion zones overwrite other zones
+  auto orderedAreas = areasWithExclusionsLast(map.areas);
+
+  for (const auto& area : orderedAreas)
   {
-    uint8_t value = area.type == msg::Area::TYPE_EXCLUSION ? 1 : 0.2;
+    int8_t value = area.type == msg::Area::TYPE_EXCLUSION ? 100 : 0;  // 0=free, 100=occupied
 
     try
     {
-      fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
+      // For very large polygons, split them to avoid performance issues
+      if (polygonArea(area.area.polygon) > 1000)
+      {  // threshold in square meters
+        auto subPolygons = splitPolygonIntoParts(area.area.polygon, 500);
+        for (const auto& subPolygon : subPolygons)
+        {
+          fillGridWithPolygon(occupancy_grid, subPolygon, value);
+        }
+      }
+      else
+      {
+        fillGridWithPolygon(occupancy_grid, area.area.polygon, value);
+      }
     }
     catch (const std::out_of_range& e)
     {
@@ -340,18 +373,18 @@ nav_msgs::msg::OccupancyGrid MapServerNode::mapToOccupancyGrid(msg::Map map)
       RCLCPP_ERROR(get_logger(), "Area ID: %s", area.id.c_str());
       RCLCPP_ERROR(get_logger(), "Area type: %d", area.type);
       RCLCPP_ERROR(get_logger(), "Area polygon points: %zu", area.area.polygon.points.size());
-      return occupancy_grid;
+      // Continue with other areas rather than returning incomplete grid
     }
   }
 
-  RCLCPP_INFO(get_logger(), "Occupancy grid size: %.2fm x %.2fm (%.2fm resolution)",
+  RCLCPP_INFO(get_logger(), "Occupancy grid size: %.2fm x %.2fm (%.2fm resolution, %dx%d cells)",
               occupancy_grid.info.width * occupancy_grid.info.resolution,
-              occupancy_grid.info.height * occupancy_grid.info.resolution, occupancy_grid.info.resolution);
+              occupancy_grid.info.height * occupancy_grid.info.resolution, occupancy_grid.info.resolution,
+              occupancy_grid.info.width, occupancy_grid.info.height);
 
   if (gaussian_filter_)
   {
     RCLCPP_INFO(get_logger(), "Applying Gaussian filter");
-
     gaussian_filter_->apply(occupancy_grid.data, occupancy_grid.info.width, occupancy_grid.info.height);
   }
 
@@ -470,27 +503,36 @@ geometry_msgs::msg::PoseArray MapServerNode::dockingStationsToPoseArray(msg::Map
 void MapServerNode::fillGridWithPolygon(nav_msgs::msg::OccupancyGrid& occupancy_grid,
                                         const geometry_msgs::msg::Polygon& polygon, uint8_t value)
 {
-  auto iterator = PolygonGridIterator(polygon, occupancy_grid.info.resolution);
+  const int width = occupancy_grid.info.width;
+  const int height = occupancy_grid.info.height;
+  const double resolution = occupancy_grid.info.resolution;
+  const double origin_x = occupancy_grid.info.origin.position.x;
+  const double origin_y = occupancy_grid.info.origin.position.y;
+
+  auto iterator = PolygonGridIterator(polygon, resolution);
   while (iterator.next())
   {
     auto point = *iterator;
-    auto x = point.x - occupancy_grid.info.origin.position.x;
-    auto y = point.y - occupancy_grid.info.origin.position.y;
-    auto index = (int)(x / occupancy_grid.info.resolution) +
-                 (int)(y / occupancy_grid.info.resolution) * occupancy_grid.info.width;
+    int grid_x = static_cast<int>((point.x - origin_x) / resolution);
+    int grid_y = static_cast<int>((point.y - origin_y) / resolution);
 
-    if (index >= occupancy_grid.data.size())
+    // Skip if outside grid bounds
+    if (grid_x < 0 || grid_x >= width || grid_y < 0 || grid_y >= height)
     {
-      throw std::out_of_range("Index out of bounds. " + std::to_string(index) +
-                              " Grid size: " + std::to_string(occupancy_grid.data.size()));
+      continue;
     }
 
-    if (occupancy_grid.data[index] > value)
-    {
-      continue;  // do not overwrite higher values
-    }
+    auto index = grid_x + grid_y * width;
 
-    occupancy_grid.data[index] = value;
+    if (index >= 0 && index < static_cast<int>(occupancy_grid.data.size()))
+    {
+      // For exclusion areas (value 100), always overwrite
+      // For non-exclusion areas (value 0), only write if the cell is unknown (-1) or less restrictive
+      if (value == 100 || (occupancy_grid.data[index] < value && occupancy_grid.data[index] != 100))
+      {
+        occupancy_grid.data[index] = value;
+      }
+    }
   }
 }
 }  // namespace open_mower_next::map_server
