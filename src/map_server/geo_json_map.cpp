@@ -173,8 +173,7 @@ msg::Map GeoJSONMap::load()
   if (f.tellg() == 0)
   {
     // file is empty, let's return an empty map
-    RCLCPP_WARN(node_->get_logger(), "GeoJSON file is empty");
-    f.close();
+    RCLCPP_WARN(node_->get_logger(), "GeoJSON file is empty. Returning empty map.");
     return map;
   }
 
@@ -184,7 +183,9 @@ msg::Map GeoJSONMap::load()
 
   if (data["type"] != "FeatureCollection")
   {
-    throw std::runtime_error("GeoJSON file is not a FeatureCollection type");
+    RCLCPP_WARN(node_->get_logger(), "Invalid GeoJSON file format. Expected FeatureCollection. Returning empty map.");
+
+    return map;
   }
 
   for (const auto& feature : data["features"])
@@ -212,8 +213,6 @@ msg::Map GeoJSONMap::load()
   }
 
   eventuallyPublishFoxgloveGeoJSON(data);
-
-  f.close();
 
   return map;
 }
