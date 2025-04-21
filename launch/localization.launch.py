@@ -55,6 +55,7 @@ def generate_launch_description():
                                     float(os.getenv("OM_DATUM_LAT")),
                                     float(os.getenv("OM_DATUM_LONG")),
                                 ],
+                                "grid.use_gaussian_blur": True,
                             }
                         ],
                         remappings=[
