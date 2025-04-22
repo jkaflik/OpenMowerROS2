@@ -65,6 +65,7 @@ COPY --from=builder $WORKSPACE/launch $WORKSPACE/launch
 COPY --from=builder $WORKSPACE/config $WORKSPACE/config
 COPY --from=builder $WORKSPACE/build $WORKSPACE/build
 COPY --from=builder $WORKSPACE/description $WORKSPACE/description
+COPY --from=builder $WORKSPACE/utils/control $WORKSPACE/utils/control
 COPY --from=builder /opt/ros/$ROS_DISTRO /opt/ros/$ROS_DISTRO
 
 # Copy XML plugins definition
