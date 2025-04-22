@@ -42,3 +42,7 @@ rsp:
 
 remote-devices:
 	bash .devcontainer/scripts/remote_devices.sh $(REMOTE_HOST) $(REMOTE_USER)
+
+control:
+	@echo "Starting OpenMower Terminal Controller..."
+	@cd utils/control && python3 cli_controller.py
