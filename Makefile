@@ -14,7 +14,7 @@ custom-deps:
 	sh utils/install-custom-deps.sh
 
 build-libs:
-	colcon build --base-paths "src/lib/*"
+	colcon build --base-paths "src/lib/*" --cmake-args -DBUILD_TESTING=OFF
 
 build:
 	colcon build --symlink-install

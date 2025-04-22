@@ -15,3 +15,11 @@ repositories:
     type: git
     url: https://github.com/LORD-MicroStrain/ntrip_client
     version: ros2
+  fields2cover:
+    type: git
+    url: https://github.com/Fields2Cover/Fields2Cover.git
+    version: v1.2.1-devel
+  opennav_coverage: # forked version of opennav_coverage that is compatible with fields2cover >=v2.0
+    type: git
+    url: https://github.com/open-navigation/opennav_coverage.git
+    version: jazzy
