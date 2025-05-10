@@ -1,0 +1,16 @@
+geometry_msgs/PolygonStamped polygon
+bool with_exclusions true # whether to include exlusions in the coverage. Exclusions are fetched from a map
+---
+# Result
+uint16 CODE_SUCCESS = 0
+uint16 CODE_INVALID_POLYGON = 1
+uint16 CODE_INVALID_EXCLUSION = 2
+uint16 CODE_UNKNOWN_ERROR = 99
+
+uint16 code                # 0 is success, otherwise is error code
+string message             # Information message
+
+nav_msgs/Path[] paths
+
+geometry_msgs/PolygonStamped polygon # polygon that is used for the coverage
+string[] area_ids # area ids that are bound by the polygon
