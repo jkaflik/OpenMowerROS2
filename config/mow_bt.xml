@@ -1,0 +1,18 @@
+<!-- It's only ideational, not a real BT. -->
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <GetAreaCoveragePolygons area_id="{area_id}" polygons="{coverage_polygons}"/>
+            <ComputeCoveragePath nav_path="{coverage_path}" polygons="{coverage_polygons}" polygons_frame_id="{polygon_frame_id}" error_code_id="{compute_coverage_error_code}"/>
+
+            <GetPoseFromPath path="{coverage_path}" pose="{start_pose}" />
+            <ComputePathToPose goal="{start_pose}" path="{path_to_start}" planner_id="GridBased" error_code_id="{compute_path_error_code}"/>
+
+            <FollowPath path="{path_to_start}" controller_id="FollowPath" error_code_id="{follow_path_error_code}"/>
+
+            <!-- TODO: mower control -->
+            <FollowPath path="{path}" controller_id="FollowPath" error_code_id="{follow_path_error_code}"/>
+            <!-- TODO: recovery -->
+        </Sequence>
+    </BehaviorTree>
+</root>

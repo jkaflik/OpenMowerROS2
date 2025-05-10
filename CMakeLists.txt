@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(open_mower_next)
 
-# Default to C++14
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
 endif ()
@@ -31,6 +30,7 @@ find_package(visualization_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(opennav_docking REQUIRED)
+find_package(Fields2Cover REQUIRED)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/share/cmake/geographiclib/")
 find_package(GeographicLib REQUIRED)
@@ -41,6 +41,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "src/srv/SaveArea.srv"
         "src/srv/SaveDockingStation.srv"
         "src/srv/FindNearestDockingStation.srv"
+        "src/srv/PolygonCoverage.srv"
+        "src/srv/AreaCoverage.srv"
         "src/msg/Area.msg"
         "src/msg/Map.msg"
         "src/msg/DockingStation.msg"
@@ -52,6 +54,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         std_msgs
         geometry_msgs
         sensor_msgs
+        nav_msgs
         tf2
         tf2_geometry_msgs
         unique_identifier_msgs
@@ -64,6 +67,7 @@ include(cmake/map_server.cmake)
 include(cmake/sim.cmake)
 include(cmake/docking_helper.cmake)
 include(cmake/map_recorder.cmake)
+include(cmake/coverage_server.cmake)
 
 if (BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
