@@ -19,6 +19,9 @@
             "use_sim_time:=true"
         ]
     },
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    "C_Cpp.codeAnalysis.runAutomatically": true,
+    "C_Cpp.errorSquiggles": "enabled",
     "python.autoComplete.extraPaths": [
         "${workspaceFolder}/install/vesc_msgs/lib/python3.12/site-packages",
         "/opt/ros/jazzy/lib/python3.12/site-packages"

@@ -1,0 +1,19 @@
+string area_id # id of the area to be covered
+bool with_exclusions true # whether to include exlusions in the coverage. Exclusions are fetched from a map
+uint16 headland_loops 3 # number of headland loops
+uint16 swath_angle 0 # angle of the swaths in degrees relative to a best fit line of the area
+
+---
+# Result
+uint16 CODE_SUCCESS = 0
+uint16 CODE_INVALID_AREA = 1
+uint16 CODE_INVALID_EXCLUSION = 2
+uint16 CODE_UNKNOWN_ERROR = 99
+
+uint16 code                # 0 is success, otherwise is error code
+string message             # Information message
+
+nav_msgs/Path path
+
+geometry_msgs/PolygonStamped polygon # polygon used for the coverage
+string area_id # area id that defined the polygon
