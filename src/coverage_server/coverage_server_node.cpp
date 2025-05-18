@@ -1,12 +1,13 @@
 #include "coverage_server_node.hpp"
 
+#include "utils.h"
+
 #include <tf2/LinearMath/Quaternion.hpp>
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 namespace open_mower_next::coverage_server
 {
-
 CoverageServerNode::CoverageServerNode(const rclcpp::NodeOptions & options)
 : Node("coverage_server", options)
 {
@@ -47,42 +48,6 @@ void CoverageServerNode::mapCallback(const open_mower_next::msg::Map::SharedPtr 
 {
   current_map_ = *msg;
   RCLCPP_INFO(get_logger(), "Received updated map with %zu areas", msg->areas.size());
-}
-nav_msgs::msg::Path CoverageServerNode::convertToRosPath(
-  const f2c::types::Path & f2c_path, const nav_msgs::msg::Path & ros_path)
-{
-  std::vector<geometry_msgs::msg::PoseStamped> poses;
-
-  for (const auto & path_state : f2c_path) {
-    geometry_msgs::msg::PoseStamped pose;
-    pose.header = ros_path.header;
-
-    pose.pose.position.x = path_state.point.getX();
-    pose.pose.position.y = path_state.point.getY();
-
-    tf2::Quaternion q;
-    q.setRPY(0, 0, path_state.angle);
-    pose.pose.orientation = tf2::toMsg(q);
-
-    poses.push_back(pose);
-  }
-
-  nav_msgs::msg::Path path;
-        path.header = ros_path.header;
-        path.poses = poses;
-
-  return path;
-}
-
-bool CoverageServerNode::isValidPolygon(const geometry_msgs::msg::PolygonStamped & polygon)
-{
-  // Check if the polygon has at least 3 points
-  if (polygon.polygon.points.size() < 3) {
-    RCLCPP_ERROR(get_logger(), "Invalid polygon: needs at least 3 points");
-    return false;
-  }
-
-  return true;
 }
 
 void CoverageServerNode::handleAreaCoverageRequest(
@@ -127,26 +92,25 @@ void CoverageServerNode::handleAreaCoverageRequest(
     findExclusionsInPolygon(area_polygon, exclusion_polygons);
   }
 
-  nav_msgs::msg::Path path;
-  path.header.frame_id = area_polygon.header.frame_id;
+  f2c::types::Robot robot(robot_width_, operation_width_, min_turning_radius_);
 
-  std::string message;
-  response->code = generateCoveragePath(
-    request->headland_loops, request->swath_angle, area_polygon, exclusion_polygons, path, message);
-  response->message = message;
+  const auto swaths = generateSwaths(
+    robot, area_polygon, exclusion_polygons, request->headland_loops, request->swath_angle);
 
-  if (response->code == open_mower_next::srv::AreaCoverage::Response::CODE_SUCCESS) {
-    response->path = path;
-    response->polygon = area_polygon;
-    response->area_id = request->area_id;
+  nav_msgs::msg::Path path = utils::toMsg(swaths, area_polygon.header.frame_id);
 
-    // Publish visualization
-    auto markers = createVisualizationMarkers(path, area_polygon, exclusion_polygons);
-    visualization_pub_->publish(markers);
+  response->message = "Coverage path generated successfully";
+  response->code = open_mower_next::srv::AreaCoverage::Response::CODE_SUCCESS;
+  response->path = path;
+  response->polygon = area_polygon;
+  response->area_id = request->area_id;
 
-    RCLCPP_INFO(
-      get_logger(), "Generated path with a %zu poses for area ID: %s", path.poses.size(), request->area_id.c_str());
-  }
+  const auto markers = createVisualizationMarkers(swaths, area_polygon.header.frame_id);
+  visualization_pub_->publish(markers);
+
+  RCLCPP_INFO(
+    get_logger(), "Generated path with a %zu poses for area ID: %s", path.poses.size(),
+    request->area_id.c_str());
 }
 
 msg::Area::SharedPtr CoverageServerNode::findAreaById(const std::string & area_id)
@@ -212,246 +176,131 @@ void CoverageServerNode::findExclusionsInPolygon(
   RCLCPP_INFO(get_logger(), "Found %zu exclusion areas", exclusion_polygons.size());
 }
 
-f2c::types::Cells CoverageServerNode::convertToF2CCells(
-  const geometry_msgs::msg::PolygonStamped & ros_polygon,
-  const std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons)
-{
-  f2c::types::Cell cell;
-  f2c::types::LinearRing boundary;
-  for (const auto & point : ros_polygon.polygon.points) {
-    boundary.addPoint(f2c::types::Point(point.x, point.y));
-  }
-
-  auto first_point = boundary.at(0);
-  auto last_point = boundary.at(boundary.size() - 1);
-
-  // Add the first point again to close the loop if not already closed
-  if (
-    !boundary.isEmpty() &&
-    (first_point.getX() != last_point.getX() || first_point.getY() != last_point.getY())) {
-    boundary.addPoint(first_point);
-  }
-
-  cell.addGeometry(boundary);
-
-  for (const auto & exclusion : exclusion_polygons) {
-    f2c::types::LinearRing exclusion_ring;
-    for (const auto & point : exclusion.polygon.points) {
-      exclusion_ring.addPoint(f2c::types::Point(point.x, point.y));
-    }
-
-    auto first_point = boundary.at(0);
-    auto last_point = boundary.at(boundary.size() - 1);
-
-    if (
-      !exclusion_ring.isEmpty() &&
-      (first_point.getX() != last_point.getX() || first_point.getY() != last_point.getY())) {
-      exclusion_ring.addPoint(first_point);
-    }
-
-    cell.addGeometry(exclusion_ring);
-  }
-
-  return f2c::types::Cells{cell};
-}
-
-uint16_t CoverageServerNode::generateCoveragePath(
-  const uint16_t headland_loops, const uint16_t swath_angle,
-  const geometry_msgs::msg::PolygonStamped & field_polygon,
+f2c::types::Swaths CoverageServerNode::generateSwaths(
+  const f2c::types::Robot & robot, const geometry_msgs::msg::PolygonStamped & field_polygon,
   const std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons,
-  nav_msgs::msg::Path & path, std::string & message)
+  const uint16_t headland_loops = 0, const uint16_t swath_angle = 0)
 {
-  try {
-    f2c::hg::ConstHL hg;
+  f2c::hg::ConstHL hg;
 
-    RCLCPP_INFO(get_logger(), "Generating coverage path...");
+  RCLCPP_INFO(get_logger(), "Generating swaths...");
 
-    auto cells = convertToF2CCells(field_polygon, exclusion_polygons);
+  f2c::types::Cells cells{utils::toCell(field_polygon, exclusion_polygons)};
 
-    f2c::types::Robot robot(robot_width_, operation_width_, min_turning_radius_);
+  auto mainland = cells;
 
-    auto mainland = cells;
+  if (headland_loops > 0) {
+    auto headland_width = robot.getCovWidth() * headland_loops;
 
-    if (headland_loops > 0) {
-      auto headland_width = robot.getCovWidth() * headland_loops;
+    RCLCPP_INFO(
+      get_logger(), "Generating headland with width=%.2f (%d loops of %.2f)", headland_width,
+      headland_loops, robot.getCovWidth());
 
-      RCLCPP_INFO(
-        get_logger(), "Generating headland with width=%.2f (%d loops of %.2f)", headland_width,
-        headland_loops, robot.getCovWidth());
-
-      mainland = hg.generateHeadlands(cells, headland_width);
-    }
-
-    // Set the swath angle based on the configuration
-    double swath_angle_rad = swath_angle * M_PI / 180.0;  // Convert degrees to radians
-
-    f2c::sg::BruteForce swath_gen;
-
-    f2c::obj::SwathLength swath_length;
-    auto best_angle =
-      swath_gen.computeBestAngle(swath_length, robot.getCovWidth(), mainland.getGeometry(0));
-    auto computed_angle = best_angle + swath_angle_rad;
-
-    const f2c::types::Swaths swaths =
-      swath_gen.generateSwaths(computed_angle, robot.getCovWidth(), mainland.getGeometry(0));
-
-    RCLCPP_INFO(get_logger(), "Generated %zu swaths", swaths.size());
-
-    const f2c::rp::BoustrophedonOrder sorter;
-    f2c::types::Swaths sorted_swaths = sorter.genSortedSwaths(swaths);
-
-    RCLCPP_INFO(get_logger(), "Sorted swaths");
-
-    // response_paths.push_back(convertToRosPath(sorted_swaths, field_polygon.header.frame_id));
-
-    // Add path for the headland if it exists
-    if (headland_loops > 0) {
-      auto cells_vector = hg.generateHeadlandSwaths(cells, operation_width_, headland_loops, false);
-
-      for (auto & cell : cells_vector) {
-        for (auto & ring : cell.getGeometry(0)) {
-          sorted_swaths.append(
-            f2c::types::LineString(ring), robot.getCovWidth(), f2c::types::SwathType::HEADLAND);
-        }
-      }
-
-      // auto paths = convertToRosPath(cells_vector, field_polygon.header.frame_id);
-
-      // RCLCPP_INFO(get_logger(), "Generated %zu headland paths", paths.size());
-
-      // response_paths.insert(response_paths.end(), paths.begin(), paths.end());
-    }
-
-    f2c::pp::PathPlanning path_planner;
-    f2c::pp::DubinsCurves dubins;
-    f2c::types::Path dubins_path = path_planner.planPath(robot, sorted_swaths, dubins);
-
-    path = convertToRosPath(dubins_path, path);
-
-    message = "Coverage path generated successfully";
-
-    return open_mower_next::srv::PolygonCoverage::Response::CODE_SUCCESS;
-  } catch (const std::exception & e) {
-    RCLCPP_ERROR(get_logger(), "Error generating coverage path: %s", e.what());
-    message = std::string("Error generating coverage path: ") + e.what();
-    return open_mower_next::srv::PolygonCoverage::Response::CODE_UNKNOWN_ERROR;
+    mainland = hg.generateHeadlands(cells, headland_width);
   }
+
+  f2c::sg::BruteForce swath_generator;
+  f2c::obj::SwathLength swath_objective;
+
+  const auto best_angle =
+    swath_generator.computeBestAngle(swath_objective, robot.getCovWidth(), mainland.getGeometry(0));
+  const auto requested_angle = best_angle + (swath_angle * M_PI / 180.0);
+
+  f2c::types::Swaths swaths =
+    swath_generator.generateSwaths(requested_angle, robot.getCovWidth(), mainland.getGeometry(0));
+
+  RCLCPP_INFO(get_logger(), "Generated %zu swaths", swaths.size());
+
+  const f2c::rp::BoustrophedonOrder sorter;
+
+  f2c::types::Swaths sorted_swaths = sorter.genSortedSwaths(swaths);
+
+  if (headland_loops > 0) {
+    auto cells_vector = hg.generateHeadlandSwaths(cells, operation_width_, headland_loops, false);
+
+    for (auto & cell : cells_vector) {
+      for (auto & ring : cell.getGeometry(0)) {
+        sorted_swaths.append(
+          f2c::types::LineString(ring), robot.getCovWidth(), f2c::types::SwathType::HEADLAND);
+      }
+    }
+
+    RCLCPP_INFO(get_logger(), "Generated %zu headland swaths", cells_vector.size());
+  }
+
+  return sorted_swaths;
 }
 
 visualization_msgs::msg::MarkerArray CoverageServerNode::createVisualizationMarkers(
-  const nav_msgs::msg::Path & path, const geometry_msgs::msg::PolygonStamped & field_polygon,
-  const std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons)
+  const f2c::types::Swaths & swaths, const std::string & frame_id)
 {
   visualization_msgs::msg::MarkerArray markers;
 
-  // Create marker for the field boundary
-  visualization_msgs::msg::Marker field_marker;
-  field_marker.header = field_polygon.header;
-  field_marker.ns = "area_boundary";
-  field_marker.id = 0;
-  field_marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
-  field_marker.action = visualization_msgs::msg::Marker::ADD;
-  field_marker.pose.orientation.w = 1.0;
-  field_marker.scale.x = 0.1;  // Line width
-  field_marker.color.r = 0.0;
-  field_marker.color.g = 1.0;  // Green
-  field_marker.color.b = 0.0;
-  field_marker.color.a = 1.0;
+  // Add a deletion marker to clear all previous markers
+  visualization_msgs::msg::Marker delete_marker;
+  delete_marker.header.frame_id = frame_id;
+  delete_marker.header.stamp = now();
+  delete_marker.ns = "all";
+  delete_marker.id = 0;
+  delete_marker.action = visualization_msgs::msg::Marker::DELETEALL;
+  markers.markers.push_back(delete_marker);
 
-  for (const auto & point : field_polygon.polygon.points) {
-    geometry_msgs::msg::Point ros_point;
-    ros_point.x = point.x;
-    ros_point.y = point.y;
-    ros_point.z = 0.05;  // Slight elevation above ground
-    field_marker.points.push_back(ros_point);
-  }
+  for (int i = 0; i < swaths.size(); ++i) {
+    if (i > 0) {
+      visualization_msgs::msg::Marker connection_marker;
+      connection_marker.ns = "connections";
+      connection_marker.color.r = 0.0f;
+      connection_marker.color.g = 0.0f;
+      connection_marker.color.b = 1.0f;
+      connection_marker.color.a = 1.0f;
+      connection_marker.header.frame_id = frame_id;
+      connection_marker.header.stamp = now();
+      connection_marker.id = i;
+      connection_marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
+      connection_marker.action = visualization_msgs::msg::Marker::ADD;
+      connection_marker.scale.x = 0.01;
+      connection_marker.points.push_back(utils::toMsg(swaths[i-1].endPoint()));
+      connection_marker.points.push_back(utils::toMsg(swaths[i].startPoint()));
 
-  // Close the loop
-  if (!field_polygon.polygon.points.empty()) {
-    geometry_msgs::msg::Point ros_point;
-    ros_point.x = field_polygon.polygon.points[0].x;
-    ros_point.y = field_polygon.polygon.points[0].y;
-    ros_point.z = 0.05;
-    field_marker.points.push_back(ros_point);
-  }
-
-  markers.markers.push_back(field_marker);
-
-  // Create markers for exclusion areas
-  for (size_t i = 0; i < exclusion_polygons.size(); i++) {
-    visualization_msgs::msg::Marker exclusion_marker;
-    exclusion_marker.header = field_polygon.header;
-    exclusion_marker.ns = "exclusion_areas";
-    exclusion_marker.id = i;
-    exclusion_marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
-    exclusion_marker.action = visualization_msgs::msg::Marker::ADD;
-    exclusion_marker.pose.orientation.w = 1.0;
-    exclusion_marker.scale.x = 0.1;  // Line width
-    exclusion_marker.color.r = 1.0;  // Red
-    exclusion_marker.color.g = 0.0;
-    exclusion_marker.color.b = 0.0;
-    exclusion_marker.color.a = 1.0;
-
-    for (const auto & point : exclusion_polygons[i].polygon.points) {
-      geometry_msgs::msg::Point ros_point;
-      ros_point.x = point.x;
-      ros_point.y = point.y;
-      ros_point.z = 0.05;  // Slight elevation above ground
-      exclusion_marker.points.push_back(ros_point);
+      markers.markers.push_back(connection_marker);
     }
 
-    // Close the loop
-    if (!exclusion_polygons[i].polygon.points.empty()) {
-      geometry_msgs::msg::Point ros_point;
-      ros_point.x = exclusion_polygons[i].polygon.points[0].x;
-      ros_point.y = exclusion_polygons[i].polygon.points[0].y;
-      ros_point.z = 0.05;
-      exclusion_marker.points.push_back(ros_point);
+    auto swath = swaths[i];
+
+    visualization_msgs::msg::Marker marker;
+
+    if (swath.getType() == f2c::types::SwathType::HEADLAND) {
+      marker.ns = "headland";
+      marker.color.r = 0.0f;
+      marker.color.g = 1.0f;
+      marker.color.b = 0.0f;
+      marker.color.a = 1.0f;
+    } else {
+      marker.ns = "mainland";
+      marker.color.r = 1.0f;
+      marker.color.g = 0.0f;
+      marker.color.b = 0.0f;
+      marker.color.a = 1.0f;
     }
 
-    markers.markers.push_back(exclusion_marker);
+    marker.header.frame_id = frame_id;
+    marker.header.stamp = now();
+    marker.id = i;
+    marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
+    marker.action = visualization_msgs::msg::Marker::ADD;
+    marker.scale.x = swath.getWidth();
+
+    const auto start_point = swath.startPoint();
+    const auto end_point = swath.endPoint();
+
+    for (int j = 0; j < swath.numPoints(); ++j) {
+      const auto point = swath.getPoint(j);
+      marker.points.push_back(utils::toMsg(point));
+    }
+
+    markers.markers.push_back(marker);
   }
 
-  visualization_msgs::msg::Marker path_marker;
-  path_marker.header = field_polygon.header;
-  path_marker.ns = "coverage_path";
-  path_marker.id = 1;
-  path_marker.type = visualization_msgs::msg::Marker::LINE_STRIP;
-  path_marker.action = visualization_msgs::msg::Marker::ADD;
-  path_marker.pose.orientation.w = 1.0;
-  path_marker.scale.x = 0.05;  // Line width
-  path_marker.color.r = 0.0;
-  path_marker.color.g = 0.0;
-  path_marker.color.b = 1.0;  // Blue
-  path_marker.color.a = 1.0;
-
-  for (const auto & pose : path.poses) {
-    path_marker.points.push_back(pose.pose.position);
-  }
-
-  markers.markers.push_back(path_marker);
-
-  // Add direction arrows at regular intervals along the path
-  visualization_msgs::msg::Marker arrow_marker;
-  arrow_marker.header = field_polygon.header;
-  arrow_marker.ns = "path_directions";
-  arrow_marker.id = 1;
-  arrow_marker.type = visualization_msgs::msg::Marker::ARROW;
-  arrow_marker.action = visualization_msgs::msg::Marker::ADD;
-  arrow_marker.scale.x = 0.3;  // Arrow length
-  arrow_marker.scale.y = 0.1;  // Arrow width
-  arrow_marker.scale.z = 0.1;  // Arrow height
-  arrow_marker.color = path_marker.color;
-
-  // Add direction arrows at regular intervals
-  const int interval = std::max(1, static_cast<int>(path.poses.size() / 10));
-  for (size_t j = 0; j < path.poses.size(); j += interval) {
-    arrow_marker.id = 1000 + j;  // Unique ID for each arrow
-    arrow_marker.pose = path.poses[j].pose;
-    markers.markers.push_back(arrow_marker);
-  }
-
-  RCLCPP_INFO(get_logger(), "Created %zu visualization markers", markers.markers.size());
   return markers;
 }
 

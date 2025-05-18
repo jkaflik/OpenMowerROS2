@@ -40,9 +40,6 @@ private:
 
   void mapCallback(const open_mower_next::msg::Map::SharedPtr msg);
 
-  nav_msgs::msg::Path convertToRosPath(
-    const f2c::types::Path & f2c_path, const nav_msgs::msg::Path & ros_path);
-
   uint16_t generateCoveragePath(
     uint16_t headland_loops, uint16_t swath_angle,
     const geometry_msgs::msg::PolygonStamped & field_polygon,
@@ -52,21 +49,18 @@ private:
   void findExclusionsInPolygon(
     const geometry_msgs::msg::PolygonStamped & field_polygon,
     std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons);
+  f2c::types::Swaths generateSwaths(
+    const f2c::types::Robot & robot, const geometry_msgs::msg::PolygonStamped & field_polygon,
+    const std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons,
+    uint16_t headland_loops, uint16_t swath_angle);
 
   msg::Area::SharedPtr findAreaById(const std::string & area_id);
 
   std::vector<std::string> findAreasInPolygon(
     const geometry_msgs::msg::PolygonStamped & polygon);
 
-  f2c::types::Cells convertToF2CCells(
-    const geometry_msgs::msg::PolygonStamped & ros_polygon,
-    const std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons);
-
   visualization_msgs::msg::MarkerArray createVisualizationMarkers(
-    const nav_msgs::msg::Path & path, const geometry_msgs::msg::PolygonStamped & field_polygon,
-    const std::vector<geometry_msgs::msg::PolygonStamped> & exclusion_polygons);
-
-  bool isValidPolygon(const geometry_msgs::msg::PolygonStamped & polygon);
+    const f2c::types::Swaths & swaths, const std::string & frame_id);
 };
 
 }  // namespace open_mower_next::coverage_server
